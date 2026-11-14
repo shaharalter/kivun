@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -86,55 +84,67 @@
 
         area.innerHTML = '<div class="loading">טוען נתונים...</div>';
 
-        try {
-            // תיקון הנתיב כך שייגש ישר לתיקיית curricula בלי תיקיית משנה מיותרת
-            let response = await fetch(`curricula/${inst}.json`);
-            if (!response.ok) throw new Error("קובץ הנתונים עדיין לא נוצר או לא נמצא.");
-            
-            let data = await response.json();
-            
-            if (!data.programs || data.programs.length === 0) {
-                area.innerHTML = '<p style="text-align:center; color:#e53e3e;">לא נמצאו תוכניות לימודים זמינות עבור מוסד זה.</p>';
-                return;
-            }
+        const possibleFiles = [
+            `curricula/${inst}.json`,
+            `curricula/${inst.replace(/__/g, "_")}.json`,
+            `curricula/${inst.replace(/___/g, "_")}.json`
+        ];
 
-            let html = `<h2>${data.institution || inst.replace(/_/g, " ")}</h2>`;
-            
-            data.programs.forEach(prog => {
-                html += `<div class="program-card">
-                    <h3>${prog.degree_title}</h3>
-                    <a href="${prog.source_url}" target="_blank" class="source-link">🔗 קישור לעמוד המקורי באתר המוסד</a>`;
-                
-                if (prog.curriculum_sections && prog.curriculum_sections.length > 0) {
-                    prog.curriculum_sections.forEach(sec => {
-                        html += `<h4>${sec.section}</h4>`;
-                        if (sec.courses && sec.courses.length > 0) {
-                            html += `<table><thead><tr>`;
-                            let keys = Object.keys(sec.courses[0]);
-                            keys.forEach(k => html += `<th>${k}</th>`);
-                            html += `</tr></thead><tbody>`;
-                            
-                            sec.courses.forEach(row => {
-                                html += `<tr>`;
-                                keys.forEach(k => html += `<td>${row[k] !== undefined ? row[k] : ''}</td>`);
-                                html += `</tr>`;
-                            });
-                            html += `</tbody></table>`;
-                        } else {
-                            html += `<pre style="white-space: pre-wrap; font-family:inherit;">${sec.markdown || ''}</pre>`;
-                        }
-                    });
+        let data = null;
+        for (let path of possibleFiles) {
+            try {
+                let response = await fetch(path);
+                if (response.ok) {
+                    data = await response.json();
+                    break;
                 }
-                html += `</div>`;
-            });
-
-            area.innerHTML = html;
-
-        } catch (error) {
-            area.innerHTML = `<p style="text-align:center; color:#e53e3e;">שגיאה בטעינת הנתונים: ייתכן שהמוסד עדיין בתהליך סריקה או שטרם נוצר לו קובץ JSON.</p>`;
+            } catch (e) {}
         }
+
+        if (!data) {
+            area.innerHTML = `<p style="text-align:center; color:#e53e3e;">קובץ הנתונים עבור מוסד זה עדיין אינו זמין בתיקייה.</p>`;
+            return;
+        }
+
+        if (!data.programs || data.programs.length === 0) {
+            area.innerHTML = '<p style="text-align:center; color:#e53e3e;">לא נמצאו תוכניות לימודים זמינות עבור מוסד זה.</p>';
+            return;
+        }
+
+        let html = `<h2>${data.institution || inst.replace(/_/g, " ")}</h2>`;
+        
+        data.programs.forEach(prog => {
+            html += `<div class="program-card">
+                <h3>${prog.degree_title}</h3>
+                <a href="${prog.source_url}" target="_blank" class="source-link">🔗 קישור לעמוד המקורי באתר המוסד</a>`;
+            
+            if (prog.curriculum_sections && prog.curriculum_sections.length > 0) {
+                prog.curriculum_sections.forEach(sec => {
+                    html += `<h4>${sec.section}</h4>`;
+                    if (sec.courses && sec.courses.length > 0) {
+                        html += `<table><thead><tr>`;
+                        let keys = Object.keys(sec.courses[0]);
+                        keys.forEach(k => html += `<th>${k}</th>`);
+                        html += `</tr></thead><tbody>`;
+                        
+                        sec.courses.forEach(row => {
+                            html += `<tr>`;
+                            keys.forEach(k => html += `<td>${row[k] !== undefined ? row[k] : ''}</td>`);
+                            html += `</tr>`;
+                        });
+                        html += `</tbody></table>`;
+                    } else {
+                        html += `<pre style="white-space: pre-wrap; font-family:inherit;">${sec.markdown || ''}</pre>`;
+                    }
+                });
+            }
+            html += `</div>`;
+        });
+
+        area.innerHTML = html;
     }
 </script>
 
 </body>
 </html>
+
