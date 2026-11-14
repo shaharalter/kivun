@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מאגר תוכניות לימודים אקדמיות בישראל</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #f4f6f9; color: #333; margin: 0; padding: 20px; direction: rtl; }
+        .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { color: #1a365d; text-align: center; margin-bottom: 25px; }
+        .select-group { margin-bottom: 25px; display: flex; flex-direction: column; gap: 8px; }
+        label { font-weight: bold; color: #2d3748; }
+        select { padding: 12px; font-size: 16px; border: 1px solid #cbd5e0; border-radius: 8px; background-color: #fff; }
+        .program-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        .program-card h3 { margin-top: 0; color: #2b6cb0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; background: #fff; }
+        th, td { border: 1px solid #e2e8f0; padding: 10px; text-align: right; font-size: 14px; }
+        th { background-color: #edf2f7; color: #2d3748; }
+        .loading { text-align: center; font-size: 18px; color: #718096; padding: 40px; }
+        .source-link { font-size: 13px; color: #4a5568; text-decoration: none; display: inline-block; margin-bottom: 10px; }
+        .source-link:hover { text-decoration: underline; color: #3182ce; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>מאגר תוכניות לימודים אקדמיות בישראל</h1>
+    
+    <div class="select-group">
+        <label for="institutionSelect">בחר מוסד אקדמי:</label>
+        <select id="institutionSelect" onchange="loadInstitutionData()">
+            <option value="">-- בחר מוסד מהרשימה --</option>
+        </select>
+    </div>
+
+    <div id="contentArea">
+        <div class="loading">בחר מוסד אקדמי כדי לצפות בתוכניות הלימודים ובקורסים</div>
+    </div>
+</div>
+
+<script>
+    const institutionsList = [
+        "אוניברסיטת_אריאל", "אוניברסיטת_בן_גוריון_בנגב", "אוניברסיטת_בר_אילן", 
+        "אוניברסיטת_חיפה", "אוניברסיטת_רייכמן", "אוניברסיטת_תל_אביב", 
+        "האוניברסיטה_העברית", "האוניברסיטה_הפתוחה", "הטכניון", 
+        "תל_חי_אוניברסיטת_קריית_שמונה_בגליל", "אפקה___המכללה_האקדמית_להנדסה", 
+        "המכללה_האקדמית_אחוה", "המכללה_האקדמית_אשקלון", "המכללה_האקדמית_גליל_מערבי", 
+        "המכללה_האקדמית_הדסה", "המכללה_האקדמית_כנרת", "המכללה_האקדמית_להנדסה_אורט_בראודה", 
+        "המכללה_האקדמית_להנדסה_סמי_שמעון", "המכללה_האקדמית_נתניה", "המכללה_האקדמית_ספיר", 
+        "המכללה_האקדמית_עמק_יזרעאל", "המכללה_האקדמית_צפת", "המכללה_האקדמית_תל_אביב_יפו", 
+        "המכללה_למינהל", "המרכז_האקדמי_לב", "המרכז_האקדמי_למשפט_ולעסקים", 
+        "המרכז_האקדמי_פרס", "המרכז_האקדמי_רופין", "המרכז_האקדמי_שלם", 
+        "המרכז_האקדמי_שערי_מדע_ומשפט", "הקריה_האקדמית_אונו", "מכון_טכנולוגי_חולון_HIT", 
+        "מכון_שכטר_למדעי_היהדות", "עזריאלי___מכללה_אקדמית_להנדסה_ירושלים", 
+        "אוהלו___מכללה_אקדמית_לחינוך_ולספורט", "אורות_ישראל", "אורנים___מכללה_אקדמית_לחינוך", 
+        "אלקאסמי___מכללה_אקדמית_לחינוך", "אמונה_אפרתה", "האקדמית_לוינסקי_וינגייט", 
+        "המכללה_האקדמית_בית_ברל", "המכללה_האקדמית_גבעת_וושינגטון", "המכללה_האקדמית_הדתית_לחינוך_שאנן", 
+        "המכללה_האקדמית_הערבית_לחינוך", "המכללה_האקדמית_הרצוג", "המכללה_האקדמית_לחינוך_גורדון", 
+        "המכללה_האקדמית_לחינוך_דוד_ילין", "המכללה_האקדמית_לחינוך_סכנין", "המכללה_האקדמית_לחינוך_קיי", 
+        "המכללה_האקדמית_לחינוך_תלפיות", "חמדת_הדרום", "מכללה_ירושלים", 
+        "סמינר_הקיבוצים", "בצלאל___אקדמיה_לאמנות_ועיצוב", "האקדמיה_למוסיקה_ולמחול", 
+        "ויצו_חיפה___המרכז_האקדמי_לעצוב_ולחינוך", "שנקר", "המכללה_הטכנולוגית_באר_שבע", 
+        "מכללת_אורט_הרמלין", "מכללת_אורט_סינגאלובסקי"
+    ];
+
+    window.onload = function() {
+        const select = document.getElementById("institutionSelect");
+        institutionsList.sort().forEach(inst => {
+            let opt = document.createElement("option");
+            opt.value = inst;
+            opt.textContent = inst.replace(/_/g, " ");
+            select.appendChild(opt);
+        });
+    };
+
+    async function loadInstitutionData() {
+        const inst = document.getElementById("institutionSelect").value;
+        const area = document.getElementById("contentArea");
+        
+        if (!inst) {
+            area.innerHTML = '<div class="loading">בחר מוסד אקדמי כדי לצפות בתוכניות הלימודים ובקורסים</div>';
+            return;
+        }
+
+        area.innerHTML = '<div class="loading">טוען נתונים...</div>';
+
+        try {
+            let response = await fetch(`curricula/json/${inst}.json`);
+            if (!response.ok) throw new Error("קובץ הנתונים עדיין לא נוצר או לא נמצא.");
+            
+            let data = await response.json();
+            
+            if (!data.programs || data.programs.length === 0) {
+                area.innerHTML = '<p style="text-align:center; color:#e53e3e;">לא נמצאו תוכניות לימודים זמינות עבור מוסד זה.</p>';
+                return;
+            }
+
+            let html = `<h2>${data.institution || inst.replace(/_/g, " ")}</h2>`;
+            
+            data.programs.forEach(prog => {
+                html += `<div class="program-card">
+                    <h3>${prog.degree_title}</h3>
+                    <a href="${prog.source_url}" target="_blank" class="source-link">🔗 קישור לעמוד המקורי באתר המוסד</a>`;
+                
+                if (prog.curriculum_sections && prog.curriculum_sections.length > 0) {
+                    prog.curriculum_sections.forEach(sec => {
+                        html += `<h4>${sec.section}</h4>`;
+                        if (sec.courses && sec.courses.length > 0) {
+                            html += `<table><thead><tr>`;
+                            let keys = Object.keys(sec.courses[0]);
+                            keys.forEach(k => html += `<th>${k}</th>`);
+                            html += `</tr></thead><tbody>`;
+                            
+                            sec.courses.forEach(row => {
+                                html += `<tr>`;
+                                keys.forEach(k => html += `<td>${row[k] !== undefined ? row[k] : ''}</td>`);
+                                html += `</tr>`;
+                            });
+                            html += `</tbody></table>`;
+                        } else {
+                            html += `<pre style="white-space: pre-wrap; font-family:inherit;">${sec.markdown || ''}</pre>`;
+                        }
+                    });
+                }
+                html += `</div>`;
+            });
+
+            area.innerHTML = html;
+
+        } catch (error) {
+            area.innerHTML = `<p style="text-align:center; color:#e53e3e;">שגיאה בטעינת הנתונים: ייתכן שהמוסד עדיין בתהליך סריקה או שטרם נוצר לו קובץ JSON.</p>`;
+        }
+    }
+</script>
+
+</body>
+</html>
