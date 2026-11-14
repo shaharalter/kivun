@@ -29,7 +29,7 @@
     <div class="select-group">
         <label for="institutionSelect">בחר מוסד אקדמי:</label>
         <select id="institutionSelect" onchange="loadInstitutionData()">
-            <option value="">-- בחר מוסד מהרשימה --</option>
+            <option value="">-- טוען רשימת מוסדות מ-GitHub --</option>
         </select>
     </div>
 
@@ -39,111 +39,85 @@
 </div>
 
 <script>
-    const institutionsList = [
-        "אוניברסיטת_אריאל", "אוניברסיטת_בן_גוריון_בנגב", "אוניברסיטת_בר_אילן", 
-        "אוניברסיטת_חיפה", "אוניברסיטת_רייכמן", "אוניברסיטת_תל_אביב", 
-        "האוניברסיטה_העברית", "האוניברסיטה_הפתוחה", "הטכניון", 
-        "תל_חי_אוניברסיטת_קריית_שמונה_בגליל", "אפקה___המכללה_האקדמית_להנדסה", 
-        "המכללה_האקדמית_אחוה", "המכללה_האקדמית_אשקלון", "המכללה_האקדמית_גליל_מערבי", 
-        "המכללה_האקדמית_הדסה", "המכללה_האקדמית_כנרת", "המכללה_האקדמית_להנדסה_אורט_בראודה", 
-        "המכללה_האקדמית_להנדסה_סמי_שמעון", "המכללה_האקדמית_נתניה", "המכללה_האקדמית_ספיר", 
-        "המכללה_האקדמית_עמק_יזרעאל", "המכללה_האקדמית_צפת", "המכללה_האקדמית_תל_אביב_יפו", 
-        "המכללה_למינהל", "המרכז_האקדמי_לב", "המרכז_האקדמי_למשפט_ולעסקים", 
-        "המרכז_האקדמי_פרס", "המרכז_האקדמי_רופין", "המרכז_האקדמי_שלם", 
-        "המרכז_האקדמי_שערי_מדע_ומשפט", "הקריה_האקדמית_אונו", "מכון_טכנולוגי_חולון_HIT", 
-        "מכון_שכטר_למדעי_היהדות", "עזריאלי___מכללה_אקדמית_להנדסה_ירושלים", 
-        "אוהלו___מכללה_אקדמית_לחינוך_ולספורט", "אורות_ישראל", "אורנים___מכללה_אקדמית_לחינוך", 
-        "אלקאסמי___מכללה_אקדמית_לחינוך", "אמונה_אפרתה", "האקדמית_לוינסקי_וינגייט", 
-        "המכללה_האקדמית_בית_ברל", "המכללה_האקדמית_גבעת_וושינגטון", "המכללה_האקדמית_הדתית_לחינוך_שאנן", 
-        "המכללה_האקדמית_הערבית_לחינוך", "המכללה_האקדמית_הרצוג", "המכללה_האקדמית_לחינוך_גורדון", 
-        "המכללה_האקדמית_לחינוך_דוד_ילין", "המכללה_האקדמית_לחינוך_סכנין", "המכללה_האקדמית_לחינוך_קיי", 
-        "המכללה_האקדמית_לחינוך_תלפיות", "חמדת_הדרום", "מכללה_ירושלים", 
-        "סמינר_הקיבוצים", "בצלאל___אקדמיה_לאמנות_ועיצוב", "האקדמיה_למוסיקה_ולמחול", 
-        "ויצו_חיפה___המרכז_האקדמי_לעצוב_ולחינוך", "שנקר", "המכללה_הטכנולוגית_באר_שבע", 
-        "מכללת_אורט_הרמלין", "מכללת_אורט_סינגאלובסקי"
-    ];
-
-    window.onload = function() {
+    // טעינת רשימת הקבצים מתוך תיקיית המשנה curricula/json ב-GitHub
+    async function loadInstitutionsList() {
         const select = document.getElementById("institutionSelect");
-        institutionsList.sort().forEach(inst => {
-            let opt = document.createElement("option");
-            opt.value = inst;
-            opt.textContent = inst.replace(/_/g, " ");
-            select.appendChild(opt);
-        });
-    };
+        try {
+            let response = await fetch('https://api.github.com/repos/shaharalter/kivun/contents/curricula/json');
+            let files = await response.json();
+            
+            select.innerHTML = '<option value="">-- בחר מוסד מהרשימה --</option>';
+            
+            files.filter(f => f.name.endsWith('.json')).forEach(file => {
+                let fileName = file.name.replace('.json', '');
+                let opt = document.createElement("option");
+                opt.value = file.name;
+                opt.textContent = fileName.replace(/_/g, " ");
+                select.appendChild(opt);
+            });
+        } catch (e) {
+            select.innerHTML = '<option value="">שגיאה בטעינת הרשימה</option>';
+        }
+    }
+
+    window.onload = loadInstitutionsList;
 
     async function loadInstitutionData() {
-        const inst = document.getElementById("institutionSelect").value;
+        const fileName = document.getElementById("institutionSelect").value;
         const area = document.getElementById("contentArea");
         
-        if (!inst) {
+        if (!fileName) {
             area.innerHTML = '<div class="loading">בחר מוסד אקדמי כדי לצפות בתוכניות הלימודים ובקורסים</div>';
             return;
         }
 
         area.innerHTML = '<div class="loading">טוען נתונים...</div>';
 
-        let cleanName = inst.replace(/[^א-תa-zA-Z0-9]/g, "_");
-        
-        const possibleFiles = [
-            `curricula/${inst}.json`,
-            `curricula/${cleanName}.json`
-        ];
-
-        let data = null;
-        for (let path of possibleFiles) {
-            try {
-                let response = await fetch(path);
-                if (response.ok) {
-                    data = await response.json();
-                    break;
-                }
-            } catch (e) {}
-        }
-
-        if (!data) {
-            area.innerHTML = `<p style="text-align:center; color:#e53e3e;">קובץ הנתונים עבור מוסד זה עדיין בטעינה או שטרם נוצר.</p>`;
-            return;
-        }
-
-        let html = `<h2>${data.institution || inst.replace(/_/g, " ")}</h2>`;
-        
-        if (!data.programs || data.programs.length === 0) {
-            area.innerHTML = html + '<p style="text-align:center; color:#e53e3e;">לא נמצאו תוכניות לימודים זמינות.</p>';
-            return;
-        }
-
-        data.programs.forEach(prog => {
-            html += `<div class="program-card">
-                <h3>${prog.degree_title}</h3>
-                <a href="${prog.source_url}" target="_blank" class="source-link">🔗 קישור לעמוד המקורי באתר המוסד</a>`;
+        try {
+            // הוספת תיקיית json לנתיב הטעינה
+            let response = await fetch(`curricula/json/${fileName}`);
+            if (!response.ok) throw new Error("קובץ לא נמצא");
             
-            if (prog.curriculum_sections && prog.curriculum_sections.length > 0) {
-                prog.curriculum_sections.forEach(sec => {
-                    html += `<h4>${sec.section}</h4>`;
-                    if (sec.courses && sec.courses.length > 0) {
-                        html += `<table><thead><tr>`;
-                        let keys = Object.keys(sec.courses[0]);
-                        keys.forEach(k => html += `<th>${k}</th>`);
-                        html += `</tr></thead><tbody>`;
-                        
-                        sec.courses.forEach(row => {
-                            html += `<tr>`;
-                            keys.forEach(k => html += `<td>${row[k] !== undefined ? row[k] : ''}</td>`);
-                            html += `</tr>`;
-                        });
-                        html += `</tbody></table>`;
-                    } else {
-                        html += `<pre style="white-space: pre-wrap; font-family:inherit;">${sec.markdown || ''}</pre>`;
-                    }
-                });
+            let data = await response.json();
+            let html = `<h2>${data.institution || fileName.replace('.json', '').replace(/_/g, " ")}</h2>`;
+            
+            if (!data.programs || data.programs.length === 0) {
+                area.innerHTML = html + '<p style="text-align:center; color:#e53e3e;">לא נמצאו תוכניות לימודים זמינות.</p>';
+                return;
             }
-            html += `</div>`;
-        });
 
-        // התיקון שנוסף - הצגת הנתונים במסך בפועל:
-        area.innerHTML = html;
+            data.programs.forEach(prog => {
+                html += `<div class="program-card">
+                    <h3>${prog.degree_title}</h3>
+                    <a href="${prog.source_url}" target="_blank" class="source-link">🔗 קישור לעמוד המקורי באתר המוסד</a>`;
+                
+                if (prog.curriculum_sections && prog.curriculum_sections.length > 0) {
+                    prog.curriculum_sections.forEach(sec => {
+                        html += `<h4>${sec.section}</h4>`;
+                        if (sec.courses && sec.courses.length > 0) {
+                            html += `<table><thead><tr>`;
+                            let keys = Object.keys(sec.courses[0]);
+                            keys.forEach(k => html += `<th>${k}</th>`);
+                            html += `</tr></thead><tbody>`;
+                            
+                            sec.courses.forEach(row => {
+                                html += `<tr>`;
+                                keys.forEach(k => html += `<td>${row[k] !== undefined ? row[k] : ''}</td>`);
+                                html += `</tr>`;
+                            });
+                            html += `</tbody></table>`;
+                        } else {
+                            html += `<pre style="white-space: pre-wrap; font-family:inherit;">${sec.markdown || ''}</pre>`;
+                        }
+                    });
+                }
+                html += `</div>`;
+            });
+
+            area.innerHTML = html;
+        } catch (error) {
+            area.innerHTML = `<p style="text-align:center; color:#e53e3e;">שגיאה בטעינת הקובץ.</p>`;
+        }
     }
 </script>
 
