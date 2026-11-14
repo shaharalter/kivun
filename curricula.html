@@ -39,7 +39,6 @@
 </div>
 
 <script>
-    // טעינת רשימת הקבצים מתוך תיקיית המשנה curricula/json ב-GitHub
     async function loadInstitutionsList() {
         const select = document.getElementById("institutionSelect");
         try {
@@ -51,7 +50,8 @@
             files.filter(f => f.name.endsWith('.json')).forEach(file => {
                 let fileName = file.name.replace('.json', '');
                 let opt = document.createElement("option");
-                opt.value = file.name;
+                // שמירת כתובת ה-Raw המלאה של הקובץ
+                opt.value = `https://raw.githubusercontent.com/shaharalter/kivun/main/curricula/json/${file.name}`;
                 opt.textContent = fileName.replace(/_/g, " ");
                 select.appendChild(opt);
             });
@@ -63,10 +63,12 @@
     window.onload = loadInstitutionsList;
 
     async function loadInstitutionData() {
-        const fileName = document.getElementById("institutionSelect").value;
+        const fileUrl = document.getElementById("institutionSelect").value;
+        const selectElement = document.getElementById("institutionSelect");
+        const institutionName = selectElement.options[selectElement.selectedIndex].text;
         const area = document.getElementById("contentArea");
         
-        if (!fileName) {
+        if (!fileUrl) {
             area.innerHTML = '<div class="loading">בחר מוסד אקדמי כדי לצפות בתוכניות הלימודים ובקורסים</div>';
             return;
         }
@@ -74,15 +76,14 @@
         area.innerHTML = '<div class="loading">טוען נתונים...</div>';
 
         try {
-            // הוספת תיקיית json לנתיב הטעינה
-            let response = await fetch(`curricula/json/${fileName}`);
+            let response = await fetch(fileUrl);
             if (!response.ok) throw new Error("קובץ לא נמצא");
             
             let data = await response.json();
-            let html = `<h2>${data.institution || fileName.replace('.json', '').replace(/_/g, " ")}</h2>`;
+            let html = `<h2>${data.institution || institutionName}</h2>`;
             
             if (!data.programs || data.programs.length === 0) {
-                area.innerHTML = html + '<p style="text-align:center; color:#e53e3e;">לא נמצאו תוכניות לימודים זמינות.</p>';
+                area.innerHTML = html + '<p style="text-align:center; color:#e53e3e;">לא נמצאו תוכניות לימודים זמינות בקובץ זה.</p>';
                 return;
             }
 
