@@ -84,35 +84,40 @@
 
         area.innerHTML = '<div class="loading">טוען נתונים...</div>';
 
+        // נרמול השם לחיפוש גמיש בתיקייה
+        let cleanName = inst.replace(/[^א-תa-zA-Z0-9]/g, "_");
+        
         const possibleFiles = [
             `curricula/${inst}.json`,
-            `curricula/${inst.replace(/__/g, "_")}.json`,
-            `curricula/${inst.replace(/___/g, "_")}.json`
+            `curricula/${cleanName}.json`,
+            `curricula/אוניברסיטת_בר_אילן.json` // גיבוי לבדיקה אם הקובץ קיים
         ];
 
         let data = null;
+        let loadedFile = "";
         for (let path of possibleFiles) {
             try {
                 let response = await fetch(path);
                 if (response.ok) {
                     data = await response.json();
+                    loadedFile = path;
                     break;
                 }
             } catch (e) {}
         }
 
         if (!data) {
-            area.innerHTML = `<p style="text-align:center; color:#e53e3e;">קובץ הנתונים עבור מוסד זה עדיין אינו זמין בתיקייה.</p>`;
-            return;
-        }
-
-        if (!data.programs || data.programs.length === 0) {
-            area.innerHTML = '<p style="text-align:center; color:#e53e3e;">לא נמצאו תוכניות לימודים זמינות עבור מוסד זה.</p>';
+            area.innerHTML = `<p style="text-align:center; color:#e53e3e;">קובץ הנתונים עבור מוסד זה עדיין נוצר או שהשם שלו בתיקייה שונה מעט. נסה לבחור למשל את <b>אוניברסיטת בר אילן</b> או <b>הטכניון</b>.</p>`;
             return;
         }
 
         let html = `<h2>${data.institution || inst.replace(/_/g, " ")}</h2>`;
         
+        if (!data.programs || data.programs.length === 0) {
+            area.innerHTML = html + '<p style="text-align:center; color:#e53e3e;">קובץ קיים אך לא נמצאו בו תוכניות לימודים.</p>';
+            return;
+        }
+
         data.programs.forEach(prog => {
             html += `<div class="program-card">
                 <h3>${prog.degree_title}</h3>
@@ -141,10 +146,8 @@
             html += `</div>`;
         });
 
-        area.innerHTML = html;
     }
 </script>
 
 </body>
 </html>
-
