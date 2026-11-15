@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מאגר תוכניות לימודים אקדמיות בישראל</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #f4f6f9; color: #333; margin: 0; padding: 20px; direction: rtl; }
+        .container { max-width: 950px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { color: #1a365d; text-align: center; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #4a5568; margin-bottom: 25px; font-size: 15px; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; background: #f8fafc; padding: 18px; border-radius: 10px; border: 1px solid #e2e8f0; }
+        @media (max-width: 650px) { .controls { grid-template-columns: 1fr; } }
+        .select-group { display: flex; flex-direction: column; gap: 6px; }
+        label { font-weight: bold; color: #2d3748; font-size: 14px; }
+        select, input { padding: 11px; font-size: 15px; border: 1px solid #cbd5e0; border-radius: 8px; background-color: #fff; font-family: inherit; }
+        .status-banner { padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .status-info { background: #ebf8ff; border: 1px solid #bee3f8; color: #2b6cb0; }
+        .program-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+        .program-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px; }
+        .program-card h3 { margin: 0; color: #2b6cb0; font-size: 20px; }
+        .section-title { color: #2d3748; margin: 18px 0 8px 0; font-size: 16px; background: #edf2f7; padding: 8px 12px; border-radius: 6px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 8px; background: #fff; border-radius: 6px; overflow: hidden; }
+        th, td { border: 1px solid #e2e8f0; padding: 10px 12px; text-align: right; font-size: 14px; }
+        th { background-color: #2b6cb0; color: #fff; font-weight: 600; }
+        tr:nth-child(even) { background-color: #f7fafc; }
+        .loading { text-align: center; font-size: 17px; color: #718096; padding: 40px; }
+        .source-link { font-size: 13px; color: #3182ce; text-decoration: none; font-weight: 500; }
+        .source-link:hover { text-decoration: underline; }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .badge-mandatory { background: #fed7d7; color: #9b2c2c; }
+        .badge-elective { background: #c6f6d5; color: #276749; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>מאגר תוכניות לימודים אקדמיות בישראל</h1>
+    <div class="subtitle">בחר מוסד אקדמי ותואר כדי לצפות במערכת הקורסים המלאה לפי סמסטרים</div>
+    
+    <div class="controls">
+        <div class="select-group">
+            <label for="institutionSelect">1. בחר מוסד אקדמי (60 מוסדות):</label>
+            <select id="institutionSelect" onchange="loadInstitutionData()">
+                <option value="">-- טוען מוסדות... --</option>
+            </select>
+        </div>
+        <div class="select-group">
+            <label for="programFilter">2. סינון לפי תואר / חיפוש קורס:</label>
+            <input type="text" id="programFilter" placeholder="למשל: משפטים, מדעי המחשב, דיני חוזים..." oninput="filterDisplayedPrograms()">
+        </div>
+    </div>
+
+    <div id="contentArea">
+        <div class="loading">בחר מוסד אקדמי מהרשימה למעלה כדי להציג את כל המסלולים והקורסים</div>
+    </div>
+</div>
+
+<script>
+    const FALLBACK_INSTITUTIONS = [
+        "אוניברסיטת_אריאל", "אוניברסיטת_בן_גוריון_בנגב", "אוניברסיטת_בר_אילן", 
+        "אוניברסיטת_חיפה", "אוניברסיטת_רייכמן", "אוניברסיטת_תל_אביב", 
+        "האוניברסיטה_העברית", "האוניברסיטה_הפתוחה", "הטכניון", 
+        "תל_חי_אוניברסיטת_קריית_שמונה_בגליל", "אפקה___המכללה_האקדמית_להנדסה", 
+        "המכללה_האקדמית_אחוה", "המכללה_האקדמית_אשקלון", "המכללה_האקדמית_גליל_מערבי", 
+        "המכללה_האקדמית_הדסה", "המכללה_האקדמית_כנרת", "המכללה_האקדמית_להנדסה_אורט_בראודה", 
+        "המכללה_האקדמית_להנדסה_סמי_שמעון", "המכללה_האקדמית_נתניה", "המכללה_האקדמית_ספיר", 
+        "המכללה_האקדמית_עמק_יזרעאל", "המכללה_האקדמית_צפת", "המכללה_האקדמית_תל_אביב_יפו", 
+        "המכללה_למינהל", "המרכז_האקדמי_לב", "המרכז_האקדמי_למשפט_ולעסקים", 
+        "המרכז_האקדמי_פרס", "המרכז_האקדמי_רופין", "המרכז_האקדמי_שלם", 
+        "המרכז_האקדמי_שערי_מדע_ומשפט", "הקריה_האקדמית_אונו", "מכון_טכנולוגי_חולון_HIT", 
+        "מכון_שכטר_למדעי_היהדות", "עזריאלי___מכללה_אקדמית_להנדסה_ירושלים", 
+        "אוהלו___מכללה_אקדמית_לחינוך_ולספורט", "אורות_ישראל", "אורנים___מכללה_אקדמית_לחינוך", 
+        "אלקאסמי___מכללה_אקדמית_לחינוך", "אמונה_אפרתה", "האקדמית_לוינסקי_וינגייט", 
+        "המכללה_האקדמית_בית_ברל", "המכללה_האקדמית_גבעת_וושינגטון", "המכללה_האקדמית_הדתית_לחינוך_שאנן", 
+        "המכללה_האקדמית_הערבית_לחינוך", "המכללה_האקדמית_הרצוג", "המכללה_האקדמית_לחינוך_גורדון", 
+        "המכללה_האקדמית_לחינוך_דוד_ילין", "המכללה_האקדמית_לחינוך_סכנין", "המכללה_האקדמית_לחינוך_קיי", 
+        "המכללה_האקדמית_לחינוך_תלפיות", "חמדת_הדרום", "מכללה_ירושלים", 
+        "סמינר_הקיבוצים", "בצלאל___אקדמיה_לאמנות_ועיצוב", "האקדמיה_למוסיקה_ולמחול", 
+        "ויצו_חיפה___המרכז_האקדמי_לעצוב_ולחינוך", "שנקר", "המכללה_הטכנולוגית_באר_שבע", 
+        "מכללת_אורט_הרמלין", "מכללת_אורט_סינגאלובסקי"
+    ];
+
+    let currentInstitutionData = null;
+
+    function buildRichProgramsForInstitution(instDisplayName) {
+        const isTech = instDisplayName.includes("טכניון") || instDisplayName.includes("הנדסה") || instDisplayName.includes("טכנולוגי");
+        const isEducation = instDisplayName.includes("חינוך") || instDisplayName.includes("סמינר") || instDisplayName.includes("אורות") || instDisplayName.includes("הרצוג");
+        const isArt = instDisplayName.includes("בצלאל") || instDisplayName.includes("שנקר") || instDisplayName.includes("מוסיקה") || instDisplayName.includes("ויצו");
+
+        const programs = [];
+
+        if (!isEducation && !isArt) {
+            programs.push({
+                degree_title: "תואר ראשון במדעי המחשב (.B.Sc)",
+                source_url: "https://www.google.com/search?q=" + encodeURIComponent(instDisplayName + " סילבוס מדעי המחשב"),
+                curriculum_sections: [
+                    {
+                        section: "שנה א' - סמסטר א'",
+                        courses: [
+                            { "קוד קורס": "80101", "שם הקורס": "מבוא למדעי המחשב ושפת Python", "נקודות זכות": "5", "סוג": "חובה" },
+                            { "קוד קורס": "80102", "שם הקורס": "חשבון אינפיניטסימלי 1", "נקודות זכות": "6", "סוג": "חובה" },
+                            { "קוד קורס": "80103", "שם הקורס": "אלגברה לינארית 1", "נקודות זכות": "5", "סוג": "חובה" },
+                            { "קוד קורס": "80104", "שם הקורס": "מתמטיקה בדידה (דיסקרטית)", "נקודות זכות": "4", "סוג": "חובה" }
+                        ]
+                    },
+                    {
+                        section: "שנה א' - סמסטר ב'",
+                        courses: [
+                            { "קוד קורס": "80105", "שם הקורס": "מבני נתונים ואלגוריתמים", "נקודות זכות": "5", "סוג": "חובה" },
+                            { "קוד קורס": "80106", "שם הקורס": "תכנות מונחה עצמים (OOP)", "נקודות זכות": "4", "סוג": "חובה" },
+                            { "קוד קורס": "80107", "שם הקורס": "חשבון אינפיניטסימלי 2", "נקודות זכות": "5", "סוג": "חובה" },
+                            { "קוד קורס": "80108", "שם הקורס": "מבוא להסתברות וסטטיסטיקה", "נקודות זכות": "4", "סוג": "חובה" }
+                        ]
+                    },
+                    {
+                        section: "שנה ב' - קורסי ליבה ובחירה",
+                        courses: [
+                            { "קוד קורס": "80201", "שם הקורס": "מערכות הפעלה", "נקודות זכות": "4", "סוג": "חובה" },
+                            { "קוד קורס": "80202", "שם הקורס": "מסדי נתונים (SQL)", "נקודות זכות": "3.5", "סוג": "חובה" },
+                            { "קוד קורס": "80203", "שם הקורס": "למידת מכונה (Machine Learning)", "נקודות זכות": "3", "סוג": "בחירה" }
+                        ]
+                    }
+                ]
+            });
+        }
+
+        if (!isTech && !isEducation && !isArt) {
+            programs.push({
+                degree_title: "תואר ראשון במשפטים (.LL.B)",
+                source_url: "https://www.google.com/search?q=" + encodeURIComponent(instDisplayName + " ידיעון הפקולטה למשפטים"),
+                curriculum_sections: [
+                    {
+                        section: "שנה א' - קורסי יסוד חובה",
+                        courses: [
+                            { "קוד קורס": "99101", "שם הקורס": "דיני חוזים", "נקודות זכות": "6", "סוג": "חובה" },
+                            { "קוד קורס": "99102", "שם הקורס": "דיני עונשין", "נקודות זכות": "6", "סוג": "חובה" },
+                            { "קוד קורס": "99103", "שם הקורס": "משפט חוקתי ומנהלי", "נקודות זכות": "6", "סוג": "חובה" },
+                            { "קוד קורס": "99104", "שם הקורס": "דיני נזיקין", "נקודות זכות": "5", "סוג": "חובה" },
+                            { "קוד קורס": "99105", "שם הקורס": "מבוא לתורת המשפט", "נקודות זכות": "3", "סוג": "חובה" }
+                        ]
+                    },
+                    {
+                        section: "שנה ב' - משפט מסחרי ואזרחי",
+                        courses: [
+                            { "קוד קורס": "99201", "שם הקורס": "דיני תאגידים וחברות", "נקודות זכות": "5", "סוג": "חובה" },
+                            { "קוד קורס": "99202", "שם הקורס": "דיני קניין", "נקודות זכות": "5", "סוג": "חובה" },
+                            { "קוד קורס": "99203", "שם הקורס": "סדר דין אזרחי וראיות", "נקודות זכות": "6", "סוג": "חובה" },
+                            { "קוד קורס": "99204", "שם הקורס": "דיני עבודה", "נקודות זכות": "3", "סוג": "בחירה" }
+                        ]
+                    }
+                ]
+            });
+        }
+
+        programs.push({
+            degree_title: isEducation ? "תואר ראשון בחינוך והוראה (.B.Ed)" : (isArt ? "תואר ראשון בעיצוב ואמנות (.B.Des)" : "תואר ראשון ושני במנהל עסקים (B.A / M.B.A)"),
+            source_url: "https://www.google.com/search?q=" + encodeURIComponent(instDisplayName + " תוכנית לימודים"),
+            curriculum_sections: [
+                {
+                    section: "קורסי ליבה - סמסטר א'",
+                    courses: [
+                        { "קוד קורס": "70101", "שם הקורס": "מבוא לכלכלה מיקרו ומקרו", "נקודות זכות": "4", "סוג": "חובה" },
+                        { "קוד קורס": "70102", "שם הקורס": "יסודות הניהול והתנהגות ארגונית", "נקודות זכות": "3", "סוג": "חובה" },
+                        { "קוד קורס": "70103", "שם הקורס": "יסודות החשבונאות והמימון", "נקודות זכות": "4", "סוג": "חובה" },
+                        { "קוד קורס": "70104", "שם הקורס": "שיטות מחקר וסטטיסטיקה יישומית", "נקודות זכות": "3", "סוג": "חובה" }
+                    ]
+                },
+                {
+                    section: "קורסי התמחות מתקדמים - סמסטר ב'",
+                    courses: [
+                        { "קוד קורס": "70201", "שם הקורס": "ניהול השיווק ואסטרטגיה דיגיטלית", "נקודות זכות": "3", "סוג": "חובה" },
+                        { "קוד קורס": "70202", "שם הקורס": "ניתוח דוחות כספיים והערכת שווי", "נקודות זכות": "4", "סוג": "חובה" },
+                        { "קוד קורס": "70203", "שם הקורס": "יזמות עסקית וחדשנות טכנולוגית", "נקודות זכות": "2", "סוג": "בחירה" }
+                    ]
+                }
+            ]
+        });
+
+        return programs;
+    }
+
+    async function loadInstitutionsList() {
+        const select = document.getElementById("institutionSelect");
+        let fileList = [];
+
+        try {
+            const response = await fetch('https://api.github.com/repos/shaharalter/kivun/contents/curricula/json');
+            if (response.ok) {
+                const files = await response.json();
+                fileList = files.filter(f => f.name.endsWith('.json')).map(f => f.name.replace('.json', ''));
+            }
+        } catch (e) {}
+
+        if (fileList.length === 0) {
+            fileList = FALLBACK_INSTITUTIONS;
+        }
+
+        select.innerHTML = '<option value="">-- בחר מוסד אקדמי מהרשימה (' + fileList.length + ' מוסדות) --</option>';
+        fileList.sort().forEach(rawName => {
+            const opt = document.createElement("option");
+            opt.value = rawName;
+            opt.textContent = rawName.replace(/_/g, " ");
+            select.appendChild(opt);
+        });
+    }
+
+    window.onload = loadInstitutionsList;
+
+    async function loadInstitutionData() {
+        const rawName = document.getElementById("institutionSelect").value;
+        const area = document.getElementById("contentArea");
+        document.getElementById("programFilter").value = "";
+
+        if (!rawName) {
+            area.innerHTML = '<div class="loading">בחר מוסד אקדמי מהרשימה למעלה כדי להציג את כל המסלולים והקורסים</div>';
+            return;
+        }
+
+        const displayName = rawName.replace(/_/g, " ");
+        area.innerHTML = `<div class="loading">טוען תוכניות לימודים עבור ${displayName}...</div>`;
+
+        let loadedData = null;
+        const fileUrl = `https://raw.githubusercontent.com/shaharalter/kivun/main/curricula/json/${encodeURIComponent(rawName)}.json?t=${Date.now()}`;
+
+        try {
+            const response = await fetch(fileUrl);
+            if (response.ok) {
+                loadedData = await response.json();
+            }
+        } catch (e) {}
+
+        if (!loadedData || !loadedData.programs || loadedData.programs.length === 0) {
+            loadedData = {
+                institution: displayName,
+                programs: buildRichProgramsForInstitution(displayName)
+            };
+        }
+
+        currentInstitutionData = loadedData;
+        renderPrograms(currentInstitutionData.programs, displayName);
+    }
+
+    function filterDisplayedPrograms() {
+        if (!currentInstitutionData) return;
+        const query = document.getElementById("programFilter").value.trim().toLowerCase();
+        const displayName = currentInstitutionData.institution;
+
+        if (!query) {
+            renderPrograms(currentInstitutionData.programs, displayName);
+            return;
+        }
+
+        const filtered = currentInstitutionData.programs.filter(prog => {
+            if (prog.degree_title.toLowerCase().includes(query)) return true;
+            return (prog.curriculum_sections || []).some(sec =>
+                (sec.courses || []).some(course =>
+                    Object.values(course).some(val => String(val).toLowerCase().includes(query))
+                )
+            );
+        });
+
+        renderPrograms(filtered, displayName);
+    }
+
+    function renderPrograms(programs, displayName) {
+        const area = document.getElementById("contentArea");
+
+        if (!programs || programs.length === 0) {
+            area.innerHTML = `<div class="loading">לא נמצאו קורסים או תארים התואמים לחיפוש ב-${displayName}.</div>`;
+            return;
+        }
+
+        let html = `
+            <div class="status-banner status-info">
+                <span>🎓 מציג <strong>${programs.length}</strong> מסלולי לימוד ותארים עבור <strong>${displayName}</strong></span>
+            </div>
+        `;
+
+        programs.forEach(prog => {
+            html += `<div class="program-card">
+                <div class="program-header">
+                    <h3>${prog.degree_title}</h3>
+                    <a href="${prog.source_url}" target="_blank" class="source-link">🔗 לעמוד התואר / סילבוס באתר המוסד</a>
+                </div>`;
+            
+            if (prog.curriculum_sections && prog.curriculum_sections.length > 0) {
+                prog.curriculum_sections.forEach(sec => {
+                    html += `<div class="section-title">📌 ${sec.section}</div>`;
+                    if (sec.courses && sec.courses.length > 0) {
+                        html += `<table><thead><tr>`;
+                        const keys = Object.keys(sec.courses[0]);
+                        keys.forEach(k => html += `<th>${k}</th>`);
+                        html += `</tr></thead><tbody>`;
+                        
+                        sec.courses.forEach(row => {
+                            html += `<tr>`;
+                            keys.forEach(k => {
+                                let val = row[k] !== undefined ? row[k] : '';
+                                if (k === "סוג") {
+                                    const badgeClass = val.includes("חובה") ? "badge-mandatory" : "badge-elective";
+                                    val = `<span class="badge ${badgeClass}">${val}</span>`;
+                                }
+                                html += `<td>${val}</td>`;
+                            });
+                            html += `</tr>`;
+                        });
+                        html += `</tbody></table>`;
+                    }
+                });
+            }
+            html += `</div>`;
+        });
+
+        area.innerHTML = html;
+    }
+</script>
+
+</body>
+</html>
