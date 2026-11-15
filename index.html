@@ -83,10 +83,11 @@ button,input,select{font:inherit;color:inherit}
 .final-cta{text-align:center;padding:48px 0 70px}
 
 .panel{background:var(--surface);border:1.5px solid var(--line);border-radius:22px;padding:30px clamp(18px,4vw,36px);margin:24px 0 40px}
-.progress{display:flex;gap:5px;margin-bottom:8px}
+.wizard-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.progress{display:flex;gap:5px;margin-bottom:10px}
 .progress span{flex:1;height:8px;border-radius:4px;background:var(--line);cursor:pointer}
 .progress span.on{background:var(--sun)}
-.stepnum{color:var(--muted);font-size:.92rem;margin-bottom:16px;font-weight:500}
+.stepnum{color:var(--muted);font-size:.92rem;font-weight:500}
 .panel h2{font-size:clamp(1.7rem,4vw,2.1rem);margin-bottom:6px;color:var(--pine)}
 .hint{color:var(--muted);margin:0 0 22px}
 .field{margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--line)}
@@ -110,6 +111,10 @@ input.wide,select.wide{width:100%}
 .seg button[aria-pressed="true"]{background:var(--sun);color:#1E2B25;font-weight:600}
 .opt[aria-pressed="true"]::before,.chip[aria-pressed="true"]::before,.seg button[aria-pressed="true"]::before{content:"✓ ";font-weight:700}
 
+/* תיבת משקל חשיבות */
+.weight-box{margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--paper);border:1px dashed var(--line)}
+.weight-box .w-lbl{font-size:.92rem;font-weight:600;color:var(--pine);display:block;margin-bottom:6px}
+
 .q{padding:16px 0;border-bottom:1px solid var(--line)}
 .q:last-child{border-bottom:0}
 .q p{font-weight:600;margin:0 0 10px;font-size:1.08rem}
@@ -117,7 +122,6 @@ input.wide,select.wide{width:100%}
 .opt{text-align:right;border:1.5px solid var(--line);background:var(--paper);border-radius:14px;padding:12px 16px;cursor:pointer;min-height:44px}
 .opt[aria-pressed="true"]{border-color:var(--pine);background:var(--pine-soft);color:var(--pine);font-weight:600}
 
-/* טבלת מקצועות */
 .subj-hdr{display:grid;grid-template-columns:1fr 96px 86px 36px;gap:8px;font-size:.85rem;color:var(--muted);font-weight:600;margin-bottom:6px;padding:0 4px}
 .subj{display:grid;grid-template-columns:1fr 96px 86px 36px;gap:8px;align-items:center;margin-bottom:8px}
 .subj.fixed{background:var(--paper);padding:8px 10px;border-radius:12px;border:1px solid var(--line)}
@@ -127,7 +131,6 @@ input.wide,select.wide{width:100%}
 .subj .x{border:0;background:none;color:var(--hard);font-size:1.3rem;cursor:pointer;min-height:42px}
 .bonus-pill{display:inline-block;font-size:.75rem;background:var(--pine-soft);color:var(--pine);padding:1px 7px;border-radius:99px;font-weight:600;margin-inline-start:6px}
 
-/* כרטיסי מלגות וצביון */
 .sch-grid{display:grid;gap:10px;margin-top:8px}
 .sch-card{display:flex;gap:12px;align-items:flex-start;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer}
 .sch-card.on{background:var(--pine-soft);border-color:var(--pine)}
@@ -142,11 +145,8 @@ input.wide,select.wide{width:100%}
 
 .summary{background:var(--pine-soft);border-radius:14px;padding:14px 18px;font-size:.96rem;margin-top:14px;border-inline-start:4px solid var(--pine)}
 .summary.warn{background:var(--sun-soft);border-inline-start-color:var(--mid)}
-.nav{display:flex;justify-content:space-between;gap:12px;margin-top:24px}
-.err{color:var(--hard);font-size:.92rem;min-height:1.4em;margin-top:8px}
-.err:not(:empty){background:var(--sun-soft);color:var(--ink);padding:8px 12px;border-radius:10px;border-inline-start:4px solid var(--hard)}
-details.more{margin-top:8px}
-details.more summary{cursor:pointer;color:var(--pine);font-weight:600}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:24px}
+.nav-right{display:flex;gap:10px;flex-wrap:wrap}
 
 .results h2{font-size:clamp(1.8rem,5vw,2.3rem);color:var(--pine);margin-top:28px}
 .stats{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
@@ -159,6 +159,7 @@ details.more summary{cursor:pointer;color:var(--pine);font-weight:600}
 .prof h3{font-size:1.4rem}
 .why{color:var(--muted);margin:6px 0 12px}
 .inst{background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:12px}
+.inst.alt{border-style:dashed;background:var(--paper)}
 .inst-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
 .inst-name{font-weight:700;font-size:1.08rem}
 .meta{color:var(--muted);font-size:.88rem}
@@ -167,6 +168,7 @@ details.more summary{cursor:pointer;color:var(--pine);font-weight:600}
 .inst ul{margin:10px 0 0;padding:0 18px 0 0;font-size:.93rem}
 .inst li{margin-bottom:4px}
 .vibe-tag{margin-top:8px;padding:8px 12px;border-radius:10px;background:var(--paper);font-size:.88rem;color:var(--ink)}
+.tip-box{margin-top:10px;padding:10px 14px;border-radius:12px;background:var(--sun-soft);font-size:.9rem;border-inline-start:4px solid var(--sun)}
 .note{font-size:.88rem;color:var(--mid);margin-top:6px}
 
 .legal-box{margin-top:40px;padding:18px 20px;border-radius:16px;background:var(--surface);border:1px solid var(--line);font-size:.86rem;color:var(--muted)}
@@ -182,7 +184,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
   <nav class="tabs">
     <a href="#" id="tabMatch" aria-current="page">התאמה אישית</a>
     <a href="data.html" target="_blank" rel="noopener">מאגר הנתונים</a>
-    <a href="curricula.html" target="_blank" rel="noopener">סילבוסים וקורסים</a>
+    <a href="curricula.html" target="_blank" rel="noopener">תוכניות לימודים</a>
   </nav>
 </div></header>
 
@@ -193,12 +195,12 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
       <div class="hero-copy">
         <p class="kicker">הכוונה ללימודים, קבלה וחיי סטודנט</p>
         <h1 id="homeTitle">לאן הולכים מכאן?</h1>
-        <p class="hero-lead">שאלון אחד, הציונים שלכם ומה שחשוב לכם – ובסוף תוכנית שלמה: מה ללמוד, איפה, איך מתקבלים, כמה זה עולה ואיפה גרים.</p>
+        <p class="hero-lead">שאלון גמיש, הציונים שלכם ומה שחשוב לכם – ובסוף תוכנית שלמה: מה ללמוד, איפה, איך מתקבלים, כמה זה עולה ואיפה גרים.</p>
         <div class="hero-cta">
           <button class="btn sun big" id="startBtn" type="button">מתחילים בשאלון</button>
           <a class="btn line big" href="data.html" target="_blank" rel="noopener">רק לעיין במאגר</a>
         </div>
-        <p class="hero-small">כ-10 דקות. בלי הרשמה, בלי פרטים אישיים.</p>
+        <p class="hero-small">אפשר לעצור ולראות תוצאות בכל שלב! בלי הרשמה ובלי פרטים אישיים.</p>
       </div>
       <svg class="compass" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
         <circle class="ring" cx="100" cy="100" r="92"/><g id="ticks"></g>
@@ -218,9 +220,9 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
     </ul>
     <h2 class="home-h">איך זה עובד</h2>
     <ol class="how">
-      <li><span class="how-n">1</span><div><h3>מכירים את עצמכם</h3><p>שאלות קצרות על מה שמעניין אתכם, על סביבת העבודה שאתם רואים לעצמכם ועל מה שחשוב לכם (מודל הולנד).</p></div></li>
-      <li><span class="how-n">2</span><div><h3>ציונים, צביון, מגורים ומלגות</h3><p>מחשבון בגרות מלא, צביון הקמפוס, בחירת שכונה או מעונות ליד המוסד, והמלגות המוכרות עם פירוט שעות התנדבות.</p></div></li>
-      <li><span class="how-n">3</span><div><h3>מקבלים תוכנית</h3><p>המקצועות שמתאימים לכם, איפה יש לכם סיכוי להתקבל, האם נדרשת מכינה במקצוע ספציפי, וכמה כל מסלול עולה.</p></div></li>
+      <li><span class="how-n">1</span><div><h3>מכירים את עצמכם</h3><p>שאלות קצרות על מה שמעניין אתכם (מודל הולנד) — ואפשר לעצור ולראות תוצאות מיד אחריהן או להמשיך.</p></div></li>
+      <li><span class="how-n">2</span><div><h3>ציונים, צביון, מגורים ומלגות</h3><p>מחשבון בגרות מלא, בחירת רמת החשיבות של כל שיקול (צביון, מרחק, תקציב), ושכונות או מעונות.</p></div></li>
+      <li><span class="how-n">3</span><div><h3>תמיד מקבלים פתרונות</h3><p>גם אם חסר ציון או שיקול מסוים מצמצם אפשרויות – תקבלו המלצות מעשיות מה כדאי לשקול כדי שכן תוכלו ללמוד.</p></div></li>
     </ol>
     <div class="final-cta"><button class="btn big" type="button" id="startBtn2">מתחילים בשאלון</button></div>
   </div>
@@ -228,12 +230,15 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
 
 <section class="panel hidden" id="wizard" aria-live="polite">
   <div class="progress" id="progress"></div>
-  <div class="stepnum" id="stepnum"></div>
+  <div class="wizard-top">
+    <div class="stepnum" id="stepnum"></div>
+    <button type="button" class="btn sun small" id="finishNowTop">סיים והצג תוצאות עכשיו ←</button>
+  </div>
 
   <!-- שלב 0: מי אני -->
   <div class="step" data-step="0">
     <h2>1. מי אני</h2>
-    <p class="hint">אין תשובות נכונות. בחרו מה שהכי קרוב למה שבאמת מעניין אתכם.</p>
+    <p class="hint">אין תשובות נכונות. בחרו מה שהכי קרוב למה שבאמת מעניין אתכם (אפשר לעצור ולראות תוצאות בכל שלב).</p>
     <div id="quizA"></div>
   </div>
 
@@ -249,7 +254,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
     <h2>3. עוד קצת עליי</h2>
     <p class="hint">שאלות קצרות שעוזרות לדייק תחומים שפחות או יותר מתאימים לכם.</p>
     <div id="quizC"></div>
-    <details class="more"><summary>כבר יודעים איזה תחום או מקצוע מעניין אתכם? (לא חובה)</summary>
+    <details class="more" open><summary>כבר יודעים איזה תחום או מקצוע מעניין אתכם? (לא חובה)</summary>
       <div class="field" style="margin-top:12px"><span class="lbl">תחומים</span><div class="chips" id="interests"></div></div>
       <div class="field"><span class="lbl">מקצוע ספציפי שרוצים לבדוק</span>
         <div class="row"><input type="text" id="progInput" list="progList" class="wide" placeholder="לדוגמה: הנדסת תוכנה, סיעוד, משפטים" style="flex:1"><button type="button" class="btn small" id="addProg">הוספה</button></div>
@@ -270,7 +275,6 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
       </div>
     </div>
 
-    <!-- מצב א: ממוצע ידוע מראש -->
     <div id="knownModeWrap">
       <div class="field">
         <label class="lbl" for="avg">ממוצע בגרות משוקלל (כולל בונוסים)
@@ -298,7 +302,6 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
       </div>
     </div>
 
-    <!-- מצב ב: מחשבון בגרות מלא -->
     <div id="calcModeWrap" class="hidden">
       <div class="field">
         <span class="lbl">מקצועות חובה בתעודת הבגרות
@@ -309,7 +312,6 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
       </div>
     </div>
 
-    <!-- מקצועות הרחבה ומגמות -->
     <div class="field">
       <span class="lbl">מקצועות מוגברים ומגמות (5 יח״ל)
         <span class="sub-hint">הוסיפו מגמות שלמדתם (פיזיקה, כימיה, מדעי המחשב, תושב״ע, גמרא וכו׳) — לבדיקת מכינות ולחישוב הבונוסים.</span>
@@ -326,7 +328,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
   <!-- שלב 4: פסיכומטרי ומכינה -->
   <div class="step" data-step="4">
     <h2>5. פסיכומטרי ומכינה</h2>
-    <p class="hint">אם עוד לא נבחנתם – סמנו זאת, ונציג מסלולי קבלה על סמך בגרות בלבד או מכינה.</p>
+    <p class="hint">אם עוד לא נבחנתם – סמנו זאת, ונציג מסלולי קבלה על סמך בגרות בלבד, מכינה או הצעות לשיפור.</p>
     <label class="check"><input type="checkbox" id="noPsy"> עוד לא נבחנתי בפסיכומטרי</label>
     <div id="psyFields" style="margin-top:14px">
       <div class="field"><span class="lbl">ציונים משוקללים (200–800)</span>
@@ -343,10 +345,10 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
     <div class="summary" id="psySummary">רמת אנגלית תחושב לפי ציון פרק האנגלית.</div>
   </div>
 
-  <!-- שלב 5: צביון, רמה דתית ואופי הקמפוס -->
+  <!-- שלב 5: צביון, רמה דתית ומשקל השיקול -->
   <div class="step" data-step="5">
     <h2>6. צביון, רמה דתית ואופי הקמפוס</h2>
-    <p class="hint">לכל מוסד בישראל יש אווירה שונה. סמנו מה הרקע שלכם ועד כמה זה משפיע על הבחירה.</p>
+    <p class="hint">סמנו מה הרקע שלכם, ובחרו עד כמה השיקול הזה מרכזי עבורכם.</p>
 
     <div class="field">
       <span class="lbl">מה הרקע / הרמה הדתית שלך?</span>
@@ -356,14 +358,14 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
         <button type="button" data-v="religious" aria-pressed="false">דתי/ת-לאומי/ת</button>
         <button type="button" data-v="haredi" aria-pressed="false">חרדי/ת</button>
       </div>
-    </div>
-
-    <div class="field">
-      <span class="lbl">עד כמה הצביון הדתי של הקמפוס משנה לך בבחירת המוסד?</span>
-      <div class="seg" data-group="relImportance">
-        <button type="button" data-v="none" aria-pressed="true">לא משנה לי – פתוח/ה לכל מוסד</button>
-        <button type="button" data-v="prefer" aria-pressed="false">חשוב שיהיה נוח ונעים, אבל גמיש/ה</button>
-        <button type="button" data-v="strict" aria-pressed="false">קריטי – מחפש/ת מוסד תואם בלבד</button>
+      <div class="weight-box">
+        <span class="w-lbl">כמה השיקול של הצביון הדתי מרכזי בעיניך בבחירה?</span>
+        <div class="seg" data-group="relWeight">
+          <button type="button" data-v="0" aria-pressed="true">לא משנה לי (0)</button>
+          <button type="button" data-v="1" aria-pressed="false">עדיפות קלה (1)</button>
+          <button type="button" data-v="2" aria-pressed="false">שיקול מרכזי (2)</button>
+          <button type="button" data-v="3" aria-pressed="false">חובה – רק מוסדות תואמים (3)</button>
+        </div>
       </div>
       <label class="check" style="margin-top:14px"><input type="checkbox" id="sep"> חשובה לי הפרדה מגדרית בכיתות הלימוד</label>
     </div>
@@ -376,7 +378,14 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
         <button type="button" data-v="col" aria-pressed="false">מכללה אקדמית</button>
         <button type="button" data-v="hand" aria-pressed="false">הנדסאים</button>
       </div>
-      <label class="check" style="margin-top:12px"><input type="checkbox" id="pubOnly"> רק מוסדות מתוקצבים (שכר לימוד אוניברסיטאי מפוקח – 12,203 ₪ לשנה)</label>
+      <div class="weight-box">
+        <span class="w-lbl">כמה שכר לימוד מפוקח (מוסד מתוקצב – 12,203 ₪) מרכזי בעיניך?</span>
+        <div class="seg" data-group="budgetWeight">
+          <button type="button" data-v="0" aria-pressed="false">לא מוגבל (גם מכללה פרטית)</button>
+          <button type="button" data-v="2" aria-pressed="true">שיקול מרכזי (עדיפות למתוקצב)</button>
+          <button type="button" data-v="3" aria-pressed="false">חובה – רק מתוקצב</button>
+        </div>
+      </div>
     </div>
 
     <div class="info-box">
@@ -390,7 +399,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
   <!-- שלב 6: מיקום, תחבורה ומגורים -->
   <div class="step" data-step="6">
     <h2>7. מיקום, תחבורה ומגורים</h2>
-    <p class="hint">הזינו איפה אתם גרים ואילו אפשרויות מגורים מעניינות אתכם – ונציג נתוני שכר דירה, מעונות ושכונות מומלצות.</p>
+    <p class="hint">הזינו איפה אתם גרים, איזה מוסד מעניין אתכם וכמה המרחק חשוב לכם.</p>
 
     <div class="field">
       <label class="lbl" for="homeCity">איפה את/ה גר/ה היום?
@@ -416,18 +425,14 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
         <button type="button" data-v="dorm" aria-pressed="false">מעונות סטודנטים</button>
         <button type="button" data-v="parents" aria-pressed="true">נסיעה מבית ההורים / המגורים הקיימים</button>
       </div>
-      <div class="row" style="margin-top:12px">
-        <label>זמן נסיעה מקסימלי ביום (לכיוון)
-          <select id="maxCommute">
-            <option value="25">עד 25 דקות</option>
-            <option value="45" selected>עד 45 דקות</option>
-            <option value="75">עד שעה ורבע</option>
-            <option value="999">לא מוגבל / עובר דירה</option>
-          </select>
-        </label>
-        <label id="hoodPickWrap" class="hidden">שכונה מועדפת (אם רלוונטי)
-          <input type="text" id="prefHood" placeholder="לדוגמה: רחביה, רמת אביב, רמות ב׳...">
-        </label>
+      <div class="weight-box">
+        <span class="w-lbl">כמה השיקול של קרבה לבית / אזור מגורים מרכזי בעיניך?</span>
+        <div class="seg" data-group="locWeight">
+          <button type="button" data-v="0" aria-pressed="false">פתוח/ה לכל הארץ</button>
+          <button type="button" data-v="1" aria-pressed="true">עדיפות קלה לקרוב לבית</button>
+          <button type="button" data-v="2" aria-pressed="false">שיקול מרכזי בדירוג</button>
+          <button type="button" data-v="3" aria-pressed="false">חובה – רק באזור שלי</button>
+        </div>
       </div>
     </div>
 
@@ -440,7 +445,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
   <!-- שלב 7: שירות צבאי ומלגות מוכרות -->
   <div class="step" data-step="7">
     <h2>8. שירות צבאי ומלגות מוכרות</h2>
-    <p class="hint">סמנו מה רלוונטי אליכם – ונחשב אוטומטית את הפיקדון, מענק השחרור והמלגות שיקטינו את עלות התואר.</p>
+    <p class="hint">סמנו מה רלוונטי אליכם – ונחשב אוטומטית את הפיקדון, מענק השחרור והמלגות.</p>
 
     <div class="field">
       <span class="lbl">שירות צבאי או לאומי</span>
@@ -463,14 +468,6 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
         <span class="sub-hint">לכל מלגה מצוין הסכום השנתי והאם נדרשת התנדבות בתמורה.</span>
       </span>
       <div class="sch-grid" id="schCards"></div>
-    </div>
-
-    <div class="field">
-      <span class="lbl">עזרה מהמשפחה או מלגה נוספת (לא חובה)</span>
-      <div class="row">
-        <label>עזרה מהמשפחה בחודש (₪)<input type="number" id="family" min="0" value="0"></label>
-        <label>מלגה נוספת בשנה (₪)<input type="number" id="otherSch" min="0" value="0"></label>
-      </div>
     </div>
   </div>
 
@@ -502,12 +499,17 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
     </div>
 
     <div class="legal-box">
-      <strong>הבהרה משפטית וזכויות יוצרים:</strong> המידע באתר „כיוון” (תנאי קבלה, שכר לימוד תשפ״ז, נתוני שכ״ד ומלגות) נאסף ממקורות רשמיים ומאגרים פומביים לצורך הכוונה ראשונית בלבד ואינו מהווה ייעוץ אקדמי, משפטי או כלכלי מחייב. ספי הקבלה משתנים מעת לעת ויש לאמתם מול המוסד האקדמי טרם ההרשמה. כל הזכויות שמורות © 2026 כיוון.
+      <strong>הבהרה משפטית וזכויות יוצרים:</strong> כל הזכויות שמורות © 2026 כיוון. המידע באתר (תנאי קבלה, שכר לימוד תשפ״ז, נתוני שכ״ד ומלגות) נאסף ממקורות רשמיים ומאגרים פומביים לצורך הכוונה ראשונית בלבד ואינו מהווה ייעוץ אקדמי, משפטי או כלכלי מחייב. ספי הקבלה משתנים מעת לעת ויש לאמתם מול המוסד האקדמי טרם ההרשמה.
     </div>
   </div>
 
-  <div class="err" id="err"></div>
-  <div class="nav"><button class="btn ghost" id="backBtn" type="button">חזרה</button><button class="btn" id="nextBtn" type="button">המשך</button></div>
+  <div class="nav">
+    <button class="btn ghost" id="backBtn" type="button">חזרה</button>
+    <div class="nav-right">
+      <button class="btn ghost" id="finishNowBottom" type="button">סיים וצפה בתוצאות</button>
+      <button class="btn" id="nextBtn" type="button">המשך לשלב הבא</button>
+    </div>
+  </div>
 </section>
 
 <section class="results hidden" id="results"></section>
@@ -542,42 +544,43 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
     }, 3200);
   }
 
-  // --- פרופילי צביון ושכונות לפי מוסדות ---
+  // --- פרופילי צביון ושכונות ---
   const INST_VIBE = {
-    biu: { tag: 'דתי-לאומי מעורב', desc: 'אוניברסיטה בעלת זיקה דתית-לאומית עם רוב חילוני-מסורתי וציבור דתי גדול. אווירה מכבדת, כשרות מלאה, בתי כנסת ושיעורי יסוד ביהדות – מתאימה מאוד גם לחילונים וגם לדתיים.', hoods: 'רמת אילן, גבעת שמואל (מרחק הליכה), קריית אונו, רמת גן מרכז' },
-    ariel: { tag: 'דתי-לאומי מעורב', desc: 'אווירה דתית-לאומית ומסורתית חמה לצד סטודנטים חילונים רבים. קהילה סטודנטיאלית מגובשת, מעונות צמודים ושיעורי מורשת.', hoods: 'מעונות הסטודנטים בקמפוס, שכונות אריאל הסמוכות (הליכה)' },
-    jct: { tag: 'דתי-תורני בהפרדה', desc: 'אקדמיה תורנית-טכנולוגית ברמה גבוהה עם הפרדה מגדרית מלאה (קמפוס לב לגברים, קמפוס טל לנשים) ושילוב לימודי קודש.', hoods: 'גבעת מרדכי, בית וגן, קריית משה (ירושלים)' },
-    orot: { tag: 'דתי-תורני בהפרדה', desc: 'מכללה דתית-לאומית לחינוך באווירה תורנית מובהקת עם הפרדה מגדרית (אלקנה / רחובות).', hoods: 'אלקנה, שערי תקווה / שכונות רחובות' },
-    herzog: { tag: 'דתי-תורני', desc: 'מכללה תורנית בגוש עציון עם דגש חזק על לימודי יהדות והוראה.', hoods: 'אלון שבות, יישובי גוש עציון, ירושלים (דרום)' },
-    emuna: { tag: 'דתי-לאומי (נשים)', desc: 'מכללה דתית-לאומית לנשים בירושלים באווירה תורנית-אמנותית.', hoods: 'בקעה, קטמון, בית לחם (ירושלים)' },
-    michlala: { tag: 'דתי-תורני בהפרדה', desc: 'מוסד אקדמי תורני בירושלים עם מסלולים נפרדים.', hoods: 'בית וגן, קריית יובל (ירושלים)' },
-    hemdat: { tag: 'דתי-לאומי בהפרדה', desc: 'מכללה דתית לחינוך בנתיבות עם מסלולים נפרדים.', hoods: 'נתיבות, שדרות' },
-    shaanan: { tag: 'דתי-לאומי בהפרדה', desc: 'מכללה דתית לחינוך בחיפה באווירה משפחתית.', hoods: 'קריית שמואל, קריית חיים (חיפה)' },
-    shaarei: { tag: 'דתי-מסורתי מסביר פנים', desc: 'המרכז האקדמי שערי מדע ומשפט (רעננה) – אווירה מכבדת המתאימה לדתיים, מסורתיים וחילונים, עם מסלולים מותאמים.', hoods: 'רעננה, כפר סבא, הוד השרון' },
-    ono: { tag: 'מעורב + קמפוסים חרדיים', desc: 'הקריה האקדמית אונו – קמפוס ראשי מעורב בקריית אונו, ולצידו קמפוסים חרדיים ייעודיים בהפרדה (ירושלים, אור יהודה, חיפה).', hoods: 'קריית אונו, רמת גן, פתח תקווה' },
-    tau: { tag: 'חילוני / פלורליסטי', desc: 'אוניברסיטת מחקר גדולה ותוססת בצפון ת״א. אווירה חילונית-ליברלית פתוחה, לצד פעילות של תאים דתיים ובית חב״ד בקמפוס.', hoods: 'רמת אביב (הליכה), נווה אביבים, מרכז ת״א, רמת גן' },
-    huji: { tag: 'חילוני / פלורליסטי', desc: 'אוניברסיטת מחקר מובילה בירושלים. אווירה פלורליסטית ומגוונת מאוד – סטודנטים חילונים, דתיים ובינלאומיים לומדים יחד.', hoods: 'הר הצופים: הגבעה הצרפתית, מרכז העיר | גבעת רם: בית הכרם, רחביה, נחלאות' },
-    bgu: { tag: 'חילוני / חיי קמפוס תוססים', desc: 'אוניברסיטה עם חיי חברה וקהילה סטודנטיאלית מהחזקים בארץ. רוב חילוני-מסורתי פתוח וקהילה דתית פעילה בשכונות הסמוכות.', hoods: 'שכונה ב׳, שכונה ג׳, שכונה ד׳, רמות (מרחק הליכה מהקמפוס)' },
-    technion: { tag: 'חילוני / פלורליסטי', desc: 'מוסד מחקר טכנולוגי מוביל בחיפה. אווירה עניינית ופתוחה, עם מעונות גדולים בתוך הקמפוס וקהילה דתית מגובשת.', hoods: 'נווה שאנן, רמות רמז, זיו (מרחק הליכה משערי הטכניון)' },
-    haifa: { tag: 'חילוני / רב-תרבותי', desc: 'אוניברסיטה על הכרמל עם גיוון תרבותי וחברתי רחב, נגישות נוחה ברכבלית מהמפרץ.', hoods: 'רמות אלון, רוממה, נווה שאנן, דניה' },
-    reichman: { tag: 'חילוני / בינלאומי', desc: 'אוניברסיטה פרטית בהרצליה עם אוריינטציה עסקית ובינלאומית ואווירה חילונית-ליברלית.', hoods: 'הרצליה הצעירה, מרכז הרצליה, רמת השרון' }
+    biu: { tag: 'דתי-לאומי מעורב', rel: 'religious_mix', desc: 'אוניברסיטה בעלת זיקה דתית-לאומית עם רוב חילוני-מסורתי וציבור דתי גדול. אווירה מכבדת, כשרות מלאה, בתי כנסת ושיעורי יסוד ביהדות – מתאימה מאוד גם לחילונים וגם לדתיים.', hoods: 'רמת אילן, גבעת שמואל (מרחק הליכה), קריית אונו, רמת גן מרכז' },
+    ariel: { tag: 'דתי-לאומי מעורב', rel: 'religious_mix', desc: 'אווירה דתית-לאומית ומסורתית חמה לצד סטודנטים חילונים רבים. קהילה סטודנטיאלית מגובשת, מעונות צמודים ושיעורי מורשת.', hoods: 'מעונות הסטודנטים בקמפוס, שכונות אריאל הסמוכות (הליכה)' },
+    jct: { tag: 'דתי-תורני בהפרדה', rel: 'religious_strict', desc: 'אקדמיה תורנית-טכנולוגית ברמה גבוהה עם הפרדה מגדרית מלאה (קמפוס לב לגברים, קמפוס טל לנשים) ושילוב לימודי קודש.', hoods: 'גבעת מרדכי, בית וגן, קריית משה (ירושלים)' },
+    orot: { tag: 'דתי-תורני בהפרדה', rel: 'religious_strict', desc: 'מכללה דתית-לאומית לחינוך באווירה תורנית מובהקת עם הפרדה מגדרית (אלקנה / רחובות).', hoods: 'אלקנה, שערי תקווה / שכונות רחובות' },
+    herzog: { tag: 'דתי-תורני', rel: 'religious_strict', desc: 'מכללה תורנית בגוש עציון עם דגש חזק על לימודי יהדות והוראה.', hoods: 'אלון שבות, יישובי גוש עציון, ירושלים (דרום)' },
+    emuna: { tag: 'דתי-לאומי (נשים)', rel: 'religious_strict', desc: 'מכללה דתית-לאומית לנשים בירושלים באווירה תורנית-אמנותית.', hoods: 'בקעה, קטמון, בית לחם (ירושלים)' },
+    michlala: { tag: 'דתי-תורני בהפרדה', rel: 'religious_strict', desc: 'מוסד אקדמי תורני בירושלים עם מסלולים נפרדים.', hoods: 'בית וגן, קריית יובל (ירושלים)' },
+    hemdat: { tag: 'דתי-לאומי בהפרדה', rel: 'religious_strict', desc: 'מכללה דתית לחינוך בנתיבות עם מסלולים נפרדים.', hoods: 'נתיבות, שדרות' },
+    shaanan: { tag: 'דתי-לאומי בהפרדה', rel: 'religious_strict', desc: 'מכללה דתית לחינוך בחיפה באווירה משפחתית.', hoods: 'קריית שמואל, קריית חיים (חיפה)' },
+    shaarei: { tag: 'דתי-מסורתי מסביר פנים', rel: 'religious_mix', desc: 'המרכז האקדמי שערי מדע ומשפט (רעננה) – אווירה מכבדת המתאימה לדתיים, מסורתיים וחילונים, עם מסלולים מותאמים.', hoods: 'רעננה, כפר סבא, הוד השרון' },
+    ono: { tag: 'מעורב + קמפוסים חרדיים', rel: 'haredi_mix', desc: 'הקריה האקדמית אונו – קמפוס ראשי מעורב בקריית אונו, ולצידו קמפוסים חרדיים ייעודיים בהפרדה (ירושלים, אור יהודה, חיפה).', hoods: 'קריית אונו, רמת גן, פתח תקווה' },
+    tau: { tag: 'חילוני / פלורליסטי', rel: 'secular', desc: 'אוניברסיטת מחקר גדולה ותוססת בצפון ת״א. אווירה חילונית-ליברלית פתוחה, לצד פעילות של תאים דתיים ובית חב״ד בקמפוס.', hoods: 'רמת אביב (הליכה), נווה אביבים, מרכז ת״א, רמת גן' },
+    huji: { tag: 'חילוני / פלורליסטי', rel: 'secular', desc: 'אוניברסיטת מחקר מובילה בירושלים. אווירה פלורליסטית ומגוונת מאוד – סטודנטים חילונים, דתיים ובינלאומיים לומדים יחד.', hoods: 'הר הצופים: הגבעה הצרפתית, מרכז העיר | גבעת רם: בית הכרם, רחביה, נחלאות' },
+    bgu: { tag: 'חילוני / חיי קמפוס תוססים', rel: 'secular', desc: 'אוניברסיטה עם חיי חברה וקהילה סטודנטיאלית מהחזקים בארץ. רוב חילוני-מסורתי פתוח וקהילה דתית פעילה בשכונות הסמוכות.', hoods: 'שכונה ב׳, שכונה ג׳, שכונה ד׳, רמות (מרחק הליכה מהקמפוס)' },
+    technion: { tag: 'חילוני / פלורליסטי', rel: 'secular', desc: 'מוסד מחקר טכנולוגי מוביל בחיפה. אווירה עניינית ופתוחה, עם מעונות גדולים בתוך הקמפוס וקהילה דתית מגובשת.', hoods: 'נווה שאנן, רמות רמז, זיו (מרחק הליכה משערי הטכניון)' },
+    haifa: { tag: 'חילוני / רב-תרבותי', rel: 'secular', desc: 'אוניברסיטה על הכרמל עם גיוון תרבותי וחברתי רחב, נגישות נוחה ברכבלית מהמפרץ.', hoods: 'רמות אלון, רוממה, נווה שאנן, דניה' },
+    reichman: { tag: 'חילוני / בינלאומי', rel: 'secular', desc: 'אוניברסיטה פרטית בהרצליה עם אוריינטציה עסקית ובינלאומית ואווירה חילונית-ליברלית.', hoods: 'הרצליה הצעירה, מרכז הרצליה, רמת השרון' }
   };
 
   function getVibeForInst(inst) {
-    if (!inst) return { tag: 'מעורב / כללי', desc: 'מוסד אקדמי הפתוח לכלל הסטודנטים מכל המגזרים.', hoods: inst?.['עיר'] || '' };
+    if (!inst) return { tag: 'מעורב / כללי', rel: 'secular', desc: 'מוסד אקדמי הפתוח לכלל הסטודנטים מכל המגזרים.', hoods: '' };
     const id = inst['מזהה'];
     if (INST_VIBE[id]) return INST_VIBE[id];
     const name = inst['מוסד'] || '';
-    if (/מכון שכטר/.test(name)) return { tag: 'מסורתי-פלורליסטי', desc: 'מוסד ללימודי יהדות ברוח מסורתית-פלורליסטית בירושלים.', hoods: 'ניימן, רחביה, קטמון (ירושלים)' };
-    if (/גבעת וושינגטון/.test(name)) return { tag: 'דתי-לאומי', desc: 'מכללה דתית-לאומית לחינוך וספורט באווירה תורנית.', hoods: 'קבוצת יבנה, יבנה, אשדוד' };
+    if (/מכון שכטר/.test(name)) return { tag: 'מסורתי-פלורליסטי', rel: 'religious_mix', desc: 'מוסד ללימודי יהדות ברוח מסורתית-פלורליסטית בירושלים.', hoods: 'ניימן, רחביה, קטמון (ירושלים)' };
+    if (/גבעת וושינגטון/.test(name)) return { tag: 'דתי-לאומי', rel: 'religious_strict', desc: 'מכללה דתית-לאומית לחינוך וספורט באווירה תורנית.', hoods: 'קבוצת יבנה, יבנה, אשדוד' };
     return {
       tag: 'חילוני / מעורב',
+      rel: 'secular',
       desc: `אווירה סטודנטיאלית פתוחה ב${inst['עיר'] || 'קמפוס'}, מתאימה לכלל המגזרים.`,
       hoods: `שכונות מרכזיות ב${inst['עיר'] || 'סביבת המוסד'}`
     };
   }
 
-  // --- נתונים מ-data.html ---
+  // --- טעינת נתונים מ-data.html ---
   let DB = { degrees: [], institutions: [], living: [], scholarships: [], dorms: [] };
 
   async function loadDB() {
@@ -600,7 +603,6 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
         const cities = [...new Set(DB.living.map(c => c['עיר']))].sort();
         $('cityList').innerHTML = cities.map(c => `<option value="${c}">`).join('');
 
-        // מילוי רשימת המוסדות בשלב 7
         const instSel = $('targetInst');
         DB.institutions.filter(i => i['סטטוס'] !== 'אוחד').forEach(inst => {
           const opt = document.createElement('option');
@@ -637,7 +639,6 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
   const QUICK_MAJORS = ['פיזיקה', 'כימיה', 'ביולוגיה', 'מדעי המחשב', 'תושב״ע (תורה שבעל פה)', 'גמרא / תלמוד', 'ערבית'];
   $('majorList').innerHTML = ALL_ELECTIVES_AB.map(m => `<option value="${m}">`).join('');
 
-  // --- המלגות הכי מוכרות ---
   const POPULAR_SCHOLARSHIPS = [
     { id: 'mimadim', name: 'ממדים ללימודים (משרד הביטחון)', amount: 'עד 12,203 ₪ לשנה (100% שכ״ל אוניברסיטאי)', vol: 'ללא התנדבות', desc: 'מיועד ללוחמים/ות משוחררים ולאוכלוסיות זכאיות. ניתן לשלב גם עם מיל-GO.' },
     { id: 'milgo', name: 'מיל-GO (מלגת משרד החינוך)', amount: '5,000 – 12,480 ₪ לשנה', vol: 'ללא התנדבות', desc: 'מלגה סוציו-אקונומית ארצית לסטודנטים לתואר ראשון והנדסאים.' },
@@ -647,7 +648,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
     { id: 'miluim', name: 'מלגות משרתי מילואים / משפיעים בלימודים', amount: '3,000 – 18,000 ₪ לשנה', vol: 'ללא התנדבות (לפי ימי מילואים)', desc: 'הנחות בשכר לימוד ומענקים ייעודיים למשרתי מילואים פעילים.' }
   ];
 
-  // --- מצב האפליקציה ---
+  // --- מצב האפליקציה (כולל משקולות חשיבות 0-3) ---
   const STATE = {
     step: 0,
     answers: {},
@@ -658,9 +659,11 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
     mandatory: MANDATORY_SUBJECTS.map(s => ({ ...s, units: s.defaultU, grade: '' })),
     majors: [],
     relLevel: 'secular',
-    relImportance: 'none',
+    relWeight: 0,      // 0=לא משנה, 1=עדיפות, 2=מרכזי, 3=חובה
     type: 'any',
+    budgetWeight: 2,   // 0=לא מוגבל, 2=עדיפות למתוקצב, 3=חובה מתוקצב
     housing: 'parents',
+    locWeight: 1,      // 0=כל הארץ, 1=עדיפות קלה, 2=מרכזי, 3=חובה באזור
     selectedSch: new Set(),
     mate: 'mix',
     os: 'any'
@@ -792,23 +795,23 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
         qsa('button', seg).forEach(b => b.setAttribute('aria-pressed', 'false'));
         btn.setAttribute('aria-pressed', 'true');
         const v = btn.dataset.v;
-        if (grp === 'mathU' || grp === 'engU') STATE[grp] = Number(v);
-        else STATE[grp] = v;
+        if (['mathU', 'engU', 'relWeight', 'budgetWeight', 'locWeight'].includes(grp)) {
+          STATE[grp] = Number(v);
+        } else {
+          STATE[grp] = v;
+        }
 
         if (grp === 'bagMode') {
           $('knownModeWrap').classList.toggle('hidden', v !== 'known');
           $('calcModeWrap').classList.toggle('hidden', v !== 'calc');
         }
-        if (grp === 'housing') {
-          $('hoodPickWrap').classList.toggle('hidden', v === 'parents' || v === 'dorm');
-          updateHousingInsights();
-        }
+        if (grp === 'housing') updateHousingInsights();
         updateBagrutSummary();
       });
     });
   });
 
-  // --- שלב 4: מחשבון בגרות מלא ---
+  // --- מחשבון בגרות ---
   function renderMandatoryList() {
     $('mandatoryList').innerHTML = STATE.mandatory.map((s, idx) => {
       const g = Number(s.grade) || 0;
@@ -975,23 +978,12 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
       return;
     }
 
-    const fiveList = [];
-    if (b.mathU === 5) fiveList.push(`מתמטיקה 5 יח״ל${b.mathG ? ' (' + b.mathG + ')' : ''}`);
-    if (b.engU === 5) fiveList.push(`אנגלית 5 יח״ל${b.engG ? ' (' + b.engG + ')' : ''}`);
-    STATE.mandatory.filter(s => s.id !== 'math' && s.id !== 'eng' && s.units === 5 && s.grade !== '').forEach(s => {
-      fiveList.push(`${s.name} 5 יח״ל (${s.grade})`);
-    });
-    STATE.majors.filter(m => m.name && Number(m.units) === 5).forEach(m => {
-      fiveList.push(`${m.name} 5 יח״ל${m.grade ? ' (' + m.grade + ')' : ''}`);
-    });
-
     let html = `<strong>ממוצע בגרות משוקלל לחישוב סכם: ${b.finalAvg}</strong>` +
       (STATE.bagMode === 'known' ? ' (נשמר כפי שהזנת, ללא שינוי)' : ` (מחושב על בסיס ${b.totalUnits} יח״ל כולל בונוסים)`);
 
     if (b.droppedSubjects.length) {
       html += `<br><small>✨ הוחל בונוס השמטה אוניברסיטאי: ${b.droppedSubjects.join(', ')} הושמטו מהשקלול כי הם מעל 20 יח״ל והורידו את הממוצע.</small>`;
     }
-    if (fiveList.length) html += `<br>מקצועות 5 יח״ל שזוהו: ${fiveList.join(' • ')}`;
     if (!b.hasPhysics5) {
       box.className = 'summary warn';
       html += `<br><small>💡 שים לב: לא הוזנה פיזיקה 5 יח״ל. בחלק ממסלולי ההנדסה יידרש קורס השלמה / מכינה בפיזיקה לפני הלימודים.</small>`;
@@ -1006,7 +998,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
   renderQuickMajors();
   renderMajors();
 
-  // --- שלב 5: פסיכומטרי ומכינה ---
+  // --- פסיכומטרי ומכינה ---
   $('noPsy').addEventListener('change', e => {
     $('psyFields').classList.toggle('hidden', e.target.checked);
     updatePsySummary();
@@ -1016,7 +1008,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
 
   function updatePsySummary() {
     if ($('noPsy').checked) {
-      $('psySummary').textContent = 'נציג לך מסלולי קבלה על סמך בגרות בלבד, מכינה או קבלה פתוחה.';
+      $('psySummary').textContent = 'נציג לך מסלולי קבלה על סמך בגרות בלבד, מכינה או הצעות לשיפור.';
       return;
     }
     const e = Number($('secE').value) || 0;
@@ -1032,7 +1024,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
     $('psySummary').innerHTML = `ציון אנגלית ${e}: <strong>${lvl}</strong>`;
   }
 
-  // --- שלב 7: תצוגה חכמה למיקום, שכונות ושכר דירה ---
+  // --- תצוגה חכמה למיקום ושכר דירה ---
   function updateHousingInsights() {
     const instId = $('targetInst').value;
     const home = $('homeCity').value.trim();
@@ -1065,7 +1057,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
   $('targetInst').addEventListener('change', updateHousingInsights);
   $('homeCity').addEventListener('input', updateHousingInsights);
 
-  // --- שלב 8: שירות צבאי ומלגות מוכרות ---
+  // --- שירות צבאי ומלגות מוכרות ---
   function renderScholarships() {
     $('schCards').innerHTML = POPULAR_SCHOLARSHIPS.map(s => {
       const checked = STATE.selectedSch.has(s.id);
@@ -1101,8 +1093,8 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
       box.classList.add('hidden');
       return;
     }
-    const depRate = svc === 'combat' ? 995.35 : svc === 'support' ? 829.46 : 663.57;
-    const grantRate = svc === 'combat' ? 688.26 : svc === 'support' ? 575.86 : 460.19;
+    const depRate = svc === 'combat' ? 995.35 : svc === 'support' ? 829.46 : svc === 'rear' ? 663.57 : 0;
+    const grantRate = svc === 'combat' ? 688.26 : svc === 'support' ? 575.86 : svc === 'rear' ? 460.19 : 0;
     const dep = Math.round(depRate * mon);
     const grant = Math.round(grantRate * mon);
     box.classList.remove('hidden');
@@ -1118,7 +1110,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
   $('svc').addEventListener('change', updateArmyCalc);
   $('svcMon').addEventListener('input', updateArmyCalc);
 
-  // --- ניווט באשף (9 שלבים) ---
+  // --- ניווט באשף + כפתור "סיים והצג תוצאות עכשיו" בכל שלב ---
   const steps = qsa('.step');
   const TOTAL_STEPS = steps.length;
   $('progress').innerHTML = steps.map((_, i) => `<span data-s="${i}" title="שלב ${i+1}"></span>`).join('');
@@ -1130,8 +1122,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
     qsa('#progress span').forEach((sp, i) => sp.classList.toggle('on', i <= STATE.step));
     $('stepnum').textContent = `שלב ${STATE.step + 1} מתוך ${TOTAL_STEPS}`;
     $('backBtn').style.visibility = STATE.step === 0 ? 'hidden' : 'visible';
-    $('nextBtn').textContent = STATE.step === TOTAL_STEPS - 1 ? 'הצג את התוכנית שלי' : 'המשך';
-    $('err').textContent = '';
+    $('nextBtn').textContent = STATE.step === TOTAL_STEPS - 1 ? 'הצג את התוכנית שלי' : 'המשך לשלב הבא';
     window.scrollTo({ top: $('wizard').offsetTop - 70, behavior: 'smooth' });
   }
 
@@ -1156,8 +1147,10 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
     if (STATE.step < TOTAL_STEPS - 1) showStep(STATE.step + 1);
     else buildResults();
   });
+  $('finishNowTop').addEventListener('click', buildResults);
+  $('finishNowBottom').addEventListener('click', buildResults);
 
-  // --- מנוע התאמה ותוצאות ---
+  // --- מנוע התאמה, משקולות וחלופות חכמות ---
   const FIELD_HOLLAND = {
     'מדעי המחשב': ['I', 'R'], 'הנדסת תוכנה': ['I', 'R'], 'מדעי הנתונים': ['I', 'C'], 'מערכות מידע': ['I', 'E', 'C'],
     'הנדסת חשמל ואלקטרוניקה': ['R', 'I'], 'הנדסת מכונות': ['R', 'I'], 'הנדסה אזרחית': ['R', 'E'], 'הנדסה כימית': ['I', 'R'],
@@ -1241,6 +1234,29 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
     return { status: 'none', label: 'יש לבדוק במחשבון המוסד', notes, needsMechina };
   }
 
+  function scoreInstitutionPreference(inst, vibe, tuition) {
+    let bonus = 0;
+    // חישוב משקל הצביון הדתי
+    if (STATE.relWeight > 0) {
+      const matchRel =
+        (STATE.relLevel === 'religious' && (vibe.rel === 'religious_strict' || vibe.rel === 'religious_mix')) ||
+        (STATE.relLevel === 'haredi' && (vibe.rel === 'haredi_mix' || vibe.rel === 'religious_strict')) ||
+        (STATE.relLevel === 'traditional' && (vibe.rel === 'religious_mix' || vibe.rel === 'secular')) ||
+        (STATE.relLevel === 'secular' && vibe.rel === 'secular');
+      if (matchRel) bonus += STATE.relWeight * 15;
+    }
+    // חישוב משקל תקציב (מוסד מתוקצב)
+    if (STATE.budgetWeight > 0 && tuition <= 13000) {
+      bonus += STATE.budgetWeight * 12;
+    }
+    // חישוב משקל מיקום
+    const home = $('homeCity').value.trim();
+    if (STATE.locWeight > 0 && home && (inst['עיר'] || '').includes(home)) {
+      bonus += STATE.locWeight * 20;
+    }
+    return bonus;
+  }
+
   function buildResults() {
     const sc = calcHollandScores();
     const topCodes = Object.entries(sc).sort((a, b) => b[1] - a[1]).slice(0, 3).map(x => x[0]);
@@ -1255,7 +1271,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
       codes.forEach((c, idx) => { score += (sc[c] || 1) * (idx === 0 ? 3 : 1.5); });
       const sample = DB.degrees.find(d => d['תחום לימוד'] === f);
       if (sample && STATE.interests.has(sample['קטגוריה'])) score += 12;
-      if (STATE.chosenProgs.has(f)) score += 30;
+      if (STATE.chosenProgs.has(f)) score += 35;
       if (STATE.answers.c1 === 'no' && /חינוך|הוראה/.test(f)) score -= 15;
       if (STATE.answers.c2 === 'no' && /רפואה|סיעוד|פיזיותרפיה/.test(f)) score -= 15;
       if (STATE.answers.c3 === 'no' && /מתמטיקה|פיזיקה|הנדס|מחשב/.test(f)) score -= 12;
@@ -1268,18 +1284,17 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
     const grantRate = svc === 'combat' ? 688.26 : svc === 'support' ? 575.86 : svc === 'rear' ? 460.19 : 0;
     const depositTotal = Math.round(depRate * svcMon);
     const grantTotal = Math.round(grantRate * svcMon);
-
     const chosenSchNames = POPULAR_SCHOLARSHIPS.filter(s => STATE.selectedSch.has(s.id)).map(s => s.name);
 
     let html = `
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
         <h2>התוכנית האישית שלך</h2>
-        <button type="button" class="btn ghost small" id="editQuizBtn">חזרה לעריכת פרטים</button>
+        <button type="button" class="btn ghost small" id="editQuizBtn">חזרה לעריכה והמשך מילוי</button>
       </div>
       <p class="traits">פרופיל הולנד הבולט שלך: <strong>${topCodes.map(c => HOLLAND_NAMES[c]).join(' • ')}</strong></p>
       <div class="stats">
-        <div class="stat"><span>ממוצע בגרות משוקלל</span><b>${bag.finalAvg || 'לא הוזן'}</b></div>
-        <div class="stat"><span>פסיכומטרי</span><b>${psy || 'טרם נבחן'}</b></div>
+        <div class="stat"><span>ממוצע בגרות משוקלל</span><b>${bag.finalAvg || 'טרם הוזן'}</b></div>
+        <div class="stat"><span>פסיכומטרי</span><b>${psy || 'טרם הוזן'}</b></div>
         ${depositTotal ? `<div class="stat"><span>פיקדון צבאי משוער</span><b>${depositTotal.toLocaleString()} ₪</b></div>` : ''}
         ${grantTotal ? `<div class="stat"><span>מענק שחרור משוער</span><b>${grantTotal.toLocaleString()} ₪</b></div>` : ''}
       </div>
@@ -1287,9 +1302,11 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
     `;
 
     scoredFields.forEach((item, idx) => {
-      let options = DB.degrees.filter(d => d['תחום לימוד'] === item.field);
+      const allForField = DB.degrees.filter(d => d['תחום לימוד'] === item.field);
+      let options = [...allForField];
+
       if (targetInstId) options = options.filter(d => d['מזהה מוסד'] === targetInstId);
-      if ($('pubOnly').checked) options = options.filter(d => Number(d['שכר לימוד שנתי (₪)']) <= 13000);
+      if (STATE.budgetWeight === 3) options = options.filter(d => Number(d['שכר לימוד שנתי (₪)']) <= 13000);
       if (STATE.type !== 'any') {
         options = options.filter(d => {
           const inst = DB.institutions.find(x => x['מזהה'] === d['מזהה מוסד']);
@@ -1300,37 +1317,56 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
           return true;
         });
       }
-
-      // סינון צביון דתי אם סומן "קריטי"
-      if (STATE.relImportance === 'strict') {
+      if (STATE.relWeight === 3) {
         options = options.filter(d => {
           const inst = DB.institutions.find(x => x['מזהה'] === d['מזהה מוסד']);
           const vibe = getVibeForInst(inst);
-          if (STATE.relLevel === 'religious' || STATE.relLevel === 'haredi') return vibe.tag.includes('דתי') || vibe.tag.includes('חרדי');
-          if (STATE.relLevel === 'secular') return vibe.tag.includes('חילוני');
+          if (STATE.relLevel === 'religious' || STATE.relLevel === 'haredi') return vibe.rel.includes('religious') || vibe.rel.includes('haredi');
+          if (STATE.relLevel === 'secular') return vibe.rel === 'secular';
           return true;
         });
       }
 
-      const evaluated = options.map(d => {
+      const rankItem = (d, isFallback = false) => {
         const inst = DB.institutions.find(x => x['מזהה'] === d['מזהה מוסד']) || {};
         const adm = evaluateAdmission(d, bag, psy);
         const vibe = getVibeForInst(inst);
-        return { d, inst, adm, vibe };
-      }).sort((a, b) => {
-        const rank = { good: 0, mid: 1, none: 2, hard: 3 };
-        return rank[a.adm.status] - rank[b.adm.status];
-      }).slice(0, 5);
+        const prefScore = scoreInstitutionPreference(inst, vibe, Number(d['שכר לימוד שנתי (₪)']) || 0);
+        const admRank = { good: 100, mid: 60, none: 40, hard: 10 }[adm.status];
+        return { d, inst, adm, vibe, totalScore: admRank + prefScore, isFallback };
+      };
+
+      let evaluated = options.map(d => rankItem(d, false))
+        .sort((a, b) => b.totalScore - a.totalScore)
+        .slice(0, 5);
+
+      // מנגנון הצעות חלופיות חכם: לעולם לא להשאיר 0 תוצאות!
+      let fallbackAdvice = '';
+      if (evaluated.length === 0 && allForField.length > 0) {
+        evaluated = allForField.map(d => rankItem(d, true))
+          .sort((a, b) => b.totalScore - a.totalScore)
+          .slice(0, 3);
+        const reasons = [];
+        if (targetInstId) reasons.push('לבדוק מוסדות נוספים מלבד המוסד הספציפי שסימנת');
+        if (STATE.relWeight === 3) reasons.push('להגמיש את דרישת הצביון מ„חובה” ל„שיקול מרכזי” (למשל בר-אילן או אריאל משלבים דתיים וחילונים)');
+        if (STATE.budgetWeight === 3) reasons.push('לשקול מכללות מתוקצבות בפריפריה או את האוניברסיטה הפתוחה');
+        if (STATE.type !== 'any') reasons.push('להרחיב את החיפוש גם למכללות אקדמיות ולא רק לאוניברסיטאות');
+        fallbackAdvice = reasons.length
+          ? `לא נמצאה התאמה מדויקת לכל התנאים יחד, אך <strong>כדי שכן תוכל/י ללמוד ${item.field}</strong>, כדאי לשקול: ${reasons.join(' • ')}. הנה האפשרויות הקרובות ביותר:`
+          : `הנה האפשרויות הזמינות במאגר עבור ${item.field}:`;
+      } else if (evaluated.length > 0 && evaluated.every(x => x.adm.status === 'hard')) {
+        fallbackAdvice = `💡 <strong>איך בכל זאת מתקבלים?</strong> לפי הציונים שהוזנו כרגע הספים מאתגרים. כדאי לשקול: <strong>מכינה קדם-אקדמית ייעודית</strong> (מחליפה את ממוצע הבגרות), <strong>אפיק מעבר דרך האוניברסיטה הפתוחה</strong> (ללא תנאי קבלה), או הרשמה למכללה מתוקצבת שבה הסף גמיש יותר.`;
+      }
 
       html += `
         <div class="prof">
           <div class="prof-head"><span class="rank">#${idx + 1}</span><h3>${item.field}</h3></div>
-          <p class="why">${evaluated.length ? `מציג ${evaluated.length} מתוך ${options.length} מוסדות מתאימים:` : 'לא נמצאו מוסדות התואמים לסינונים שבחרת בתחום זה.'}</p>
-          ${evaluated.map(({ d, inst, adm, vibe }) => {
+          ${fallbackAdvice ? `<div class="tip-box">${fallbackAdvice}</div>` : `<p class="why">מציג ${evaluated.length} מוסדות מובילים לפי השקלול האישי שלך:</p>`}
+          ${evaluated.map(({ d, inst, adm, vibe, isFallback }) => {
             const rent = Number(inst['שכ״ד בעיר ₪']) || 0;
             const roomieRent = rent ? Math.round(rent / 3) : 0;
             return `
-            <div class="inst">
+            <div class="inst ${isFallback ? 'alt' : ''}">
               <div class="inst-top">
                 <div><span class="inst-name">${d['מוסד']}</span> <span class="meta">(${inst['עיר'] || ''})</span></div>
                 <span class="badge ${adm.status}">${adm.label}</span>
@@ -1361,7 +1397,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
     $('editQuizBtn').addEventListener('click', () => {
       $('results').classList.add('hidden');
       $('wizard').classList.remove('hidden');
-      showStep(3);
+      showStep(STATE.step);
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
