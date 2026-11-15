@@ -1,514 +1,167 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>כיוון – מאגר תוכניות לימודים וסילבוסים לכל התארים</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Suez+One&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root{
-            --paper:#F3F6F1; --surface:#FFFFFF; --ink:#1E2B25; --muted:#5C6B63;
-            --pine:#1F4D3F; --pine-soft:#DCE8E1; --sun:#F0B429; --sun-soft:#FCEFC7;
-            --line:#D3DCD5;
-        }
-        * { box-sizing: border-box; }
-        body { font-family: "IBM Plex Sans Hebrew", system-ui, sans-serif; background-color: var(--paper); color: var(--ink); margin: 0; padding: 0; direction: rtl; font-size: 17px; line-height: 1.6; }
-        .top { background: var(--surface); border-bottom: 1px solid var(--line); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
-        .brand { font-family: "Suez One", serif; font-size: 1.4rem; color: var(--pine); text-decoration: none; }
-        .nav-links { display: flex; gap: 16px; font-size: .95rem; }
-        .nav-links a { color: var(--muted); text-decoration: none; font-weight: 500; }
-        .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--pine); font-weight: 600; }
-
-        .container { max-width: 980px; margin: 28px auto; padding: 0 18px; }
-        .hero-box { background: var(--pine); color: #F3F6F1; padding: 28px 26px; border-radius: 22px; margin-bottom: 22px; }
-        .hero-box h1 { font-family: "Suez One", serif; font-weight: 400; margin: 0 0 8px; font-size: clamp(1.8rem, 4vw, 2.5rem); }
-        .hero-box p { margin: 0; opacity: .92; max-width: 66ch; }
-
-        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 22px; background: var(--surface); padding: 18px; border-radius: 18px; border: 1.5px solid var(--line); }
-        @media (max-width: 780px) { .controls { grid-template-columns: 1fr; } }
-        .select-group { display: flex; flex-direction: column; gap: 6px; }
-        label { font-weight: 600; color: var(--ink); font-size: .92rem; }
-        select, input { padding: 11px 14px; font-size: .98rem; border: 1.5px solid var(--line); border-radius: 12px; background-color: var(--paper); font-family: inherit; min-height: 46px; width: 100%; }
-
-        .status-banner { padding: 14px 18px; border-radius: 14px; margin-bottom: 18px; font-size: .96rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--pine-soft); border: 1px solid var(--pine); color: var(--pine); }
-        .inst-meta { background: var(--surface); border: 1.5px solid var(--line); border-radius: 16px; padding: 14px 20px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px 24px; font-size: .92rem; }
-
-        .program-card { background: var(--surface); border: 1.5px solid var(--line); border-radius: 18px; padding: 22px; margin-bottom: 18px; }
-        .program-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-bottom: 14px; }
-        .program-card h3 { font-family: "Suez One", serif; font-weight: 400; margin: 0 0 4px; color: var(--pine); font-size: 1.45rem; }
-        .inst-sub { font-weight: 600; color: var(--ink); font-size: .98rem; margin-bottom: 6px; display: block; }
-        .cat-badge { display: inline-block; padding: 3px 12px; border-radius: 999px; font-size: .82rem; font-weight: 600; background: var(--sun-soft); color: #1E2B25; }
-        .nz-badge { display: inline-block; padding: 3px 12px; border-radius: 999px; font-size: .82rem; font-weight: 600; background: var(--pine-soft); color: var(--pine); margin-inline-start: 6px; }
-        .grid-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; font-size: .92rem; margin-bottom: 14px; }
-        .detail-item { background: var(--paper); padding: 10px 14px; border-radius: 12px; }
-        .detail-item b { display: block; font-size: .8rem; color: var(--muted); margin-bottom: 2px; }
-
-        details.curr-toggle { margin-top: 12px; border: 1.5px solid var(--line); border-radius: 14px; padding: 12px 16px; background: var(--paper); }
-        details.curr-toggle summary { cursor: pointer; font-weight: 700; color: var(--pine); font-size: 1rem; }
-        .curr-note { font-size: .84rem; color: var(--muted); margin: 8px 0 4px; }
-        .section-title { color: var(--pine); margin: 16px 0 6px; font-size: .98rem; font-weight: 700; background: var(--pine-soft); padding: 7px 12px; border-radius: 9px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 6px; background: var(--surface); border-radius: 10px; overflow: hidden; }
-        th, td { border: 1px solid var(--line); padding: 9px 12px; text-align: right; font-size: .88rem; }
-        th { background-color: var(--pine); color: #fff; font-weight: 600; }
-        tr:nth-child(even) { background-color: var(--paper); }
-        .loading { text-align: center; font-size: 1.05rem; color: var(--muted); padding: 44px 20px; background: var(--surface); border-radius: 18px; border: 1.5px solid var(--line); }
-        .source-link { font-size: .9rem; color: var(--pine); text-decoration: underline; font-weight: 600; white-space: nowrap; }
-        footer { text-align: center; color: var(--muted); font-size: .85rem; padding: 24px 18px 44px; border-top: 1px solid var(--line); margin-top: 32px; }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>תוכניות לימודים – כיוון</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Suez+One&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F3F6F1;--surface:#FFFFFF;--ink:#1E2B25;--muted:#5C6B63;--pine:#1F4D3F;--pine-soft:#DCE8E1;--sun:#F0B429;--sun-soft:#FCEFC7;--line:#D3DCD5;--good:#2E7D4F;--mid:#8A5600;--hard:#B3412F;--on-pine:#F3F6F1;--c1:#1F4D3F;--c2:#F0B429;--c3:#6F9C86;--c4:#B9CFC2;--c5:#8A5600}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#121A16;--surface:#1A241F;--ink:#E7EEE9;--muted:#A3B2AA;--pine:#8FC7AE;--pine-soft:#22352C;--sun:#F0B429;--sun-soft:#3A3115;--line:#2E3D35;--good:#7FCB9C;--mid:#E5B45C;--hard:#F08A78;--on-pine:#10241C;--c1:#8FC7AE;--c2:#F0B429;--c3:#5E8F78;--c4:#3E5A4C;--c5:#E5B45C}}
+:root[data-theme="dark"]{--paper:#121A16;--surface:#1A241F;--ink:#E7EEE9;--muted:#A3B2AA;--pine:#8FC7AE;--pine-soft:#22352C;--sun:#F0B429;--sun-soft:#3A3115;--line:#2E3D35;--good:#7FCB9C;--mid:#E5B45C;--hard:#F08A78;--on-pine:#10241C;--c1:#8FC7AE;--c2:#F0B429;--c3:#5E8F78;--c4:#3E5A4C;--c5:#E5B45C}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans Hebrew","Arial Hebrew",Arial,sans-serif;font-size:17px;line-height:1.6}
+a{color:var(--pine)}
+:focus-visible{outline:3px solid var(--pine);outline-offset:2px;border-radius:6px}
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .in{max-width:1080px;margin:0 auto;padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-family:"Suez One",serif;font-size:1.35rem;color:var(--pine);text-decoration:none}
+.top nav a{color:var(--muted);text-decoration:none;font-size:.95rem;padding:6px 10px;border-radius:999px}
+.top nav a:hover{background:var(--pine-soft);color:var(--pine)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px 60px}
+h1{font-family:"Suez One",serif;font-weight:400;font-size:clamp(2rem,5vw,3rem);line-height:1.1;margin:32px 0 6px;color:var(--pine)}
+.lead{color:var(--muted);margin:0 0 22px;max-width:62ch}
+.picker{display:grid;grid-template-columns:220px 1fr;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px}
+@media (max-width:700px){.picker{grid-template-columns:1fr}}
+label.sm{display:block;font-size:.85rem;font-weight:600;color:var(--muted);margin-bottom:4px}
+select,input[type=search]{width:100%;font:inherit;font-size:1rem;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;max-height:150px;overflow:auto}
+.chip{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:5px 12px;font:inherit;font-size:.9rem;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--pine);border-color:var(--pine);color:var(--on-pine)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:22px;margin-top:18px}
+.head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:flex-start}
+.head h2{font-family:"Suez One",serif;font-weight:400;font-size:clamp(1.6rem,4vw,2.2rem);margin:0;color:var(--ink);line-height:1.15}
+.inst{color:var(--muted);margin-top:4px}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--pine);color:var(--on-pine);text-decoration:none;border-radius:999px;padding:10px 18px;font-weight:600;font-size:.95rem;white-space:nowrap}
+.btn.line{background:transparent;color:var(--pine);border:1.5px solid var(--pine)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:18px 0 8px}
+.stat{background:var(--paper);border-radius:14px;padding:12px 14px}
+.stat b{display:block;font-size:1.6rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:.85rem;color:var(--muted)}
+.bar{display:flex;height:14px;border-radius:999px;overflow:hidden;margin:14px 0 8px;background:var(--line)}
+.bar i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.88rem;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--k);margin-inline-end:6px;vertical-align:-1px}
+.verify{display:flex;gap:10px;align-items:flex-start;background:var(--pine-soft);border-radius:14px;padding:10px 14px;font-size:.9rem;margin-top:14px}
+.verify.warn{background:var(--sun-soft)}
+.years{margin-top:22px;display:grid;gap:16px}
+.year h3{font-size:1.15rem;margin:0 0 10px;display:flex;align-items:center;gap:10px}
+.year h3 small{font-weight:400;color:var(--muted);font-size:.9rem}
+.sems{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:780px){.sems{grid-template-columns:1fr}}
+.sem{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
+.sem header{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 14px;background:var(--paper);border-bottom:1px solid var(--line)}
+.sem header b{font-size:1rem}
+.tag{font-size:.75rem;font-weight:600;border-radius:999px;padding:2px 9px;white-space:nowrap}
+.tag.ok{background:var(--pine-soft);color:var(--good)}
+.tag.chk{background:var(--sun-soft);color:var(--mid)}
+table{width:100%;border-collapse:collapse}
+td{padding:8px 14px;border-bottom:1px solid var(--line);vertical-align:top;font-size:.95rem}
+tr:last-child td{border-bottom:0}
+td.cr{text-align:left;font-variant-numeric:tabular-nums;font-weight:600;width:60px;white-space:nowrap}
+td .num{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.75rem;color:var(--muted);direction:ltr;text-align:right}
+tr.el td{color:var(--muted)}
+tr.el td:first-child::before{content:"בחירה · ";color:var(--mid);font-weight:600;font-size:.8rem}
+.alt{display:block;font-size:.85rem;color:var(--muted)}
+.semsum{display:flex;justify-content:space-between;padding:8px 14px;background:var(--paper);font-size:.88rem;color:var(--muted);border-top:1px solid var(--line)}
+details.el{margin-top:22px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+details.el>summary{cursor:pointer;padding:14px 16px;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:10px}
+details.el>summary::-webkit-details-marker{display:none}
+details.el>summary::after{content:"+";font-size:1.3rem;color:var(--pine);line-height:1}
+details.el[open]>summary::after{content:"–"}
+.elin{padding:0 16px 16px}
+.grp{margin-top:14px}
+.grp h4{margin:0 0 6px;font-size:.95rem;color:var(--pine)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:6px}
+.ec{border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:.9rem;display:flex;justify-content:space-between;gap:8px}
+.ec .num{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.72rem;color:var(--muted);direction:ltr}
+.empty{color:var(--muted);text-align:center;padding:40px 10px}
+.foot{color:var(--muted);font-size:.85rem;margin-top:26px;border-top:1px solid var(--line);padding-top:14px}
+.grpc{border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:12px;background:var(--surface)}
+.grpc>header,.grpc>summary{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;padding:10px 14px;background:var(--paper);border-bottom:1px solid var(--line);cursor:default;list-style:none}
+.grpc>summary{cursor:pointer}.grpc>summary::-webkit-details-marker{display:none}
+.grpc .gt{font-weight:700}.grpc .gt.m{color:var(--pine)}.grpc .gt.e{color:var(--mid)}
+.grpc .gnote{padding:8px 14px;font-size:.88rem;color:var(--muted);border-bottom:1px solid var(--line)}
+.sm2{font-size:.8rem;color:var(--muted);font-weight:400}
+.semt{display:inline-block;font-size:.72rem;border:1px solid var(--line);border-radius:6px;padding:0 5px;margin-inline-start:6px;color:var(--muted)}
+@media print{.top,.picker,.btn{display:none}.card{border:0}}
+</style>
 </head>
 <body>
-<header class="top">
-    <a class="brand" href="index.html">כיוון</a>
-    <nav class="nav-links">
-        <a href="index.html">שאלון התאמה</a>
-        <a href="curricula.html" aria-current="page">תוכניות לימודים</a>
-        <a href="data.html">מאגר הנתונים</a>
-    </nav>
-</header>
-
-<div class="container">
-    <div class="hero-box">
-        <h1>תוכניות לימודים וסילבוסים לכל התארים</h1>
-        <p>לכל אחד מ-502 התארים במאגר מוצגת תוכנית לימודים מלאה מחולקת לשנים, סמסטרים ונקודות זכות – לצד תנאי הקבלה, שכר הלימוד וקישור לידיעון המוסד.</p>
-    </div>
-
-    <div class="controls">
-        <div class="select-group">
-            <label for="institutionSelect">1. בחרו מוסד אקדמי:</label>
-            <select id="institutionSelect" onchange="handleFilterChange()">
-                <option value="">כל המוסדות במאגר</option>
-            </select>
-        </div>
-        <div class="select-group">
-            <label for="categorySelect">2. סינון לפי תחום / קטגוריה:</label>
-            <select id="categorySelect" onchange="handleFilterChange()">
-                <option value="">כל התחומים</option>
-            </select>
-        </div>
-        <div class="select-group">
-            <label for="programFilter">3. חיפוש חופשי (שם תואר / קורס):</label>
-            <input type="search" id="programFilter" placeholder="לדוגמה: הנדסת תוכנה, משפטים, סיעוד..." oninput="handleFilterChange()">
-        </div>
-    </div>
-
-    <div id="contentArea">
-        <div class="loading">טוען את מאגר התארים והסילבוסים...</div>
-    </div>
-</div>
-
-<footer>
-    <strong>© 2026 כיוון – כל הזכויות שמורות.</strong> הנתונים נשאבים מהמאגר המאומת (תשפ״ז). יש לאמת מול ידיעון המוסד לפני ההרשמה.
-</footer>
-
+<header class="top"><div class="in"><a class="brand" href="index.html">כיוון</a><nav aria-label="ניווט"><a href="index.html">האתר</a><a href="data.html">מאגר הנתונים</a></nav></div></header>
+<main class="wrap">
+<h1>תוכניות לימודים</h1>
+<p class="lead">איך נראה התואר בפועל: אילו קורסים לומדים בכל שנה ובכל סמסטר, כמה נקודות זכות, ומה החובה ומה הבחירה. הנתונים נלקחו מקטלוג הלימודים הרשמי של המוסד לשנת תשפ״ז, עם קישור למקור.</p>
+<section class="picker" aria-label="בחירת תואר">
+  <div><label class="sm" for="inst">מוסד</label><select id="inst"></select></div>
+  <div><label class="sm" for="q">תואר</label><input id="q" type="search" placeholder="חיפוש תואר, למשל ״מדעי המחשב״"><div class="chips" id="chips" role="group" aria-label="תארים"></div></div>
+</section>
+<div id="out"></div>
+<p class="foot" id="foot"></p>
+</main>
+<script type="application/json" id="curdata">{"institutions":{"technion":{"name":"הטכניון – מכון טכנולוגי לישראל","short":"הטכניון","year":"תשפ״ז 2026/27","catalogBase":"https://ugportal.technion.ac.il/wp-content/uploads/2026/10/","catalogSuffix":"-%D7%AA%D7%A9%D7%A4%D7%96.pdf","sourceNote":"קטלוג לימודי הסמכה תשפ״ז (ugportal.technion.ac.il)","degs":["אדריכלות","ביוטכנולוגיה","ביולוגיה","הוראה בחטיבה ובתיכון","הנדסה אזרחית","הנדסה ביו-רפואית","הנדסה כימית","הנדסת אווירונאוטיקה וחלל","הנדסת חומרים","הנדסת חשמל ואלקטרוניקה","הנדסת מכונות","הנדסת תוכנה","הנדסת תעשייה וניהול","כימיה","מדעי המחשב","מדעי הנתונים","מערכות מידע","מתמטיקה","פיזיקה","רפואה"],"src":"curricula/data/technion.json"},"huji":{"unit":false,"name":"האוניברסיטה העברית בירושלים","short":"האוניברסיטה העברית","year":"תשפ״ז 2027","sourceNote":"שנתון האוניברסיטה העברית תשפ״ז (shnaton.huji.ac.il)","degs":["ביולוגיה","גאוגרפיה","היסטוריה","הנדסת חשמל ואלקטרוניקה","חינוך ולמידה","חקלאות ומדעי הצמח","חשבונאות","כימיה","כלכלה","מדע המדינה ויחסים בינלאומיים","מדעי היהדות, תנ״ך ותלמוד","מדעי המוח","מדעי המחשב","מדעי הנתונים","מדעי הסביבה וכדור הארץ","מזרח תיכון ואסלאם","מנהל עסקים","משפטים","מתמטיקה","סוציולוגיה ואנתרופולוגיה","סיעוד","ספרות","ספרות ושפה אנגלית","עבודה סוציאלית","פיזיקה","פילוסופיה","פסיכולוגיה","קרימינולוגיה","רוקחות","ריפוי בעיסוק","רפואה","רפואת שיניים","שפה וספרות ערבית","תזונה","תקשורת"],"src":"curricula/data/huji.json"},"tau":{"unit":true,"name":"אוניברסיטת תל אביב","short":"אוניברסיטת תל אביב","year":"תשפ״ז 2026/27","sourceNote":"ידיעון אוניברסיטת תל אביב תשפ״ז (tau.ac.il/study-program)","degs":["אדריכלות","ביולוגיה","היסטוריה","הנדסה ביו-רפואית","הנדסת חומרים","הנדסת חשמל ואלקטרוניקה","הנדסת מכונות","הנדסת תעשייה וניהול","הפרעות בתקשורת","חינוך ולמידה","חשבונאות","כימיה","כלכלה","מדעי היהדות, תנ״ך ותלמוד","מדעי המוח","מדעי המחשב","מדעי הנתונים","מדעי הסביבה וכדור הארץ","מזרח תיכון ואסלאם","משפטים","מתמטיקה","סוציולוגיה ואנתרופולוגיה","ספרות","ספרות ושפה אנגלית","עבודה סוציאלית","פיזיותרפיה","פיזיקה","פילוסופיה","פסיכולוגיה","קולנוע וטלוויזיה","ריפוי בעיסוק","רפואה","רפואת שיניים","שפה וספרות ערבית"],"src":"curricula/data/tau.json"}}}</script>
 <script>
-    let FULL_DB = { degrees: [], institutions: [], instMap: {} };
-    let scrapedCache = {};
+const DATA=JSON.parse(document.getElementById('curdata').textContent);
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const YN=['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ז׳'];
+let cur={inst:null,deg:null};
+function initInst(){const s=$('inst');s.innerHTML=Object.entries(DATA.institutions).map(([k,v])=>`<option value="${k}">${esc(v.name)}</option>`).join('');}
+function chips(){const I=DATA.institutions[cur.inst];const q=$('q').value.trim();const names=I.degs.filter(n=>!q||n.includes(q)).sort((a,b)=>a.localeCompare(b,'he'));$('chips').innerHTML=names.map(n=>`<button class="chip" aria-pressed="${n===cur.deg}" data-d="${esc(n)}">${esc(n)}</button>`).join('')||'<span class="inst">לא נמצא תואר בשם הזה</span>';}
+function cr(v){return typeof v==='string'?v.replace('/', '–'):(+v).toFixed(1).replace(/\.0$/,'.0')}
 
-    // מאגר תוכניות לימודים מובנה לפי תחומי לימוד וקטגוריות (מבטיח סילבוס מלא לכל 502 התארים!)
-    const CURRICULA_TEMPLATES = {
-        "מדעי המחשב": {
-            nz: "120 נ״ז",
-            sections: [
-                { section: "שנה א׳ – יסודות המתמטיקה והתכנות", courses: [
-                    { "שם הקורס": "חשבון אינפיניטסימלי 1 + 2", "סמסטר": "א׳–ב׳", "נ״ז": "10", "סוג": "חובה" },
-                    { "שם הקורס": "אלגברה לינארית 1 + 2", "סמסטר": "א׳–ב׳", "נ״ז": "9", "סוג": "חובה" },
-                    { "שם הקורס": "מבוא למדעי המחשב ושפת Python / Java", "סמסטר": "א׳", "נ״ז": "5", "סוג": "חובה + תרגול" },
-                    { "שם הקורס": "מתמטיקה בדידה (דיסקרטית) ולוגיקה", "סמסטר": "א׳", "נ״ז": "5", "סוג": "חובה" },
-                    { "שם הקורס": "מבני נתונים (Data Structures)", "סמסטר": "ב׳", "נ״ז": "5", "סוג": "חובה" }
-                ]},
-                { section: "שנה ב׳ – אלגוריתמים, מערכות וליבה", courses: [
-                    { "שם הקורס": "אלגוריתמים וסיבוכיות", "סמסטר": "א׳", "נ״ז": "5", "סוג": "חובה" },
-                    { "שם הקורס": "מערכות הפעלה ותכנות מערכות (C/C++)", "סמסטר": "א׳", "נ״ז": "5", "סוג": "חובה + מעבדה" },
-                    { "שם הקורס": "אוטומטים ושפות פורמליות / חישוביות", "סמסטר": "ב׳", "נ״ז": "4", "סוג": "חובה" },
-                    { "שם הקורס": "מסדי נתונים (SQL & NoSQL) ורשתות תקשורת", "סמסטר": "ב׳", "נ״ז": "6", "סוג": "חובה" },
-                    { "שם הקורס": "הסתברות וסטטיסטיקה למדעי המחשב", "סמסטר": "א׳", "נ״ז": "4", "סוג": "חובה" }
-                ]},
-                { section: "שנה ג׳ – התמחויות ופרויקט גמר", courses: [
-                    { "שם הקורס": "למידת מכונה (Machine Learning) ובינה מלאכותית", "סמסטר": "א׳", "נ״ז": "4", "סוג": "בחירה / התמחות" },
-                    { "שם הקורס": "אבטחת מידע וסייבר / קריפטוגרפיה", "סמסטר": "א׳", "נ״ז": "4", "סוג": "בחירה" },
-                    { "שם הקורס": "סמינריון מתקדם במדעי המחשב", "סמסטר": "ב׳", "נ״ז": "3", "סוג": "סמינריון" },
-                    { "שם הקורס": "פרויקט גמר הנדסי / פיתוח תוכנה בצוות", "סמסטר": "שנתי", "נ״ז": "6", "סוג": "פרויקט גמר" }
-                ]}
-            ]
-        },
-        "הנדסת תוכנה": {
-            nz: "160 נ״ז (4 שנים)",
-            sections: [
-                { section: "שנה א׳ – מתמטיקה, פיזיקה ותכנות", courses: [
-                    { "שם הקורס": "חדו״א 1מ׳ + 2מ׳", "סמסטר": "א׳–ב׳", "נ״ז": "11", "סוג": "חובה" },
-                    { "שם הקורס": "אלגברה לינארית ומתמטיקה דיסקרטית", "סמסטר": "א׳–ב׳", "נ״ז": "9", "סוג": "חובה" },
-                    { "שם הקורס": "פיזיקה 1 (מכניקה) ופיזיקה 2 (חשמל)", "סמסטר": "א׳–ב׳", "נ״ז": "8", "סוג": "חובה + מעבדה" },
-                    { "שם הקורס": "מבוא לתכנות מונחה עצמים (OOP)", "סמסטר": "ב׳", "נ״ז": "5", "סוג": "חובה" }
-                ]},
-                { section: "שנים ב׳–ג׳ – ארכיטקטורת תוכנה ומערכות", courses: [
-                    { "שם הקורס": "מבני נתונים ואלגוריתמים מתקדמים", "סמסטר": "ג׳–ד׳", "נ״ז": "9", "סוג": "חובה" },
-                    { "שם הקורס": "הנדסת תוכנה, תבניות עיצוב (Design Patterns) ובדיקות", "סמסטר": "ד׳", "נ״ז": "5", "סוג": "חובה" },
-                    { "שם הקורס": "מערכות הפעלה, מערכות מבוזרות ומחשוב ענן", "סמסטר": "ה׳–ו׳", "נ״ז": "8", "סוג": "חובה" },
-                    { "שם הקורס": "מסדי נתונים, מערכות מידע ואבטחת יישומים", "סמסטר": "ה׳", "נ״ז": "5", "סוג": "חובה" }
-                ]},
-                { section: "שנה ד׳ – התמחות ופרויקט תעשייה", courses: [
-                    { "שם הקורס": "קורסי התמחות (AI / סייבר / Full-Stack / DevOps)", "סמסטר": "ז׳–ח׳", "נ״ז": "12", "סוג": "התמחות" },
-                    { "שם הקורס": "פרויקט גמר שנתי בשיתוף התעשייה", "סמסטר": "ז׳–ח׳", "נ״ז": "10", "סוג": "פרויקט גמר" }
-                ]}
-            ]
-        },
-        "משפטים": {
-            nz: "140–144 נ״ז (3.5 שנים)",
-            sections: [
-                { section: "שנה א׳ – מקצועות היסוד המשפטיים", courses: [
-                    { "שם הקורס": "דיני חוקה ומשפט ציבורי", "סמסטר": "שנתי", "נ״ז": "6", "סוג": "חובה" },
-                    { "שם הקורס": "דיני חוזים", "סמסטר": "שנתי", "נ״ז": "6", "סוג": "חובה" },
-                    { "שם הקורס": "דיני עונשין (משפט פלילי מהותי)", "סמסטר": "שנתי", "נ״ז": "6", "סוג": "חובה" },
-                    { "שם הקורס": "דיני נזיקין", "סמסטר": "שנתי", "נ״ז": "6", "סוג": "חובה" },
-                    { "שם הקורס": "תורת המשפט, משפט עברי ומיומנויות מחקר משפטי", "סמסטר": "א׳–ב׳", "נ״ז": "8", "סוג": "חובה" }
-                ]},
-                { section: "שנה ב׳ – משפט מסחרי, קניין ומינהלי", courses: [
-                    { "שם הקורס": "דיני קניין", "סמסטר": "שנתי", "נ״ז": "6", "סוג": "חובה" },
-                    { "שם הקורס": "דיני תאגידים וחברות", "סמסטר": "א׳", "נ״ז": "4", "סוג": "חובה" },
-                    { "שם הקורס": "משפט מינהלי", "סמסטר": "א׳", "נ״ז": "4", "סוג": "חובה" },
-                    { "שם הקורס": "סדר דין אזרחי וסדר דין פלילי", "סמסטר": "א׳–ב׳", "נ״ז": "8", "סוג": "חובה" },
-                    { "שם הקורס": "דיני משפחה וירושה", "סמסטר": "ב׳", "נ״ז": "4", "סוג": "חובה" }
-                ]},
-                { section: "שנים ג׳–ד׳ – ראיות, קליניקות וסמינריונים", courses: [
-                    { "שם הקורס": "דיני ראיות ודיני מיסים", "סמסטר": "ה׳", "נ״ז": "7", "סוג": "חובה" },
-                    { "שם הקורס": "דיני עבודה ומשפט בינלאומי פומבי", "סמסטר": "ה׳–ו׳", "נ״ז": "6", "סוג": "בחירה מרכזית" },
-                    { "שם הקורס": "קליניקה משפטית מעשית (ייצוג וזכויות)", "סמסטר": "שנתי", "נ״ז": "6", "סוג": "מעשי" },
-                    { "שם הקורס": "סמינריון מחקרי במשפט ציבורי / מסחרי", "סמסטר": "ו׳–ז׳", "נ״ז": "4", "סוג": "סמינריון" }
-                ]}
-            ]
-        },
-        "סיעוד": {
-            nz: "152 נ״ז + התנסות קלינית (4 שנים)",
-            sections: [
-                { section: "שנה א׳ – מדעי היסוד והרפואה", courses: [
-                    { "שם הקורס": "אנטומיה ופיזיולוגיה של גוף האדם", "סמסטר": "שנתי", "נ״ז": "8", "סוג": "חובה" },
-                    { "שם הקורס": "ביוכימיה, מיקרוביולוגיה ופרמקולוגיה בסיסית", "סמסטר": "א׳–ב׳", "נ״ז": "8", "סוג": "חובה" },
-                    { "שם הקורס": "יסודות הסיעוד ומיומנויות קליניות בסימולציה", "סמסטר": "ב׳", "נ״ז": "6", "סוג": "חובה + מעבדה" },
-                    { "שם הקורס": "פסיכולוגיה התפתחותית ותקשורת מטפל-מטופל", "סמסטר": "א׳", "נ״ז": "4", "סוג": "חובה" }
-                ]},
-                { section: "שנים ב׳–ג׳ – סיעוד המבוגר, הילד והאישה", courses: [
-                    { "שם הקורס": "סיעוד המבוגר (רפואה פנימית וכירורגיה)", "סמסטר": "ג׳–ד׳", "נ״ז": "10", "סוג": "חובה" },
-                    { "שם הקורס": "סיעוד האישה, מיילדות וגינקולוגיה", "סמסטר": "ה׳", "נ״ז": "5", "סוג": "חובה" },
-                    { "שם הקורס": "סיעוד הילד והמתבגר", "סמסטר": "ה׳", "נ״ז": "5", "סוג": "חובה" },
-                    { "שם הקורס": "סיעוד בריאות הנפש וסיעוד בקהילה", "סמסטר": "ו׳", "נ״ז": "7", "סוג": "חובה" },
-                    { "שם הקורס": "התנסויות קליניות במחלקות בתי החולים", "סמסטר": "ג׳–ו׳", "נ״ז": "24", "סוג": "קליני" }
-                ]},
-                { section: "שנה ד׳ – מצבים דחופים ומבחן ממשלתי", courses: [
-                    { "שם הקורס": "סיעוד במצבים דחופים וטיפול נמרץ", "סמסטר": "ז׳", "נ״ז": "5", "סוג": "חובה" },
-                    { "שם הקורס": "ניהול ומנהיגות בסיעוד + סמינריון מחקר", "סמסטר": "ז׳–ח׳", "נ״ז": "6", "סוג": "סמינריון" },
-                    { "שם הקורס": "התנסות קלינית מתקדמת (סטאז׳) והכנה למבחן הרישוי", "סמסטר": "ח׳", "נ״ז": "10", "סוג": "קליני" }
-                ]}
-            ]
-        },
-        "פסיכולוגיה": {
-            nz: "120 נ״ז (דו-חוגי / חד-חוגי)",
-            sections: [
-                { section: "שנה א׳ – מבואות ושיטות מחקר", courses: [
-                    { "שם הקורס": "מבוא לפסיכולוגיה", "סמסטר": "שנתי", "נ״ז": "6", "סוג": "חובה" },
-                    { "שם הקורס": "סטטיסטיקה לפסיכולוגים ושיטות מחקר", "סמסטר": "שנתי", "נ״ז": "8", "סוג": "חובה + תרגול" },
-                    { "שם הקורס": "מבוא לפסיכולוגיה פיזיולוגית (נוירוביולוגיה)", "סמסטר": "ב׳", "נ״ז": "4", "סוג": "חובה" },
-                    { "שם הקורס": "פסיכולוגיה התפתחותית", "סמסטר": "ב׳", "נ״ז": "4", "סוג": "חובה" }
-                ]},
-                { section: "שנה ב׳ – תחומי הליבה בפסיכולוגיה", courses: [
-                    { "שם הקורס": "פסיכולוגיה קוגניטיבית (תפיסה, זיכרון וחשיבה)", "סמסטר": "א׳", "נ״ז": "4", "סוג": "חובה" },
-                    { "שם הקורס": "פסיכולוגיה חברתית", "סמסטר": "א׳", "נ״ז": "4", "סוג": "חובה" },
-                    { "שם הקורס": "פסיכופתולוגיה (אבחון הפרעות נפשיות)", "סמסטר": "ב׳", "נ״ז": "4", "סוג": "חובה" },
-                    { "שם הקורס": "תאוריות אישיות ומבחנים פסיכולוגיים", "סמסטר": "ב׳", "נ״ז": "5", "סוג": "חובה" }
-                ]},
-                { section: "שנה ג׳ – התנסות שדה וסמינריון אמפירי", courses: [
-                    { "שם הקורס": "עבודה מעשית / התנסות במוסד טיפולי או מחקרי", "סמסטר": "שנתי", "נ״ז": "4", "סוג": "מעשי" },
-                    { "שם הקורס": "סמינריון מחקרי אמפירי (כתיבת מחקר עצמאי)", "סמסטר": "שנתי", "נ״ז": "6", "סוג": "סמינריון" },
-                    { "שם הקורס": "קורסי בחירה (פסיכולוגיה קלינית, ארגונית, שיקומית)", "סמסטר": "ה׳–ו׳", "נ״ז": "8", "סוג": "בחירה" }
-                ]}
-            ]
-        },
-        "מנהל עסקים": {
-            nz: "120 נ״ז",
-            sections: [
-                { section: "שנה א׳ – יסודות הכלכלה והניהול", courses: [
-                    { "שם הקורס": "מבוא למיקרו ומאקרו כלכלה", "סמסטר": "א׳–ב׳", "נ״ז": "8", "סוג": "חובה" },
-                    { "שם הקורס": "מתמטיקה וסטטיסטיקה לניהול", "סמסטר": "א׳–ב׳", "נ״ז": "8", "סוג": "חובה" },
-                    { "שם הקורס": "יסודות החשבונאות הפיננסית", "סמסטר": "ב׳", "נ״ז": "4", "סוג": "חובה" },
-                    { "שם הקורס": "התנהגות ארגונית ויסודות הניהול", "סמסטר": "א׳", "נ״ז": "4", "סוג": "חובה" }
-                ]},
-                { section: "שנה ב׳ – מימון, שיווק ואסטרטגיה", courses: [
-                    { "שם הקורס": "יסודות המימון והערכת שווי", "סמסטר": "א׳", "נ״ז": "4", "סוג": "חובה" },
-                    { "שם הקורס": "יסודות השיווק והתנהגות צרכנים", "סמסטר": "א׳", "נ״ז": "4", "סוג": "חובה" },
-                    { "שם הקורס": "חקר ביצועים וניהול התפעול", "סמסטר": "ב׳", "נ״ז": "4", "סוג": "חובה" },
-                    { "שם הקורס": "דיני עסקים ותאגידים", "סמסטר": "ב׳", "נ״ז": "3", "סוג": "חובה" }
-                ]},
-                { section: "שנה ג׳ – התמחות ופרויקט ייעוץ עסקי", courses: [
-                    { "שם הקורס": "ניהול אסטרטגי ויזמות עסקית", "סמסטר": "א׳", "נ״ז": "4", "סוג": "חובה" },
-                    { "שם הקורס": "אשכול התמחות (מימון / שיווק דיגיטלי / מערכות מידע)", "סמסטר": "ה׳–ו׳", "נ״ז": "12", "סוג": "התמחות" },
-                    { "שם הקורס": "סמינריון ופרויקט גמר יישומי בחברה", "סמסטר": "ו׳", "נ״ז": "6", "סוג": "פרויקט גמר" }
-                ]}
-            ]
-        }
-    };
-
-    // תבניות גיבוי עשירות לפי קטגוריה לכל שאר 72 תחומי הלימוד!
-    const CATEGORY_TEMPLATES = {
-        "הנדסה": {
-            nz: "160 נ״ז (4 שנים)",
-            sections: [
-                { section: "שנה א׳ – מדעי היסוד ההנדסיים", courses: [
-                    { "שם הקורס": "חדו״א 1 + 2 ואלגברה לינארית", "סמסטר": "א׳–ב׳", "נ״ז": "14", "סוג": "חובה" },
-                    { "שם הקורס": "פיזיקה 1 (מכניקה) ופיזיקה 2 (חשמל ומגנטיות)", "סמסטר": "א׳–ב׳", "נ״ז": "9", "סוג": "חובה + מעבדה" },
-                    { "שם הקורס": "מבוא לתכנות וכלים חישוביים למהנדסים", "סמסטר": "א׳", "נ״ז": "4", "סוג": "חובה" }
-                ]},
-                { section: "שנים ב׳–ג׳ – ליבת ההנדסה ומעבדות", courses: [
-                    { "שם הקורס": "משוואות דיפרנציאליות, הסתברות ואותות", "סמסטר": "ג׳–ד׳", "נ״ז": "10", "סוג": "חובה" },
-                    { "שם הקורס": "קורסי תכן, מערכות ומעבדות התמחות בתחום", "סמסטר": "ד׳–ו׳", "נ״ז": "24", "סוג": "חובה + מעבדה" }
-                ]},
-                { section: "שנה ד׳ – התמחות ופרויקט גמר הנדסי", courses: [
-                    { "שם הקורס": "אשכולות התמחות מתקדמים", "סמסטר": "ז׳–ח׳", "נ״ז": "14", "סוג": "התמחות" },
-                    { "שם הקורס": "פרויקט גמר הנדסי שנתי", "סמסטר": "ז׳–ח׳", "נ״ז": "10", "סוג": "פרויקט גמר" }
-                ]}
-            ]
-        },
-        "בריאות": {
-            nz: "135–155 נ״ז + הכשרה קלינית",
-            sections: [
-                { section: "שנה א׳ – מדעי הרפואה והחיים", courses: [
-                    { "שם הקורס": "אנטומיה, פיזיולוגיה ופתולוגיה", "סמסטר": "א׳–ב׳", "נ״ז": "10", "סוג": "חובה" },
-                    { "שם הקורס": "כימיה, ביוכימיה ופרמקולוגיה", "סמסטר": "א׳–ב׳", "נ״ז": "8", "סוג": "חובה" },
-                    { "שם הקורס": "מבוא למקצועות הבריאות ואתיקה רפואית", "סמסטר": "א׳", "נ״ז": "4", "סוג": "חובה" }
-                ]},
-                { section: "שנים ב׳–ג׳ – לימודים קליניים ומעשיים", courses: [
-                    { "שם הקורס": "שיטות אבחון, טיפול ושיקום בתחום", "סמסטר": "ג׳–ו׳", "נ״ז": "22", "סוג": "חובה" },
-                    { "שם הקורס": "הכשרה קלינית מעשית בבתי חולים ובקהילה", "סמסטר": "ד׳–ו׳", "נ״ז": "20", "סוג": "קליני" }
-                ]},
-                { section: "שנה ד׳ – סטאז׳ / הכשרה מתקדמת וסמינריון", courses: [
-                    { "שם הקורס": "סמינריון מחקר מבוסס ראיות (EBM)", "סמסטר": "ז׳", "נ״ז": "4", "סוג": "סמינריון" },
-                    { "שם הקורס": "הכשרה קלינית מסכמת לקראת רישוי משרד הבריאות", "סמסטר": "ז׳–ח׳", "נ״ז": "14", "סוג": "קליני" }
-                ]}
-            ]
-        },
-        "חינוך": {
-            nz: "120 נ״ז + תעודת הוראה",
-            sections: [
-                { section: "שנה א׳ – יסודות החינוך והדיסציפלינה", courses: [
-                    { "שם הקורס": "פסיכולוגיה התפתחותית וחינוכית", "סמסטר": "א׳–ב׳", "נ״ז": "6", "סוג": "חובה" },
-                    { "שם הקורס": "סוציולוגיה ופילוסופיה של החינוך", "סמסטר": "א׳", "נ״ז": "4", "סוג": "חובה" },
-                    { "שם הקורס": "מבואות בתחום ההתמחות הנבחר", "סמסטר": "א׳–ב׳", "נ״ז": "12", "סוג": "חובה" }
-                ]},
-                { section: "שנה ב׳ – דידקטיקה והתנסות בבתי ספר", courses: [
-                    { "שם הקורס": "תכנון לימודים, הערכה ושילוב טכנולוגיות למידה", "סמסטר": "א׳–ב׳", "נ״ז": "6", "סוג": "חובה" },
-                    { "שם הקורס": "התנסות מעשית בהוראה (עבודה מעשית בשדה)", "סמסטר": "שנתי", "נ״ז": "8", "סוג": "מעשי" }
-                ]},
-                { section: "שנה ג׳ – סמינריונים וסטאז׳", courses: [
-                    { "שם הקורס": "סמינריון בחינוך ובחוג ההתמחות", "סמסטר": "שנתי", "נ״ז": "8", "סוג": "סמינריון" },
-                    { "שם הקורס": "סדנת סטאז׳ והכנה לכניסה להוראה", "סמסטר": "ב׳", "נ״ז": "4", "סוג": "סדנה" }
-                ]}
-            ]
-        },
-        "DEFAULT": {
-            nz: "120 נ״ז (3 שנים)",
-            sections: [
-                { section: "שנה א׳ – קורסי מבוא ויסוד", courses: [
-                    { "שם הקורס": "מבואות תיאורטיים מרכזיים בתחום הלימוד", "סמסטר": "א׳–ב׳", "נ״ז": "12", "סוג": "חובה" },
-                    { "שם הקורס": "שיטות מחקר כמותיות ואיכותניות + סטטיסטיקה", "סמסטר": "א׳–ב׳", "נ״ז": "8", "סוג": "חובה + תרגול" },
-                    { "שם הקורס": "כתיבה אקדמית ומיומנויות מחקר", "סמסטר": "א׳", "נ״ז": "2", "סוג": "חובה" }
-                ]},
-                { section: "שנה ב׳ – קורסי ליבה והעמקה", courses: [
-                    { "שם הקורס": "סוגיות מתקדמות ותיאוריות עכשוויות בתחום", "סמסטר": "א׳–ב׳", "נ״ז": "14", "סוג": "חובה" },
-                    { "שם הקורס": "סדנאות יישומיות וקורסי בחירה", "סמסטר": "א׳–ב׳", "נ״ז": "10", "סוג": "בחירה" }
-                ]},
-                { section: "שנה ג׳ – סמינריונים ופרויקט / פרקטיקום", courses: [
-                    { "שם הקורס": "סמינריון מחקרי 1 + 2", "סמסטר": "שנתי", "נ״ז": "8", "סוג": "סמינריון" },
-                    { "שם הקורס": "פרקטיקום / התנסות מעשית או פרויקט גמר", "סמסטר": "ב׳", "נ״ז": "6", "סוג": "מעשי" }
-                ]}
-            ]
-        }
-    };
-
-    function getCurriculumForDegree(deg, inst, scrapedMap) {
-        const title = deg["תחום לימוד"] || "";
-        // 1. עדיפות ראשונה: קובץ JSON סרוק מהאתר הרשמי של המוסד
-        if (scrapedMap[title] && scrapedMap[title].length > 0) {
-            return { isOfficialScrape: true, nz: "", sections: scrapedMap[title] };
-        }
-        // 2. עדיפות שנייה: תוכנית לימודים מפורטת לפי תחום הלימוד הספציפי
-        let tpl = CURRICULA_TEMPLATES[title];
-        if (!tpl) {
-            if (/הנדס/.test(title)) tpl = CATEGORY_TEMPLATES["הנדסה"];
-            else if (/מחשב|נתונים|מערכות מידע/.test(title)) tpl = CURRICULA_TEMPLATES["מדעי המחשב"];
-            else if (/רפואה|פיזיותרפיה|ריפוי בעיסוק|תקשורת|תזונה|רוקחות|מעבדה/.test(title)) tpl = CATEGORY_TEMPLATES["בריאות"];
-            else if (/כלכלה|חשבונאות/.test(title)) tpl = CURRICULA_TEMPLATES["מנהל עסקים"];
-            else if (deg["קטגוריה"] === "חינוך" || /הוראה|חינוך/.test(title)) tpl = CATEGORY_TEMPLATES["חינוך"];
-            else tpl = CATEGORY_TEMPLATES["DEFAULT"];
-        }
-
-        // שכפול עמוק והוספת לימודי יסוד ביהדות למוסדות דתיים/בעלי זיקה
-        const cloned = JSON.parse(JSON.stringify(tpl));
-        const instName = inst["מוסד"] || "";
-        if (/בר-אילן|אריאל|מכון לב|אורות|הרצוג|אמונה|מכללה ירושלים|חמדת|שאנן|שערי מדע/.test(instName)) {
-            cloned.sections.push({
-                section: "לימודי יסוד ביהדות / מורשת (ייחודי למוסד)",
-                courses: [
-                    { "שם הקורס": "קורסי יסוד בתנ״ך, תלמוד, מחשבת ישראל ותולדות ישראל", "סמסטר": "א׳–ו׳", "נ״ז": "8–10", "סוג": "חובה מוסדית" }
-                ]
-            });
-        }
-        return { isOfficialScrape: false, nz: cloned.nz, sections: cloned.sections };
-    }
-
-    async function init() {
-        const instSel = document.getElementById("institutionSelect");
-        const catSel = document.getElementById("categorySelect");
-        try {
-            const res = await fetch("data.html");
-            const txt = await res.text();
-            const m = txt.match(/<script id="data" type="application\/json">([\s\S]*?)<\/script>/);
-            if (m) {
-                const raw = JSON.parse(m[1]);
-                FULL_DB.degrees = (raw["תארים"] || []).filter(d => d["סטטוס"] !== "לא קיים במוסד");
-                FULL_DB.institutions = (raw["מוסדות"] || []).filter(i => i["סטטוס"] !== "אוחד");
-                FULL_DB.institutions.forEach(i => { FULL_DB.instMap[i["מזהה"]] = i; });
-            }
-        } catch (e) {
-            document.getElementById("contentArea").innerHTML = '<div class="loading">שגיאה בטעינת קובץ הנתונים (data.html).</div>';
-            return;
-        }
-
-        FULL_DB.institutions
-            .sort((a, b) => a["מוסד"].localeCompare(b["מוסד"], "he"))
-            .forEach(inst => {
-                const count = FULL_DB.degrees.filter(d => d["מזהה מוסד"] === inst["מזהה"]).length;
-                if (count > 0) {
-                    const opt = document.createElement("option");
-                    opt.value = inst["מזהה"];
-                    opt.textContent = `${inst["מוסד"]} (${inst["עיר"]}) – ${count} תארים`;
-                    instSel.appendChild(opt);
-                }
-            });
-
-        const cats = [...new Set(FULL_DB.degrees.map(d => d["קטגוריה"]).filter(Boolean))].sort((a, b) => a.localeCompare(b, "he"));
-        cats.forEach(c => {
-            const opt = document.createElement("option");
-            opt.value = c;
-            opt.textContent = c;
-            catSel.appendChild(opt);
-        });
-
-        handleFilterChange();
-    }
-
-    window.onload = init;
-
-    async function fetchScrapedSections(instId, instName) {
-        if (scrapedCache[instId] !== undefined) return scrapedCache[instId];
-        const safeName = instName.replace(/[\\/*?:"<>|\s–-]+/g, "_").replace(/^_+|_+$/g, "");
-        try {
-            const resp = await fetch(`https://raw.githubusercontent.com/shaharalter/kivun/main/curricula/json/${encodeURIComponent(safeName)}.json`);
-            if (resp.ok) {
-                const sData = await resp.json();
-                const map = {};
-                (sData.programs || []).forEach(p => { map[p.degree_title] = p.curriculum_sections || []; });
-                scrapedCache[instId] = map;
-                return map;
-            }
-        } catch (e) {}
-        scrapedCache[instId] = {};
-        return {};
-    }
-
-    async function handleFilterChange() {
-        const instId = document.getElementById("institutionSelect").value;
-        const cat = document.getElementById("categorySelect").value;
-        const q = document.getElementById("programFilter").value.trim().toLowerCase();
-        const area = document.getElementById("contentArea");
-
-        if (!instId && !cat && !q) {
-            area.innerHTML = `<div class="loading">בחרו <strong>מוסד אקדמי</strong>, בחרו <strong>קטגוריה</strong> או הקלידו <strong>שם תואר</strong> למעלה – ותקבלו מיד את תוכנית הלימודים, הקורסים, הנ״ז ותנאי הקבלה מתוך ${FULL_DB.degrees.length} התארים במאגר.</div>`;
-            return;
-        }
-
-        let matches = FULL_DB.degrees.filter(d => {
-            if (instId && d["מזהה מוסד"] !== instId) return false;
-            if (cat && d["קטגוריה"] !== cat) return false;
-            if (q) {
-                const inst = FULL_DB.instMap[d["מזהה מוסד"]] || {};
-                const hay = `${d["תחום לימוד"]} ${d["מוסד"]} ${d["קטגוריה"]} ${inst["עיר"] || ""}`.toLowerCase();
-                if (!hay.includes(q)) return false;
-            }
-            return true;
-        });
-
-        let scrapedMap = {};
-        let instObj = null;
-        if (instId) {
-            instObj = FULL_DB.instMap[instId] || {};
-            scrapedMap = await fetchScrapedSections(instId, instObj["מוסד"] || "");
-        }
-
-        renderResults(matches, instObj, scrapedMap);
-    }
-
-    function renderResults(list, instObj, scrapedMap) {
-        const area = document.getElementById("contentArea");
-        if (list.length === 0) {
-            area.innerHTML = '<div class="loading">לא נמצאו תוכניות לימודים התואמות לסינון שבחרת. נסו להרחיב את החיפוש.</div>';
-            return;
-        }
-
-        const shown = list.slice(0, 50);
-        let html = `
-            <div class="status-banner">
-                <span>🎓 נמצאו <strong>${list.length}</strong> תוכניות לימודים עם סילבוס קורסים מלא${list.length > 50 ? " (מציג 50 ראשונות)" : ""}</span>
-                ${instObj && instObj["אתר"] ? `<a href="${instObj["אתר"]}" target="_blank" rel="noopener" class="source-link">לאתר הרשמי של ${instObj["מוסד"]} ↗</a>` : ""}
-            </div>
-        `;
-
-        shown.forEach((deg, idx) => {
-            const inst = FULL_DB.instMap[deg["מזהה מוסד"]] || {};
-            const curr = getCurriculumForDegree(deg, inst, scrapedMap);
-            const sourceUrl = deg["מקור (קישור)"] || inst["אתר"] || "#";
-
-            html += `
-                <div class="program-card">
-                    <div class="program-header">
-                        <div>
-                            <h3>${deg["תחום לימוד"]}</h3>
-                            ${!instObj ? `<span class="inst-sub">${deg["מוסד"]} (${inst["עיר"] || ""})</span>` : ""}
-                            <span class="cat-badge">${deg["קטגוריה"] || "אקדמי"} • ${deg["משך (שנים)"] || 3} שנות לימוד</span>
-                            ${curr.nz ? `<span class="nz-badge">${curr.nz}</span>` : ""}
-                        </div>
-                        <a href="${sourceUrl}" target="_blank" rel="noopener" class="source-link">🔗 לידיעון ולעמוד התואר הרשמי ↗</a>
-                    </div>
-                    <div class="grid-details">
-                        <div class="detail-item"><b>ערוצי קבלה</b>${deg["ערוצי קבלה"] || "ראו אתר המוסד"}</div>
-                        <div class="detail-item"><b>ספי קבלה</b>${deg["סף משוקלל"] ? `סף משוקלל: ${deg["סף משוקלל"]} | ` : ""}${deg["קבלה ישירה: בגרות"] ? `בגרות בלבד: ${deg["קבלה ישירה: בגרות"]}` : (!deg["סף משוקלל"] ? "לפי דרישות החוג" : "")}</div>
-                        <div class="detail-item"><b>דרישות בגרות</b>${deg["דרישות בגרות"] || "זכאות לבגרות מלאה"}</div>
-                        <div class="detail-item"><b>שכר לימוד שנתי (תשפ״ז)</b>${deg["שכר לימוד שנתי (₪)"] ? Number(deg["שכר לימוד שנתי (₪)"]).toLocaleString() + " ₪" : "לפי קורס / לא צוין"}</div>
-                    </div>
-
-                    <details class="curr-toggle" ${idx < 3 ? "open" : ""}>
-                        <summary>📚 צפייה בתוכנית הלימודים, קורסי חובה/בחירה ונ״ז (${curr.sections.length} חטיבות)</summary>
-                        <p class="curr-note">${curr.isOfficialScrape ? "✓ סילבוס רשמי שנסרק מאתר המוסד:" : "תוכנית הלימודים האקדמית הטיפוסית לתואר זה (כולל התאמות מוסדיות; לפירוט קורסי בחירה מלא ראו ידיעון המוסד):"}</p>
-                        ${curr.sections.map(sec => {
-                            const keys = sec.courses && sec.courses.length ? Object.keys(sec.courses[0]) : [];
-                            return `
-                                <div class="section-title">📌 ${sec.section}</div>
-                                ${keys.length ? `
-                                    <table>
-                                        <thead><tr>${keys.map(k => `<th>${k}</th>`).join("")}</tr></thead>
-                                        <tbody>
-                                            ${sec.courses.map(row => `<tr>${keys.map(k => `<td>${row[k] ?? ""}</td>`).join("")}</tr>`).join("")}
-                                        </tbody>
-                                    </table>
-                                ` : ""}
-                            `;
-                        }).join("")}
-                    </details>
-                </div>
-            `;
-        });
-
-        area.innerHTML = html;
-    }
+function renderYears(I,p){const U=p.unit?p.unit.replace('"','״'):'נ״ז';const semN={'א':'סמ׳ א','ב':'סמ׳ ב','ש':'שנתי','ק':'קיץ'};
+ const mandN=p.years.reduce((a,y)=>a+y.groups.filter(g=>g.m).reduce((b,g)=>b+g.c.length,0),0);const elN=p.years.reduce((a,y)=>a+y.groups.filter(g=>!g.m).reduce((b,g)=>b+g.n,0),0);
+ const cats=(p.cats||[]).filter(c=>parseFloat(c[1])>0);const colors=['var(--c1)','var(--c2)','var(--c3)','var(--c4)','var(--c5)'];const tot=cats.reduce((a,c)=>a+parseFloat(c[1]),0);
+ let h=`<article class="card"><div class="head"><div><h2>${esc(cur.deg)}</h2><div class="inst">${esc(I.name)} · ${esc(p.title)}${p.deg?' · '+esc(p.deg):''} · ${I.unit?'ידיעון':'שנתון'} ${esc(I.year)}</div></div><a class="btn" href="${p.url}" target="_blank" rel="noopener">${I.unit?'לתוכנית בידיעון הרשמי':'לתוכנית בשנתון הרשמי'} ↗</a></div>`;
+ h+=`<div class="stats"><div class="stat"><b>${esc(p.total||'—')}</b><span>${p.unit?'ש״ס (שעות סמסטריאליות) בתוכנית':'נקודות זכות לתואר'}</span></div><div class="stat"><b>${p.years_n}</b><span>שנות לימוד</span></div><div class="stat"><b>${mandN}</b><span>קורסי חובה</span></div><div class="stat"><b>${elN}</b><span>קורסים לבחירה</span></div></div>`;
+ if(cats.length){h+=`<div class="bar" role="img" aria-label="חלוקת הנקודות">${cats.map((c,i)=>`<i style="width:${parseFloat(c[1])/tot*100}%;background:${colors[i%5]}"></i>`).join('')}</div><div class="legend">${cats.map((c,i)=>`<span style="--k:${colors[i%5]}">${esc(c[0])}: <b>${esc(c[1])}</b> ${U}</span>`).join('')}</div>`}
+ h+=`<div class="verify">✓ <span>הנתונים נשלפו ישירות ממאגר ${I.unit?'הידיעון':'השנתון'} הרשמי של ${esc(I.short||I.name)}: הקורסים, ${p.unit?'השעות':'נקודות הזכות'} והדרישות בכל קבוצה כפי שהם מופיעים שם.${p.unit?' ב-ת״א מודדים בש״ס – שעות סמסטריאליות (שעה שבועית לאורך סמסטר).':''}</span></div>`;
+ if(p.info)h+=`<details class="el" style="margin-top:14px"><summary>מידע כללי על התוכנית</summary><div class="elin" style="white-space:pre-line;font-size:.92rem">${esc(p.info)}</div></details>`;
+ h+='<div class="years">';
+ for(const y of p.years){h+=`<section class="year"><h3>${y.label?esc(y.label):'שנה '+(YN[y.y-1]||y.y)}${y.tot?` <small>${y.tot} ${U}</small>`:''}</h3>`;
+  for(const g of y.groups){const many=!g.m&&g.c.length>8;const span=g.span?` <span class="sm2">· שנים ${g.span.map(x=>YN[x-1]).join('–')}</span>`:'';const req=g.min?(g.m?`${g.min} ${U}`:`לפחות ${g.min} ${U}`):(g.m?'':'רשות');
+   const head=`<span><span class="gt ${g.m?'m':'e'}">${esc(g.t||'')}</span>${span}</span><span class="sm2">${req}${g.n?` · ${g.n} קורסים`:''}${g.ok?' · <span class="tag ok">סכום תואם</span>':''}</span>`;
+   const body=`${g.note?`<div class="gnote">${esc(g.note)}</div>`:''}<table><tbody>${g.c.map(c=>`<tr><td>${esc(c[1])}${c[3]?`<span class="semt">${esc(semN[c[3]]||c[3])}</span>`:''}<span class="num">${esc(c[0])}</span></td><td class="cr">${esc(c[2]!=null?(+c[2]).toFixed(1):'')}</td></tr>`).join('')}</tbody></table>${g.n>g.c.length?`<div class="semsum"><span>מוצגים ${g.c.length} מתוך ${g.n} קורסים – הרשימה המלאה במקור</span></div>`:''}`;
+   h+=many?`<details class="grpc"><summary>${head}</summary>${body}</details>`:`<div class="grpc"><header>${head}</header>${body}</div>`}
+  h+='</section>'}
+ h+='</div></article>';return h}
+function render(){const I=DATA.institutions[cur.inst];chips();if(cur.deg&&!I.programs){$('out').innerHTML='<div class="card empty">טוען את תוכנית הלימודים…</div>';fetch(I.src).then(r=>r.json()).then(j=>{I.programs=j;render()}).catch(()=>{$('out').innerHTML='<div class="card empty">לא ניתן היה לטעון את הנתונים כרגע. נסו לרענן את העמוד.</div>'});return}const p=cur.deg?I.programs[cur.deg]:null;
+ if(!p){$('out').innerHTML='<div class="card empty">בחרו תואר כדי לראות את תוכנית הלימודים</div>';return}
+ if(p.mode==='years'){$('out').innerHTML=renderYears(I,p);const u=new URL(location);u.searchParams.set('inst',cur.inst);u.searchParams.set('deg',cur.deg);history.replaceState(null,'',u);return}
+ const url=I.catalogBase+encodeURIComponent(p.file)+I.catalogSuffix+(p.page?'#page='+p.page:'');
+ const sems=p.sems;const okN=sems.filter(s=>s.ok).length;const lastSem=Math.max(...sems.map(s=>s.n));const years=Math.max(1,Math.ceil(lastSem/2),Math.round((parseFloat(p.total)||0)/39));
+ const cats=(p.cats||[]).filter(c=>/[א-ת]/.test(c[0])&&/\d/.test(c[1]));
+ const colors=['var(--c1)','var(--c2)','var(--c3)','var(--c4)','var(--c5)'];
+ const tot=parseFloat(p.total)||cats.reduce((a,c)=>a+parseFloat(c[1]),0);
+ const catNice=t=>t.replace(/פקולטית מקצועות בחירה|מקצועות בחירה פקולטית/,'בחירה פקולטית').replace(/טכניונית - (כלל )?מקצועות בחירה( כלל)?|טכניונית - כלל מקצועות בחירה/,'בחירה כלל-טכניונית').replace(/^ה? ?מקצועות חוב.?$/,'מקצועות חובה').replace(/ליבה מקצועות/,'מקצועות ליבה').trim();
+ let h=`<article class="card"><div class="head"><div><h2>${esc(cur.deg)}</h2><div class="inst">${esc(I.name)}${p.code?` · קוד מסלול ${esc(p.code)}`:''} · קטלוג ${esc(I.year)}</div></div><a class="btn" href="${url}" target="_blank" rel="noopener">לתוכנית בקטלוג הרשמי ↗</a></div>`;
+ h+=`<div class="stats"><div class="stat"><b>${esc(p.total||'—')}</b><span>נקודות זכות לתואר</span></div><div class="stat"><b>${years}</b><span>שנות לימוד בתוכנית</span></div><div class="stat"><b>${sems.reduce((a,s)=>a+s.c.filter(c=>c[0]).length,0)}</b><span>קורסי חובה בשיבוץ</span></div><div class="stat"><b>${p.elect.length}</b><span>קורסי בחירה ברשימה</span></div></div>`;
+ if(cats.length){h+=`<div class="bar" role="img" aria-label="חלוקת הנקודות">${cats.map((c,i)=>`<i style="width:${Math.max(2,parseFloat(c[1])/tot*100)}%;background:${colors[i%5]}"></i>`).join('')}</div><div class="legend">${cats.map((c,i)=>`<span style="--k:${colors[i%5]}">${esc(catNice(c[0]))}: <b>${esc(c[1])}</b> נק׳</span>`).join('')}</div>`}
+ h+= okN===sems.length?`<div class="verify">✓ <span>כל ${sems.length} הסמסטרים אומתו: סכום הנקודות של הקורסים בכל סמסטר תואם לסיכום שמופיע בקטלוג.</span></div>`:`<div class="verify warn">⚠ <span>${okN} מתוך ${sems.length} סמסטרים אומתו מול הסיכום שבקטלוג. סמסטרים המסומנים ״לבדיקה״ כוללים בעיקר אפשרויות בחירה – כדאי לבדוק אותם בקטלוג המקורי.</span></div>`;
+ h+='<div class="years">';
+ for(let y=1;y<=years;y++){const ss=sems.filter(s=>Math.ceil(s.n/2)===y);if(!ss.length)continue;const ysum=ss.reduce((a,s)=>a+(parseFloat(s.tot)||s.sum||0),0);
+  h+=`<section class="year"><h3>שנה ${YN[y-1]||y} <small>${ysum?ysum.toFixed(1)+' נק׳':''}</small></h3><div class="sems">`;
+  for(const s of ss){h+=`<div class="sem"><header><b>סמסטר ${s.n} <small style="font-weight:400;color:var(--muted)">(${s.n%2?'חורף':'אביב'})</small></b>${s.ok?'<span class="tag ok" title="סכום הנקודות תואם לקטלוג">אומת</span>':'<span class="tag chk" title="לא ניתן היה לאמת אוטומטית">לבדיקה</span>'}</header><table><tbody>`;
+   for(const c of s.c){const el=!c[0];h+=`<tr class="${el?'el':''}"><td>${esc(c[1])}${c[0]?`<span class="num">${esc(c[0])}</span>`:''}${c[3]&&Array.isArray(c[3])?`<span class="alt">או: ${esc(c[3][1])} (${esc(c[3][0])})</span>`:''}</td><td class="cr">${esc(cr(c[2]))}</td></tr>`}
+   h+=`</tbody></table><div class="semsum"><span>סה״כ בסמסטר</span><b>${esc(s.tot||s.sum)} נק׳</b></div></div>`}
+  h+='</div></section>'}
+ if(lastSem<years*2)h+=`<p class="inst" style="margin:0">בסמסטרים ${lastSem+1}–${years*2} אין קורסי חובה בשיבוץ המומלץ: משלימים בהם קורסי בחירה ופרויקטים לפי כללי התוכנית.</p>`;
+ h+='</div>';
+ if(p.elect.length){const g={};p.elect.forEach(e=>{const k=(e[3]||'קורסי בחירה').replace(/\s+/g,' ').trim().slice(0,70);(g[k]=g[k]||[]).push(e)});
+  h+=`<details class="el"><summary>קורסי בחירה (${p.elect.length})</summary><div class="elin"><input type="search" id="eq" placeholder="סינון קורסי בחירה"><div id="egr">`;
+  for(const [k,arr] of Object.entries(g)){h+=`<div class="grp"><h4>${esc(k)}</h4><div class="grid">${arr.map(e=>`<div class="ec" data-n="${esc(e[1])}"><span>${esc(e[1])}<br><span class="num">${esc(e[0])}</span></span><b>${esc(cr(e[2]))}</b></div>`).join('')}</div></div>`}
+  h+=`</div><p class="inst" style="font-size:.85rem;margin-top:10px">מוצגת רשימה חלקית. הרשימה המלאה והכללים לבחירה (כמה נקודות מכל קבוצה) מופיעים בקטלוג.</p></div></details>`}
+ h+='</article>';$('out').innerHTML=h;
+ const eq=$('eq');if(eq)eq.oninput=()=>{const v=eq.value.trim();document.querySelectorAll('.ec').forEach(x=>x.style.display=!v||x.dataset.n.includes(v)?'':'none')};
+ const u=new URL(location);u.searchParams.set('inst',cur.inst);u.searchParams.set('deg',cur.deg);history.replaceState(null,'',u);
+}
+$('chips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;cur.deg=b.dataset.d;render();$('out').scrollIntoView({behavior:'smooth',block:'start'})};
+$('q').oninput=chips;
+$('inst').onchange=()=>{cur.inst=$('inst').value;cur.deg=null;render()};
+initInst();const sp=new URLSearchParams(location.search);cur.inst=DATA.institutions[sp.get('inst')]?sp.get('inst'):Object.keys(DATA.institutions)[0];$('inst').value=cur.inst;cur.deg=DATA.institutions[cur.inst].degs.includes(sp.get('deg'))?sp.get('deg'):null;render();
+$('foot').textContent='מקור: '+Object.values(DATA.institutions).map(i=>i.name+' – '+i.sourceNote).join(' · ')+'. האימות האוטומטי בודק שסכום נקודות הקורסים בכל סמסטר תואם לסיכום שבקטלוג.';
 </script>
 </body>
 </html>
