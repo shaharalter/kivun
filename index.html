@@ -1498,7 +1498,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
           <a href="${moovitUrl}" target="_blank" rel="noopener" class="btn ghost small">🚌 מסלולי אוטובוס ורכבת ב-Moovit</a>
         </div>
         <iframe class="map-frame" src="${embedMapUrl}" loading="lazy" title="מפת ${instName}"></iframe>
-        <p class="meta"><strong>תחבורה וחניה בקמפוס:</strong> ${inst['תחבורה'] && inst['תחבורה'] !== '—' ? inst['תחבורה'] + ' • ' : ''}חניה: ${inst['חניה'] || 'לא ידוע. יש לוודא ולבדוק'}</p>
+        <p class="meta"><strong>תחבורה וחניה בקמפוס:</strong> ${inst['תחבורה'] && inst['תחבורה'] !== '—' ? inst['תחבורה'] + ' • ' : ''}חניה: ${inst['חניה'] && !/^לבדיקה/.test(inst['חניה']) ? inst['חניה'] : 'לא ידוע. יש לוודא ולבדוק'}</p>
       </div>
 
       <div class="sec">
