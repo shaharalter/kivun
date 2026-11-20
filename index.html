@@ -1691,6 +1691,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
                 ${d['קשר: טלפון'] ? `<li><strong>ייעוץ ורישום:</strong> ${d['קשר: יחידה / איש קשר'] || ''} – ${d['קשר: טלפון']}</li>` : ''}
               </ul>
               ${adm.notes.map(n => `<div class="note">⚠️ ${n}</div>`).join('')}
+              ${d['סטטוס'] === 'מאומת חלקית' ? `<div class="note">ℹ️ נתוני הקבלה לתואר הזה לא אומתו במלואם מול אתר המוסד${/לא מפרסמת|לא מתפרסמים|בלי ספים|אינו מפרסם|אינם מציגים|נמסרים בפגישת/.test(d['הערות'] || '') ? ' (המוסד לא מפרסם ספים מספריים)' : ''}. כדאי לוודא מול מרכז הרישום${d['קשר: טלפון'] ? ' – ' + d['קשר: טלפון'] : ''}.</div>` : ''}
               <div class="inst-actions">
                 <button type="button" class="btn small plan-housing-btn" data-cidx="${cIdx}">🗺️ מפה, מסלולי הגעה ועסקאות חבילה למגורים</button>
                 ${d['מקור (קישור)'] ? `<a href="${d['מקור (קישור)']}" target="_blank" rel="noopener" class="btn ghost small">לאתר התואר ↗</a>` : ''}
