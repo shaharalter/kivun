@@ -1368,6 +1368,9 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
 
     const notes = [];
     let needsMechina = false;
+    if (deg['סטטוס'] === 'מאומת חלקית') {
+      return { status: 'none', label: 'לא ידוע. יש לוודא ולבדוק', notes, needsMechina };
+    }
     if (/פיזיקה\s*5/.test(reqBagText) && !bag.hasPhysics5) {
       needsMechina = true;
       notes.push('חסרה פיזיקה 5 יח״ל – תידרש מכינת השלמה בפיזיקה');
@@ -1437,7 +1440,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
       return { status: 'hard', label: `חסרות ${(bagOnly - bag.finalAvg).toFixed(1)} נק׳ בממוצע`, notes, needsMechina };
     }
 
-    return { status: 'none', label: 'יש לבדוק במחשבון המוסד', notes, needsMechina };
+    return { status: 'none', label: 'לא ידוע. יש לוודא ולבדוק', notes, needsMechina };
   }
 
   function scoreInstitutionPreference(inst, vibe, tuition) {
@@ -1495,7 +1498,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
           <a href="${moovitUrl}" target="_blank" rel="noopener" class="btn ghost small">🚌 מסלולי אוטובוס ורכבת ב-Moovit</a>
         </div>
         <iframe class="map-frame" src="${embedMapUrl}" loading="lazy" title="מפת ${instName}"></iframe>
-        <p class="meta"><strong>תחבורה וחניה בקמפוס:</strong> ${inst['תחבורה'] && inst['תחבורה'] !== '—' ? inst['תחבורה'] + ' • ' : ''}חניה: ${inst['חניה'] || 'לבדיקה מול אגודת הסטודנטים'}</p>
+        <p class="meta"><strong>תחבורה וחניה בקמפוס:</strong> ${inst['תחבורה'] && inst['תחבורה'] !== '—' ? inst['תחבורה'] + ' • ' : ''}חניה: ${inst['חניה'] || 'לא ידוע. יש לוודא ולבדוק'}</p>
       </div>
 
       <div class="sec">
@@ -1686,8 +1689,8 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
               </div>
               <div class="vibe-tag"><strong>צביון ואופי (${vibe.tag}):</strong> ${vibe.desc}</div>
               <ul>
-                <li><strong>ערוצי קבלה:</strong> ${d['ערוצי קבלה'] || 'ראו אתר המוסד'}</li>
-                <li><strong>שכר לימוד שנתי:</strong> ${baseTuition ? baseTuition.toLocaleString() + ' ₪' + engNote : 'לפי קורס / לא צוין'} ${STATE.selectedSch.has('mimadim') && baseTuition <= 13000 ? '(מכוסה ע״י ממדים ללימודים!)' : ''}</li>
+                <li><strong>ערוצי קבלה:</strong> ${!d['ערוצי קבלה'] ? 'לא ידוע. יש לוודא ולבדוק' : d['סטטוס'] === 'מאומת חלקית' ? `לא ידוע. יש לוודא ולבדוק <small>(נתון ממקור קודם, לא מאומת: ${d['ערוצי קבלה']})</small>` : d['ערוצי קבלה']}</li>
+                <li><strong>שכר לימוד שנתי:</strong> ${baseTuition ? baseTuition.toLocaleString() + ' ₪' + engNote : 'לא ידוע. יש לוודא ולבדוק'} ${STATE.selectedSch.has('mimadim') && baseTuition <= 13000 ? '(מכוסה ע״י ממדים ללימודים!)' : ''}</li>
                 ${d['קשר: טלפון'] ? `<li><strong>ייעוץ ורישום:</strong> ${d['קשר: יחידה / איש קשר'] || ''} – ${d['קשר: טלפון']}</li>` : ''}
               </ul>
               ${adm.notes.map(n => `<div class="note">⚠️ ${n}</div>`).join('')}
