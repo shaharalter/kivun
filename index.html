@@ -1369,7 +1369,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
     const notes = [];
     let needsMechina = false;
     if (deg['סטטוס'] === 'מאומת חלקית') {
-      return { status: 'none', label: 'לא ידוע. יש לוודא ולבדוק', notes, needsMechina };
+      return { status: 'none', label: 'יש לוודא – תנאים דינמיים ומשתנים', notes, needsMechina };
     }
     if (/פיזיקה\s*5/.test(reqBagText) && !bag.hasPhysics5) {
       needsMechina = true;
@@ -1689,14 +1689,16 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
               </div>
               <div class="vibe-tag"><strong>צביון ואופי (${vibe.tag}):</strong> ${vibe.desc}</div>
               <ul>
-                <li><strong>ערוצי קבלה:</strong> ${!d['ערוצי קבלה'] ? 'לא ידוע. יש לוודא ולבדוק' : d['סטטוס'] === 'מאומת חלקית' ? `לא ידוע. יש לוודא ולבדוק <small>(נתון ממקור קודם, לא מאומת: ${d['ערוצי קבלה']})</small>` : d['ערוצי קבלה']}</li>
+                <li><strong>ערוצי קבלה:</strong> ${!d['ערוצי קבלה'] ? 'לא ידוע. יש לוודא ולבדוק' : d['סטטוס'] === 'מאומת חלקית' ? `יש לוודא – תנאי הקבלה במוסד זה דינמיים ומשתנים ואינם מפורסמים באתר <small>(נתון ממקור קודם, לא מאומת: ${d['ערוצי קבלה']})</small>` : d['ערוצי קבלה']}</li>
                 <li><strong>שכר לימוד שנתי:</strong> ${baseTuition ? baseTuition.toLocaleString() + ' ₪' + engNote : 'לא ידוע. יש לוודא ולבדוק'} ${STATE.selectedSch.has('mimadim') && baseTuition <= 13000 ? '(מכוסה ע״י ממדים ללימודים!)' : ''}</li>
                 ${d['קשר: טלפון'] ? `<li><strong>ייעוץ ורישום:</strong> ${d['קשר: יחידה / איש קשר'] || ''} – ${d['קשר: טלפון']}</li>` : ''}
+                <li><strong>📅 מועדי הרשמה:</strong> ${(inst && inst['הרשמה – מועדים']) || 'לא ידוע. יש לוודא ולבדוק'}${inst && inst['הרשמה – מקור'] ? ` <a href="${inst['הרשמה – מקור']}" target="_blank" rel="noopener">(מקור)</a>` : ''}</li>
               </ul>
               ${adm.notes.map(n => `<div class="note">⚠️ ${n}</div>`).join('')}
               ${d['סטטוס'] === 'מאומת חלקית' ? `<div class="note">ℹ️ נתוני הקבלה לתואר הזה לא אומתו במלואם מול אתר המוסד${/לא מפרסמת|לא מתפרסמים|בלי ספים|אינו מפרסם|אינם מציגים|נמסרים בפגישת/.test(d['הערות'] || '') ? ' (המוסד לא מפרסם ספים מספריים)' : ''}. כדאי לוודא מול מרכז הרישום${d['קשר: טלפון'] ? ' – ' + d['קשר: טלפון'] : ''}.</div>` : ''}
               <div class="inst-actions">
                 <button type="button" class="btn small plan-housing-btn" data-cidx="${cIdx}">🗺️ מפה, מסלולי הגעה ועסקאות חבילה למגורים</button>
+                ${inst && inst['הרשמה – קישור'] ? `<a href="${inst['הרשמה – קישור']}" target="_blank" rel="noopener" class="btn small">📝 להרשמה ↗</a>` : ''}
                 ${d['מקור (קישור)'] ? `<a href="${d['מקור (קישור)']}" target="_blank" rel="noopener" class="btn ghost small">לאתר התואר ↗</a>` : ''}
                 ${(CUR_AVAIL[d['מזהה מוסד']]||[]).includes(d['תחום לימוד']) ? `<a href="curricula.html?inst=${encodeURIComponent(d['מזהה מוסד'])}&deg=${encodeURIComponent(d['תחום לימוד'])}" target="_blank" rel="noopener" class="btn ghost small">📚 תוכנית לימודים</a>` : ''}
               </div>
