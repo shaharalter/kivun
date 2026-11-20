@@ -1389,10 +1389,31 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
 
     let userSekhem = 0;
     if (bag.finalAvg && psy) {
+      const method = deg['שיטת חישוב'] || '';
       if (instId === 'haifa') userSekhem = Math.round(2.5 * bag.finalAvg + 0.75 * psy - 82.5);
-      else if (instId === 'tau') userSekhem = Math.round(5.0024 * Math.min(bag.finalAvg, 117) + 0.52 * psy - 225.05);
-      else if (instId === 'bgu') userSekhem = Math.round(5 * Math.min(bag.finalAvg, 120) + 0.5 * psy - 165);
-      else if (instId === 'ariel') userSekhem = Math.round((bag.finalAvg * 6.666 + psy) / 2);
+      else if (instId === 'tau' && !/ניהול|אדריכלות/.test(method)) userSekhem = Math.round(5.0024 * Math.min(bag.finalAvg, 117) + 0.52 * psy - 225.05);
+      else if (instId === 'bgu' && /סכם כללי/.test(method)) userSekhem = Math.round(5 * Math.min(bag.finalAvg, 120) + 0.5 * psy - 165);
+      else if (instId === 'ariel' || instId === 'hadassah') userSekhem = Math.round((Math.min(bag.finalAvg, 120) * 6.666 + psy) / 2);
+      else if (instId === 'jct') userSekhem = Math.round((0.35 * Math.min(bag.finalAvg, 120) + 0.02 * psy + 35.7) * 100) / 100;
+      else if (instId === 'orot') userSekhem = Math.round(3.63 * Math.min(bag.finalAvg, 120) + 0.5 * psy - 58.4);
+      if (instId === 'zefat' && /סכ"ם צפת/.test(method)) {
+        // המכללה מפרסמת נוסחה [(בגרות×10)−310]+פסיכומטרי, אך התוצאה שלה לא תואמת את הסף שהיא עצמה מפרסמת,
+        // לכן בודקים את תנאי הסף של כל רכיב בנפרד ולא מחשבים ציון
+        const ch = deg['ערוצי קבלה'] || '';
+        const m1 = ch.match(/מינימום בגרות(?: בציון)?\s*(\d+)\s*ו?(?:לא פחות מ\s*)?(?:פסיכומטרי\s*)?(\d{3})/) || ch.match(/בגרות\s*(\d+)\s*\+\s*פסיכומטרי\s*(\d{3})/);
+        if (m1) {
+          const minB = Number(m1[1]), minP = Number(m1[2]);
+          const isMin = /מינימום/.test(m1[0]);
+          if (bag.finalAvg >= minB && psy >= minP) return isMin
+            ? { status: 'mid', label: `עומד/ת במינימום לסכ"ם (בגרות ${minB}, פסיכומטרי ${minP}); הקבלה לפי ציון סכ"ם ${sekhemThresh} וראיון`, notes, needsMechina }
+            : { status: needsMechina ? 'mid' : 'good', label: `עומד/ת בתנאי הקבלה (בגרות ${minB}+, פסיכומטרי ${minP}+)`, notes, needsMechina };
+          return { status: 'hard', label: `נדרשים בגרות ${minB} ופסיכומטרי ${minP} לפחות`, notes, needsMechina };
+        }
+      }
+      if (instId === 'hadassah' && /נדרש פסיכומטרי\s*(\d+)/.test(method)) {
+        const minPsy = Number(method.match(/נדרש פסיכומטרי\s*(\d+)/)[1]);
+        if (psy < minPsy) return { status: 'hard', label: `נדרש פסיכומטרי ${minPsy} לפחות (יש לך ${psy})`, notes, needsMechina };
+      }
     }
 
     if (sekhemThresh && userSekhem) {
@@ -1403,7 +1424,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
           notes, needsMechina
         };
       }
-      if (userSekhem >= sekhemThresh - 25) {
+      if (userSekhem >= sekhemThresh - (sekhemThresh <= 150 ? 3 : 25)) {
         return { status: 'mid', label: `גבולי (סכם ${userSekhem} מול סף ${sekhemThresh})`, notes, needsMechina };
       }
       return { status: 'hard', label: `מתחת לסף (סכם ${userSekhem} מול סף ${sekhemThresh})`, notes, needsMechina };
