@@ -200,6 +200,10 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
 .cmp-check input{width:20px;height:20px;accent-color:var(--pine)}
 #cmpBar{position:fixed;inset-inline:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:40;max-width:720px;margin:0 auto;background:var(--pine);color:var(--on-pine);border-radius:18px;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:0 8px 28px rgba(0,0,0,.25)}
 #cmpBar.hidden{display:none}
+.improve{margin-top:8px;background:var(--pine-soft);border-radius:12px;padding:8px 12px;font-size:.92rem}
+.improve summary{cursor:pointer;font-weight:600;color:var(--pine)}
+.improve ul{margin:6px 0;padding-inline-start:18px}
+.improve small{color:var(--muted,#666)}
 body.cmp-on{padding-bottom:120px}
 #cmpBar .grow{flex:1;min-width:140px;font-weight:600}
 #cmpBar .btn{background:var(--sun);color:#1E2B25;min-height:44px;padding:8px 18px}
@@ -1478,6 +1482,60 @@ body.cmp-on{padding-bottom:120px}
     $('cmpClose').focus();
   }
 
+  // נוסחאות הסכם הרשמיות לפי מוסד (null = אין נוסחה מאומתת)
+  function sekhemFor(instId, method, b, p) {
+    method = method || '';
+    if (instId === 'haifa') return Math.round(2.5 * b + 0.75 * p - 82.5);
+    if (instId === 'tau' && !/ניהול|אדריכלות/.test(method)) return Math.round(5.0024 * Math.min(b, 117) + 0.52 * p - 225.05);
+    if (instId === 'bgu' && /סכם כללי/.test(method)) return Math.round(5 * Math.min(b, 120) + 0.5 * p - 165);
+    if (instId === 'ariel' || instId === 'hadassah') return Math.round((Math.min(b, 120) * 6.666 + p) / 2);
+    if (instId === 'jct') return Math.round((0.35 * Math.min(b, 120) + 0.02 * p + 35.7) * 100) / 100;
+    if (instId === 'orot') return Math.round(3.63 * Math.min(b, 120) + 0.5 * p - 58.4);
+    return null;
+  }
+  const BAG_CAP = { tau: 117 };
+  // מחשבון שיפורים: מה צריך כדי להגיע לסף – בבגרות לבד או בפסיכומטרי לבד
+  function improvementPlan(deg, b, p) {
+    const instId = deg['מזהה מוסד'], method = deg['שיטת חישוב'] || '';
+    const T = Number(deg['סף משוקלל']) || 0;
+    const bagOnly = Number(deg['קבלה ישירה: בגרות']) || 0;
+    const psyOnly = Number(deg['קבלה ישירה: פסיכומטרי']) || 0;
+    const out = [];
+    if (T && b && sekhemFor(instId, method, b, p || 200) !== null) {
+      const cur = p ? sekhemFor(instId, method, b, p) : null;
+      if (cur === null || cur < T) {
+        let needP = null;
+        for (let q = Math.max(200, p || 200); q <= 800; q++) if (sekhemFor(instId, method, b, q) >= T) { needP = q; break; }
+        let needB = null; const cap = Math.min(BAG_CAP[instId] || 120, 127);
+        if (p) for (let x = Math.round(b * 10); x <= cap * 10; x++) if (sekhemFor(instId, method, x / 10, p) >= T) { needB = x / 10; break; }
+        let comboP = null;
+        if (p && needP === null && needB === null) for (let q = p; q <= 800; q++) if (sekhemFor(instId, method, cap, q) >= T) { comboP = q; break; }
+        out.push({ kind: 'sekhem', T, cur, needP, needB, cap, comboP });
+      }
+    }
+    if (bagOnly && b && b < bagOnly) out.push({ kind: 'bagOnly', need: bagOnly, gap: Math.round((bagOnly - b) * 100) / 100 });
+    if (psyOnly && (!p || p < psyOnly)) out.push({ kind: 'psyOnly', need: psyOnly, gap: psyOnly - (p || 0) });
+    return out;
+  }
+  function improvementHtml(plan, b, p) {
+    if (!plan || !plan.length) return '';
+    const li = [];
+    plan.forEach(x => {
+      if (x.kind === 'sekhem') {
+        if (!p) li.push(x.needP ? `עם ממוצע הבגרות שלך (${b}) נדרש פסיכומטרי <strong>${x.needP}</strong> לפחות כדי להגיע לסף הסכם (${x.T}).` : `עם ממוצע הבגרות הנוכחי גם פסיכומטרי 800 לא מספיק לסף הסכם (${x.T}) – צריך לשפר גם את הבגרות.`);
+        else {
+          li.push(x.needP ? `פסיכומטרי <strong>${x.needP}</strong> (+${x.needP - p}) עם הבגרות הנוכחית מביא לסף הסכם (${x.T}).` : `שיפור הפסיכומטרי לבדו לא מספיק לסף (${x.T}), גם בציון 800.`);
+          if (x.comboP) li.push(`שילוב: גם עם ממוצע בגרות ${x.cap} נדרש פסיכומטרי <strong>${x.comboP}</strong> לפחות.`);
+          else if (x.needP === null && x.needB === null) li.push(`גם שיפור מרבי בשניהם לא מגיע לסף של השנה האחרונה – כדאי לשקול מסלול אחר או מוסד אחר.`);
+          li.push(x.needB ? `או: ממוצע בגרות <strong>${x.needB}</strong> (+${Math.round((x.needB - b) * 100) / 100}) עם הפסיכומטרי הנוכחי.` : `שיפור הבגרות לבדו לא מספיק לסף${x.cap < 120 ? ` (המוסד מגביל את הממוצע ל-${x.cap})` : ''}.`);
+        }
+      }
+      if (x.kind === 'bagOnly') li.push(`קבלה על סמך בגרות בלבד: נדרש ממוצע <strong>${x.need}</strong> (חסרות ${x.gap} נק׳).`);
+      if (x.kind === 'psyOnly') li.push(`קבלה על סמך פסיכומטרי בלבד: נדרש <strong>${x.need}</strong>${p ? ` (חסרות ${x.gap} נק׳)` : ''}.`);
+    });
+    return `<details class="improve"><summary>📈 מה צריך כדי להתקבל?</summary><ul>${li.map(t => `<li>${t}</li>`).join('')}</ul><small>החישוב לפי הנוסחה והסף של השנה האחרונה. הספים משתנים משנה לשנה – יש לוודא מול המוסד.</small></details>`;
+  }
+
   function evaluateAdmission(deg, bag, psy) {
     if (bag && bag.byInst && bag.byInst[deg['מזהה מוסד']]) bag = Object.assign({}, bag, { finalAvg: bag.byInst[deg['מזהה מוסד']] });
     const bagOnly = Number(deg['קבלה ישירה: בגרות']) || 0;
@@ -1513,12 +1571,7 @@ body.cmp-on{padding-bottom:120px}
     let userSekhem = 0;
     if (bag.finalAvg && psy) {
       const method = deg['שיטת חישוב'] || '';
-      if (instId === 'haifa') userSekhem = Math.round(2.5 * bag.finalAvg + 0.75 * psy - 82.5);
-      else if (instId === 'tau' && !/ניהול|אדריכלות/.test(method)) userSekhem = Math.round(5.0024 * Math.min(bag.finalAvg, 117) + 0.52 * psy - 225.05);
-      else if (instId === 'bgu' && /סכם כללי/.test(method)) userSekhem = Math.round(5 * Math.min(bag.finalAvg, 120) + 0.5 * psy - 165);
-      else if (instId === 'ariel' || instId === 'hadassah') userSekhem = Math.round((Math.min(bag.finalAvg, 120) * 6.666 + psy) / 2);
-      else if (instId === 'jct') userSekhem = Math.round((0.35 * Math.min(bag.finalAvg, 120) + 0.02 * psy + 35.7) * 100) / 100;
-      else if (instId === 'orot') userSekhem = Math.round(3.63 * Math.min(bag.finalAvg, 120) + 0.5 * psy - 58.4);
+      userSekhem = sekhemFor(instId, method, bag.finalAvg, psy) || 0;
       if (instId === 'zefat' && /סכ"ם צפת/.test(method)) {
         // המכללה מפרסמת נוסחה [(בגרות×10)−310]+פסיכומטרי, אך התוצאה שלה לא תואמת את הסף שהיא עצמה מפרסמת,
         // לכן בודקים את תנאי הסף של כל רכיב בנפרד ולא מחשבים ציון
@@ -1765,6 +1818,10 @@ body.cmp-on{padding-bottom:120px}
       const rankItem = (d, isFallback = false) => {
         const inst = DB.institutions.find(x => x['מזהה'] === d['מזהה מוסד']) || {};
         const adm = evaluateAdmission(d, bag, psy);
+        if (adm.status !== 'good' && d['סטטוס'] !== 'מאומת חלקית') {
+          const bb = (bag.byInst && bag.byInst[d['מזהה מוסד']]) || bag.finalAvg;
+          adm.improve = improvementHtml(improvementPlan(d, bb, psy), bb, psy);
+        }
         const vibe = getVibeForInst(inst);
         const prefScore = scoreInstitutionPreference(inst, vibe, Number(d['שכר לימוד שנתי (₪)']) || 0);
         const admRank = { good: 100, mid: 60, none: 40, hard: 10 }[adm.status];
@@ -1815,6 +1872,7 @@ body.cmp-on{padding-bottom:120px}
                 <li><strong>📅 מועדי הרשמה:</strong> ${(inst && inst['הרשמה – מועדים']) || 'לא ידוע. יש לוודא ולבדוק'}${inst && inst['הרשמה – מקור'] ? ` <a href="${inst['הרשמה – מקור']}" target="_blank" rel="noopener">(מקור)</a>` : ''}</li>
               </ul>
               ${adm.notes.map(n => `<div class="note">⚠️ ${n}</div>`).join('')}
+              ${adm.improve || ''}
               ${d['סטטוס'] === 'מאומת חלקית' ? `<div class="note">ℹ️ נתוני הקבלה לתואר הזה לא אומתו במלואם מול אתר המוסד${/לא מפרסמת|לא מתפרסמים|בלי ספים|אינו מפרסם|אינם מציגים|נמסרים בפגישת/.test(d['הערות'] || '') ? ' (המוסד לא מפרסם ספים מספריים)' : ''}. כדאי לוודא מול מרכז הרישום${d['קשר: טלפון'] ? ' – ' + d['קשר: טלפון'] : ''}.</div>` : ''}
               <div class="inst-actions">
                 <label class="cmp-check"><input type="checkbox" class="cmp-box" data-cidx="${cIdx}" ${CMP.has(cmpKey(d)) ? 'checked' : ''}> ⚖️ להשוואה</label>
