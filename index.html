@@ -1109,44 +1109,61 @@ body.cmp-on{padding-bottom:120px}
     const hasPhysics5 = STATE.majors.some(m => m.name.includes('פיזיק') && Number(m.units) === 5 && ((Number(m.grade) || 0) >= 60 || m.grade === ''));
     let finalAvg = 0, totalUnits = 0, droppedSubjects = [];
 
+    const byInst = {};
     if (STATE.bagMode === 'known') {
       finalAvg = Number($('avg').value) || 0;
     } else {
-      const items = [];
-      STATE.mandatory.forEach(s => {
-        const g = Number(s.grade);
-        if (s.grade !== '' && !isNaN(g) && g > 0) {
-          const bonus = (g >= 60) ? (s.units === 5 ? (s.id === 'math' ? 35 : 25) : s.units === 4 ? 12.5 : 0) : 0;
-          items.push({ name: s.name, units: s.units, raw: g, weighted: g + bonus, canDrop: s.units <= 2 && s.id !== 'math' && s.id !== 'eng' });
-        }
-      });
-      STATE.majors.forEach(m => {
-        const g = Number(m.grade);
-        if (m.name.trim() && m.grade !== '' && !isNaN(g) && g > 0) {
-          const bonus = (g >= 60) ? (m.units === 5 ? 25 : m.units === 4 ? 12.5 : 0) : 0;
-          items.push({ name: m.name.trim(), units: m.units, raw: g, weighted: g + bonus, canDrop: false });
-        }
-      });
-
-      if (items.length > 0) {
-        let sumW = items.reduce((acc, x) => acc + x.weighted * x.units, 0);
-        let sumU = items.reduce((acc, x) => acc + x.units, 0);
-        let avg = sumW / sumU;
-
-        const droppables = items.filter(x => x.canDrop).sort((a, b) => a.weighted - b.weighted);
-        for (const d of droppables) {
-          if (sumU - d.units >= 20 && d.weighted < avg) {
-            sumW -= d.weighted * d.units;
-            sumU -= d.units;
-            avg = sumW / sumU;
-            droppedSubjects.push(d.name);
-          }
-        }
-        finalAvg = Math.round(avg * 100) / 100;
-        totalUnits = sumU;
-      }
+      const r = computeBagAvg('generic');
+      finalAvg = r.avg; totalUnits = r.units; droppedSubjects = r.dropped;
+      // כללי בונוס רשמיים לפי מוסד (אומתו מול אתרי המוסדות)
+      ['tau', 'haifa'].forEach(k => { const x = computeBagAvg(k); if (x.avg) byInst[k] = x.avg; });
     }
-    return { finalAvg, totalUnits, droppedSubjects, mathU, mathG, engU, engG, hasPhysics5 };
+    return { finalAvg, totalUnits, droppedSubjects, mathU, mathG, engU, engG, hasPhysics5, byInst };
+  }
+
+  // בונוס לציון בגרות לפי כללי המוסד.
+  // tau – go.tau.ac.il/he/ba/how-to-calculate ; haifa – admissions.haifa.ac.il/score-calculation
+  // generic – הערכה כללית למוסדות שכללי הבונוס שלהם לא אומתו
+  function bagBonus(rule, id, name, units, g) {
+    if (!(g >= 60) || units < 4) return 0;
+    const isMath = id === 'math' || /מתמטיקה/.test(name);
+    const isEng = id === 'eng' || /אנגלית/.test(name);
+    const core = ['lit', 'hist', 'bible'].includes(id) || /פיזיק|כימי|ביולוגי|ערבית|ספרות|היסטורי|תנ/.test(name);
+    if (rule === 'tau') {
+      if (isMath) return units >= 5 ? 35 : 12.5;
+      if (isEng) return units >= 5 ? 25 : 12.5;
+      return units >= 5 ? (core ? 25 : 20) : 10;
+    }
+    if (rule === 'haifa') {
+      if (isMath) return units >= 5 ? 35 : 20;
+      if (isEng || core) return units >= 5 ? 25 : 20;
+      return units >= 5 ? 20 : 10;
+    }
+    return units >= 5 ? (isMath ? 35 : 25) : 12.5;
+  }
+
+  function computeBagAvg(rule) {
+    const items = [];
+    STATE.mandatory.forEach(s => {
+      const g = Number(s.grade);
+      if (s.grade !== '' && !isNaN(g) && g > 0) {
+        items.push({ name: s.name, units: s.units, weighted: g + bagBonus(rule, s.id, s.name, s.units, g), canDrop: rule === 'tau' && (s.id === 'bible' || s.id === 'lit') });
+      }
+    });
+    STATE.majors.forEach(m => {
+      const g = Number(m.grade);
+      if (m.name.trim() && m.grade !== '' && !isNaN(g) && g > 0) {
+        items.push({ name: m.name.trim(), units: m.units, weighted: g + bagBonus(rule, '', m.name, m.units, g), canDrop: true });
+      }
+    });
+    if (!items.length) return { avg: 0, units: 0, dropped: [] };
+    let sumW = items.reduce((a, x) => a + x.weighted * x.units, 0);
+    let sumU = items.reduce((a, x) => a + x.units, 0);
+    let avg = sumW / sumU; const dropped = [];
+    items.filter(x => x.canDrop).sort((a, b) => a.weighted - b.weighted).forEach(d => {
+      if (sumU - d.units >= 20 && d.weighted < avg) { sumW -= d.weighted * d.units; sumU -= d.units; avg = sumW / sumU; dropped.push(d.name); }
+    });
+    return { avg: Math.round(avg * 100) / 100, units: sumU, dropped };
   }
 
   function updateBagrutSummary() {
@@ -1163,8 +1180,11 @@ body.cmp-on{padding-bottom:120px}
     let html = `<strong>ממוצע בגרות משוקלל לחישוב סכם: ${b.finalAvg}</strong>` +
       (STATE.bagMode === 'known' ? ' (נשמר כפי שהזנת, ללא שינוי)' : ` (מחושב על בסיס ${b.totalUnits} יח״ל כולל בונוסים)`);
 
+    if (b.byInst && (b.byInst.tau || b.byInst.haifa)) {
+      html += `<br><small>🎓 לפי כללי הבונוס הרשמיים של כל מוסד: אוניברסיטת ת״א – ${b.byInst.tau || '—'}${b.byInst.tau > 117 ? ' (בחישוב הסכם נלקח 117, התקרה של ת״א)' : ''}, אוניברסיטת חיפה – ${b.byInst.haifa || '—'}. במוסדות אחרים מוצגת הערכה כללית לפי בונוס אחיד.</small>`;
+    }
     if (b.droppedSubjects.length) {
-      html += `<br><small>✨ הוחל בונוס השמטה אוניברסיטאי: ${b.droppedSubjects.join(', ')} הושמטו מהשקלול כי הם מעל 20 יח״ל והורידו את הממוצע.</small>`;
+      html += `<br><small>✨ ממוצע אופטימלי: ${b.droppedSubjects.join(', ')} הושמטו מהשקלול כי הורידו את הממוצע ונשארו לפחות 20 יח״ל. מקצועות החובה של משרד החינוך נשארים תמיד בחישוב.</small>`;
     }
     if (!b.hasPhysics5) {
       box.className = 'summary warn';
@@ -1459,6 +1479,7 @@ body.cmp-on{padding-bottom:120px}
   }
 
   function evaluateAdmission(deg, bag, psy) {
+    if (bag && bag.byInst && bag.byInst[deg['מזהה מוסד']]) bag = Object.assign({}, bag, { finalAvg: bag.byInst[deg['מזהה מוסד']] });
     const bagOnly = Number(deg['קבלה ישירה: בגרות']) || 0;
     const psyOnly = Number(deg['קבלה ישירה: פסיכומטרי']) || 0;
     const sekhemThresh = Number(deg['סף משוקלל']) || 0;
