@@ -204,6 +204,7 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
 .improve summary{cursor:pointer;font-weight:600;color:var(--pine)}
 .improve ul{margin:6px 0;padding-inline-start:18px}
 .improve small{color:var(--muted,#666)}
+.improve .eff{border-top:1px dashed currentColor;margin-top:6px;padding-top:6px}
 body.cmp-on{padding-bottom:120px}
 #cmpBar .grow{flex:1;min-width:140px;font-weight:600}
 #cmpBar .btn{background:var(--sun);color:#1E2B25;min-height:44px;padding:8px 18px}
@@ -1494,6 +1495,27 @@ body.cmp-on{padding-bottom:120px}
     return null;
   }
   const BAG_CAP = { tau: 117 };
+  // מועדים ועלויות לשיפור (מקורות: nite.org.il – לוח מבחנים 2027; משרד החינוך – תקנון נבחנים אקסטרניים, מהדורה 29)
+  const PSY_SESSIONS = [
+    { test: '2026-12-04', label: '4 ו-6 בדצמבר 2026', reg: '2026-10-14', scores: '20.1.2027' },
+    { test: '2027-04-18', label: '18–19 באפריל 2027', reg: '2027-02-10' },
+    { test: '2027-07-01', label: '1 ביולי 2027', reg: '2027-05-13' },
+    { test: '2027-09-06', label: '6–7 בספטמבר 2027', reg: '2027-07-12' },
+    { test: '2027-12-24', label: '24 ו-26 בדצמבר 2027', reg: '2027-10-25' }
+  ];
+  const PSY_FEE = 495;
+  function nextPsySession() {
+    const today = new Date().toISOString().slice(0, 10);
+    return PSY_SESSIONS.find(x => x.reg >= today) || null;
+  }
+  function nextBagrutSession() {
+    // מועד חורף (ינואר–פברואר; הרשמה ספטמבר עד 20 בנובמבר), מועד קיץ (מאי–יולי; הרשמה 1 בפברואר עד 20 במרץ)
+    const d = new Date(), y = d.getFullYear(), md = (d.getMonth() + 1) * 100 + d.getDate();
+    if (md <= 1120 && md >= 901) return { label: `מועד חורף ${y + 1} (ינואר–פברואר)`, reg: `עד 20.11.${y}` };
+    if (md <= 320) return { label: `מועד קיץ ${y} (מאי–יולי)`, reg: `1.2–20.3.${y}` };
+    if (md < 901) return { label: `מועד חורף ${y + 1} (ינואר–פברואר)`, reg: `ספטמבר–20.11.${y}` };
+    return { label: `מועד קיץ ${y + 1} (מאי–יולי)`, reg: `1.2–20.3.${y + 1}` };
+  }
   // מחשבון שיפורים: מה צריך כדי להגיע לסף – בבגרות לבד או בפסיכומטרי לבד
   function improvementPlan(deg, b, p) {
     const instId = deg['מזהה מוסד'], method = deg['שיטת חישוב'] || '';
@@ -1517,9 +1539,10 @@ body.cmp-on{padding-bottom:120px}
     if (psyOnly && (!p || p < psyOnly)) out.push({ kind: 'psyOnly', need: psyOnly, gap: psyOnly - (p || 0) });
     return out;
   }
-  function improvementHtml(plan, b, p) {
+  function improvementHtml(plan, b, p, units) {
     if (!plan || !plan.length) return '';
     const li = [];
+    const eff = [];
     plan.forEach(x => {
       if (x.kind === 'sekhem') {
         if (!p) li.push(x.needP ? `עם ממוצע הבגרות שלך (${b}) נדרש פסיכומטרי <strong>${x.needP}</strong> לפחות כדי להגיע לסף הסכם (${x.T}).` : `עם ממוצע הבגרות הנוכחי גם פסיכומטרי 800 לא מספיק לסף הסכם (${x.T}) – צריך לשפר גם את הבגרות.`);
@@ -1530,10 +1553,19 @@ body.cmp-on{padding-bottom:120px}
           li.push(x.needB ? `או: ממוצע בגרות <strong>${x.needB}</strong> (+${Math.round((x.needB - b) * 100) / 100}) עם הפסיכומטרי הנוכחי.` : `שיפור הבגרות לבדו לא מספיק לסף${x.cap < 120 ? ` (המוסד מגביל את הממוצע ל-${x.cap})` : ''}.`);
         }
       }
+      if (x.kind === 'sekhem' && (x.needP || x.needB)) {
+        const ps = nextPsySession(), bs = nextBagrutSession();
+        if (x.needP) eff.push(`<strong>פסיכומטרי:</strong> המועד הקרוב שעוד אפשר להירשם אליו – ${ps ? `${ps.label} (הרשמה עד ${ps.reg.split('-').reverse().join('.')})` : 'לא ידוע. יש לוודא ולבדוק'}. עלות בחינה: ${PSY_FEE} ₪ (לא כולל קורס הכנה, שמחירו משתנה).`);
+        if (x.needB && p) {
+          const dx = Math.round((x.needB - b) * 100) / 100, U = Math.max(units || 20, 20);
+          const per5 = Math.round(dx * U / 5);
+          eff.push(`<strong>בגרות:</strong> העלאת הממוצע ב-${dx} שקולה, למשל, לשיפור של כ-${per5} נקודות בציון מקצוע אחד של 5 יח״ל${per5 > 30 ? ' – כנראה לא ריאלי במקצוע אחד, צריך לשפר כמה מקצועות' : ''}. המועד הקרוב: ${bs.label}, הרשמה ${bs.reg}. אגרת הבחינה: לא ידוע. יש לוודא ולבדוק מול משרד החינוך.`);
+        }
+      }
       if (x.kind === 'bagOnly') li.push(`קבלה על סמך בגרות בלבד: נדרש ממוצע <strong>${x.need}</strong> (חסרות ${x.gap} נק׳).`);
       if (x.kind === 'psyOnly') li.push(`קבלה על סמך פסיכומטרי בלבד: נדרש <strong>${x.need}</strong>${p ? ` (חסרות ${x.gap} נק׳)` : ''}.`);
     });
-    return `<details class="improve"><summary>📈 מה צריך כדי להתקבל?</summary><ul>${li.map(t => `<li>${t}</li>`).join('')}</ul><small>החישוב לפי הנוסחה והסף של השנה האחרונה. הספים משתנים משנה לשנה – יש לוודא מול המוסד.</small></details>`;
+    return `<details class="improve"><summary>📈 מה צריך כדי להתקבל?</summary><ul>${li.map(t => `<li>${t}</li>`).join('')}</ul>${eff.length ? `<div class="eff"><strong>⏱️ המסלול היעיל – זמן ועלות</strong><ul>${eff.map(t => `<li>${t}</li>`).join('')}</ul></div>` : ''}<small>החישוב לפי הנוסחה והסף של השנה האחרונה. הספים משתנים משנה לשנה – יש לוודא מול המוסד.</small></details>`;
   }
 
   function evaluateAdmission(deg, bag, psy) {
@@ -1820,7 +1852,7 @@ body.cmp-on{padding-bottom:120px}
         const adm = evaluateAdmission(d, bag, psy);
         if (adm.status !== 'good' && d['סטטוס'] !== 'מאומת חלקית') {
           const bb = (bag.byInst && bag.byInst[d['מזהה מוסד']]) || bag.finalAvg;
-          adm.improve = improvementHtml(improvementPlan(d, bb, psy), bb, psy);
+          adm.improve = improvementHtml(improvementPlan(d, bb, psy), bb, psy, bag.totalUnits);
         }
         const vibe = getVibeForInst(inst);
         const prefScore = scoreInstitutionPreference(inst, vibe, Number(d['שכר לימוד שנתי (₪)']) || 0);
