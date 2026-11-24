@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>סימולטור פיננסי – כיוון</title>
+<meta name="description" content="סימולטור פיננסי לתואר ראשון: כמה יעלה התואר, כמה צריך לעבוד, אילו מלגות יעזרו ואיך ייראה החיסכון לאורך השנים – לפי המוסד, העיר וסוג המגורים.">
+<meta property="og:title" content="כיוון – סימולטור פיננסי לתואר">
+<meta property="og:description" content="כמה יעלה התואר, כמה צריך לעבוד ואיך ייראה החיסכון – לפי המוסד, העיר וסוג המגורים.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="he_IL">
+<meta name="theme-color" content="#1f4d3d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f4d3d'/%3E%3Cpath d='M32 10 L44 34 L32 28 L20 34 Z' fill='%23f4c542'/%3E%3Ccircle cx='32' cy='44' r='8' fill='none' stroke='%23fff' stroke-width='4'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Suez+One&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F3F6F1;--surface:#FFFFFF;--ink:#1E2B25;--muted:#5C6B63;--pine:#1F4D3F;--pine-soft:#DCE8E1;--sun:#F0B429;--sun-soft:#FCEFC7;--line:#D3DCD5;--good:#2E7D4F;--mid:#8A5600;--hard:#B3412F;--on-pine:#F3F6F1;
+ --c1:#1F4D3F;--c2:#3F8A6E;--c3:#E0A526;--c4:#C2603F;--c5:#7A8C84;--c6:#5B6FB5;color-scheme:light;box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#121A16;--surface:#1A241F;--ink:#E7EEE9;--muted:#A3B2AA;--pine:#8FD1B2;--pine-soft:#22352C;--sun:#F5C452;--sun-soft:#3A3115;--line:#2D3B34;--good:#7ED3A0;--mid:#F0B86B;--hard:#F08C78;--on-pine:#121A16;
+ --c1:#8FD1B2;--c2:#4FA884;--c3:#F5C452;--c4:#E88B6C;--c5:#97A8A0;--c6:#8C9EE0;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#121A16;--surface:#1A241F;--ink:#E7EEE9;--muted:#A3B2AA;--pine:#8FD1B2;--pine-soft:#22352C;--sun:#F5C452;--sun-soft:#3A3115;--line:#2D3B34;--good:#7ED3A0;--mid:#F0B86B;--hard:#F08C78;--on-pine:#121A16;
+ --c1:#8FD1B2;--c2:#4FA884;--c3:#F5C452;--c4:#E88B6C;--c5:#97A8A0;--c6:#8C9EE0;color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans Hebrew","Arial Hebrew",Arial,sans-serif;font-size:17px;line-height:1.6}
+h1,h2,h3{font-family:"Suez One","IBM Plex Sans Hebrew",Georgia,serif;font-weight:400;line-height:1.25;margin:0}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--pine);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+.top{position:sticky;top:0;z-index:9;background:var(--paper);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:56px}
+.brand{font-family:"Suez One",serif;font-size:1.4rem;color:var(--pine);text-decoration:none}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tabs a{text-decoration:none;color:var(--muted);padding:6px 12px;border-radius:999px;font-size:.92rem;white-space:nowrap}
+.tabs a[aria-current="page"]{background:var(--pine-soft);color:var(--pine);font-weight:600}
+h1{font-size:clamp(1.6rem,4vw,2.2rem);color:var(--pine);margin:22px 0 6px}
+.lead{color:var(--muted);margin:0 0 18px;max-width:70ch}
+.layout{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:900px){.layout{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:14px}
+.card h2{font-size:1.15rem;color:var(--pine);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.field{margin:10px 0}
+.field label,.lbl{display:block;font-size:.88rem;font-weight:600;margin-bottom:4px}
+.field input[type=number],.field input[type=text],.field select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hint{font-size:.8rem;color:var(--muted);margin:3px 0 0}
+.unk{font-size:.8rem;color:var(--mid);margin:3px 0 0}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:.9rem}
+.seg button[aria-pressed="true"]{background:var(--pine);border-color:var(--pine);color:var(--on-pine);font-weight:600}
+.chk{display:flex;gap:8px;align-items:flex-start;margin:6px 0;font-size:.92rem;cursor:pointer}
+.chk input{margin-top:5px;accent-color:var(--pine)}
+.chk small{color:var(--muted);display:block}
+.sticky{position:sticky;top:68px}
+@media (max-width:900px){.sticky{position:static}}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.kpi{background:var(--paper);border-radius:12px;padding:10px 12px}
+.kpi span{display:block;font-size:.8rem;color:var(--muted)}
+.kpi b{font-size:1.35rem;font-variant-numeric:tabular-nums}
+.kpi.good b{color:var(--good)}.kpi.bad b{color:var(--hard)}
+.verdict{border-radius:12px;padding:10px 14px;margin:0 0 12px;font-weight:500}
+.verdict.good{background:color-mix(in srgb,var(--good) 14%,transparent)}
+.verdict.bad{background:color-mix(in srgb,var(--hard) 14%,transparent)}
+.verdict.mid{background:var(--sun-soft)}
+.chart{width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.8rem;color:var(--muted);margin:6px 0 0}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-end:5px;vertical-align:middle}
+.tbl-wrap{overflow-x:auto}
+table.yt{border-collapse:collapse;width:100%;font-size:.88rem;font-variant-numeric:tabular-nums}
+.yt th,.yt td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:start;white-space:nowrap}
+.yt thead th{color:var(--muted);font-weight:600;font-size:.8rem}
+.yt tr.tot td{font-weight:700;border-top:2px solid var(--line)}
+.neg{color:var(--hard)}.pos{color:var(--good)}
+.btn{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:10px;padding:8px 14px;background:var(--pine);color:var(--on-pine);cursor:pointer;font-weight:600;text-decoration:none;font-size:.9rem}
+.btn.ghost{background:transparent;color:var(--pine);border:1px solid var(--pine)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.msg{font-size:.88rem;background:var(--pine-soft);border-radius:10px;padding:8px 12px;margin-top:10px}
+.tips li{margin:4px 0}
+.foot{font-size:.8rem;color:var(--muted);margin:16px 0 40px}
+.foot a{color:inherit}
+.hidden{display:none!important}
+.mobbar{display:none}
+@media (max-width:900px){.mobbar{display:flex;position:fixed;inset-inline:10px;bottom:10px;z-index:8;background:var(--pine);color:var(--on-pine);border-radius:14px;padding:10px 14px;justify-content:space-between;align-items:center;gap:10px;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.2);font-size:.92rem}.mobbar b{font-size:1.05rem}body{padding-bottom:70px}}
+@media print{.mobbar{display:none!important}}
+@media print{.top,.actions,#f{display:none}.layout{display:block}.sticky{position:static}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html">כיוון</a>
+  <nav class="tabs" aria-label="ניווט">
+    <a href="index.html">התאמה אישית</a>
+    <a href="curricula.html">תוכניות לימודים</a>
+    <a href="finance.html" aria-current="page">סימולטור פיננסי</a>
+    <a href="data.html">מאגר הנתונים</a>
+  </nav>
+</div></header>
+<main class="wrap" id="main">
+<h1>סימולטור פיננסי לתואר</h1>
+<p class="lead">כמה יעלה התואר, כמה צריך לעבוד, ואיך ייראה החיסכון שלכם לאורך השנים. שכר הלימוד, שכר הדירה בעיר, המעונות והמלגות נשלפים מהמאגר. את כל השאר אפשר לשנות לפי המצב שלכם. הסכומים במחירי היום.</p>
+
+<div class="layout">
+<form id="f" onsubmit="return false" aria-label="נתוני הסימולציה">
+  <section class="card">
+    <h2>🎓 מה לומדים</h2>
+    <div class="field"><label for="inst">מוסד</label><select id="inst"></select></div>
+    <div class="field"><label for="deg">תואר</label><select id="deg"></select></div>
+    <div class="row2">
+      <div class="field"><label for="tuition">שכר לימוד לשנה (₪)</label><input type="number" id="tuition" min="0" step="100"><p class="hint" id="tuitionNote"></p></div>
+      <div class="field"><label for="years">שנות לימוד</label><input type="number" id="years" min="1" max="7" step="1"></div>
+    </div>
+    <div class="field"><label for="fees">תשלומים נלווים לשנה (₪)</label><input type="number" id="fees" min="0" step="10"><p class="hint" id="feesNote"></p></div>
+  </section>
+
+  <section class="card">
+    <h2>🏠 איפה גרים</h2>
+    <div class="seg" id="housing" role="group" aria-label="סוג מגורים">
+      <button type="button" data-v="parents" aria-pressed="true">אצל ההורים</button>
+      <button type="button" data-v="dorm" aria-pressed="false">מעונות</button>
+      <button type="button" data-v="shared" aria-pressed="false">דירת שותפים</button>
+      <button type="button" data-v="alone" aria-pressed="false">דירה לבד / זוג</button>
+    </div>
+    <div id="hDorm" class="field hidden"><label for="dormSel">יחידת מגורים</label><select id="dormSel"></select><p class="unk" id="dormNote"></p></div>
+    <div id="hShared" class="field hidden"><label for="mates">כמה גרים בדירה (כולל אתכם)</label><input type="number" id="mates" min="2" max="8" value="3"></div>
+    <div id="hRent" class="row2 hidden">
+      <div class="field"><label for="rent">שכר דירה – החלק שלכם (₪ לחודש)</label><input type="number" id="rent" min="0" step="50"><p class="hint" id="rentNote"></p></div>
+      <div class="field"><label for="bills">חשבונות וארנונה (₪ לחודש)</label><input type="number" id="bills" min="0" step="25" value="350"><p class="hint">הערכה – הזינו את הסכום שלכם</p></div>
+    </div>
+    <div id="hMonths" class="field hidden"><label for="hMonthsN">חודשי שכירות בשנה</label><input type="number" id="hMonthsN" min="1" max="12" value="12"><p class="hint">במעונות לפעמים משלמים רק על חודשי הלימודים – בדקו בחוזה</p></div>
+  </section>
+
+  <section class="card">
+    <h2>🛒 הוצאות מחיה בחודש</h2>
+    <p class="hint" style="margin-top:-4px">אלה ערכי פתיחה להמחשה בלבד. כל אחד מוציא אחרת, אז הזינו את הסכומים שלכם.</p>
+    <div class="row2">
+      <div class="field"><label for="food">אוכל וקניות (₪)</label><input type="number" id="food" min="0" step="50" value="1200"></div>
+      <div class="field"><label for="transport">תחבורה / דלק (₪)</label><input type="number" id="transport" min="0" step="25" value="250"><p class="hint">לסטודנטים יש הנחה בתחבורה הציבורית</p></div>
+      <div class="field"><label for="phone">טלפון, אינטרנט, מנויים (₪)</label><input type="number" id="phone" min="0" step="10" value="120"></div>
+      <div class="field"><label for="other">בילויים ושונות (₪)</label><input type="number" id="other" min="0" step="50" value="400"></div>
+    </div>
+    <div class="field"><label for="books">ספרים, ציוד ומחשב (₪ לשנה)</label><input type="number" id="books" min="0" step="100" value="1000"></div>
+  </section>
+
+  <section class="card">
+    <h2>💼 עבודה</h2>
+    <div class="row2">
+      <div class="field"><label for="hours">שעות בשבוע בתקופת הלימודים</label><input type="number" id="hours" min="0" max="45" step="1" value="12"></div>
+      <div class="field"><label for="wage">שכר לשעה (₪, ברוטו)</label><input type="number" id="wage" min="0" step="0.5" value="35.40"><p class="hint">שכר המינימום מ-1.4.2026: 35.40 ₪ לשעה</p></div>
+      <div class="field"><label for="summerHours">שעות בשבוע בחופשת הקיץ</label><input type="number" id="summerHours" min="0" max="45" step="1" value="30"></div>
+      <div class="field"><label for="summerWeeks">שבועות עבודה בקיץ</label><input type="number" id="summerWeeks" min="0" max="16" step="1" value="10"></div>
+    </div>
+    <p class="hint">החישוב מניח כ-30 שבועות לימודים בשנה (שני סמסטרים ותקופות מבחנים, בניכוי חופשות). השכר ברוטו – בפועל הנטו נמוך מעט בגלל ניכויי ביטוח לאומי ובריאות.</p>
+  </section>
+
+  <section class="card">
+    <h2>🎁 מלגות, עזרה וחסכונות</h2>
+    <div id="schList"></div>
+    <div class="row2">
+      <div class="field"><label for="otherSch">מלגה אחרת (₪ לשנה)</label><input type="number" id="otherSch" min="0" step="500" value="0"></div>
+      <div class="field"><label for="parents">עזרה מההורים (₪ לחודש)</label><input type="number" id="parents" min="0" step="100" value="0"></div>
+    </div>
+    <div class="field"><label class="lbl" for="svcType">שירות צבאי / לאומי (לחישוב פיקדון ומענק שחרור)</label>
+      <div class="row2">
+        <select id="svcType" aria-label="סוג שירות"><option value="">לא רלוונטי</option><option value="combat">לוחם/ת</option><option value="support">תומך/ת לחימה</option><option value="rear">עורפי/ת</option></select>
+        <input type="number" id="svcMonths" min="0" max="48" placeholder="חודשי שירות" aria-label="חודשי שירות">
+      </div>
+      <p class="hint" id="svcNote"></p>
+    </div>
+    <div class="field"><label for="savings">חסכונות אחרים בתחילת התואר (₪)</label><input type="number" id="savings" min="0" step="1000" value="0"></div>
+  </section>
+
+  <section class="card">
+    <h2>🏦 הלוואה (לא חובה)</h2>
+    <div class="row2">
+      <div class="field"><label for="loan">סכום הלוואה לשנה (₪)</label><input type="number" id="loan" min="0" step="1000" value="0"></div>
+      <div class="field"><label for="rate">ריבית שנתית (%)</label><input type="number" id="rate" min="0" max="20" step="0.1" value=""><p class="unk">הריבית לא ידועה. יש לוודא ולבדוק מול הבנק או הקרן.</p></div>
+      <div class="field"><label for="repay">שנים להחזר אחרי התואר</label><input type="number" id="repay" min="1" max="15" value="5"></div>
+    </div>
+  </section>
+</form>
+
+<div class="sticky" id="results">
+  <section class="card" aria-live="polite">
+    <h2>📊 התמונה הכספית</h2>
+    <div id="verdict" class="verdict"></div>
+    <div class="kpis" id="kpis"></div>
+    <svg class="chart" id="chart" viewBox="0 0 640 300" role="img" aria-label="הוצאות והכנסות לפי שנה ויתרה מצטברת"></svg>
+    <div class="legend" id="legend"></div>
+  </section>
+  <section class="card">
+    <h2>📅 שנה אחר שנה</h2>
+    <div class="tbl-wrap"><table class="yt" id="yt"></table></div>
+  </section>
+  <section class="card">
+    <h2>💡 מה אפשר לשנות</h2>
+    <ul class="tips" id="tips"></ul>
+    <div class="actions">
+      <button type="button" class="btn" id="shareBtn">🔗 שמירה ושיתוף</button>
+      <button type="button" class="btn ghost" id="saveScen">＋ שמירה כתרחיש להשוואה</button>
+      <button type="button" class="btn ghost" id="printBtn">🖨️ הדפסה / PDF</button>
+    </div>
+    <div id="msg" class="msg" hidden></div>
+  </section>
+  <section class="card" id="scenCard" hidden>
+    <h2>⚖️ השוואת תרחישים</h2>
+    <div class="tbl-wrap"><table class="yt" id="scenT"></table></div>
+  </section>
+</div>
+</div>
+<a class="mobbar" id="mobbar" href="#results"><span>יתרה בסוף התואר: <b id="mobEnd">—</b></span><span>לתוצאות ↓</span></a>
+<p class="foot">מקורות: שכר לימוד ותשלומים נלווים – אתרי המוסדות (במאגר הנתונים); שכר דירה ממוצע – הלמ״ס 2025; מעונות – מחירוני המוסדות; מלגות, פיקדון ומענק שחרור – האגף לחיילים משוחררים והגופים המעניקים; שכר מינימום – <a href="https://www.btl.gov.il/MEDINIYUT/GENERALDATA/Pages/%D7%A9%D7%9B%D7%A8%20%D7%9E%D7%99%D7%A0%D7%99%D7%9E%D7%95%D7%9D.aspx" target="_blank" rel="noopener">ביטוח לאומי</a>. הסימולציה היא הערכה בלבד ואינה ייעוץ פיננסי. יש לוודא כל סכום מול הגורם הרשמי.</p>
+</main>
+
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const UNK='לא ידוע. יש לוודא ולבדוק';
+const nf=n=>Math.round(n).toLocaleString('he-IL');
+const money=n=>(n<0?'−':'')+nf(Math.abs(n))+' ₪';
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const num=id=>{const v=parseFloat(($(id)||{}).value);return isFinite(v)?v:0};
+const STUDY_WEEKS=30;
+const DB={degrees:[],institutions:[],living:[],dorms:[],scholarships:[],deposit:[]};
+// מלגות לבחירה: סכום שנתי מייצג (מינימום מהמאגר, או ערך מקסימלי כשאין מינימום). ממדים מכסה שכ״ל בלבד.
+const SCH=[
+ {id:'mimadim',name:'ממדים ללימודים',key:'ממדים',note:'מממנת שכר לימוד בלבד (עד גובה שכ״ל אוניברסיטאי)',tuitionOnly:true},
+ {id:'milgo',name:'מיל-GO',key:'מיל-GO',note:'מלגה סוציו-אקונומית'},
+ {id:'periphery',name:'לומדים בפריפריה',key:'לומדים בפריפריה',note:'למשוחררים שלומדים בפריפריה'},
+ {id:'perach',name:'פר״ח',key:'פר"ח',note:'דורש כ-4 שעות חונכות בשבוע'},
+ {id:'impact',name:'IMPACT!',key:'IMPACT',note:'ללוחמים משוחררים, דורש התנדבות'},
+ {id:'mashpiim',name:'משפיעים בלימודים',key:'משפיעים',note:'דורש התנדבות'},
+];
+let housing='parents';
+
+async function load(){
+  try{const t=await (await fetch('data.html')).text();const m=t.match(/<script id="data" type="application\/json">([\s\S]*?)<\/script>/);const raw=JSON.parse(m[1]);
+    DB.degrees=(raw['תארים']||[]).filter(d=>d['סטטוס']!=='לא קיים במוסד');DB.institutions=raw['מוסדות']||[];DB.living=raw['עלויות מחיה']||[];DB.dorms=(raw['מעונות']||[]).filter(d=>d['מוסד']);DB.scholarships=raw['מלגות']||[];DB.deposit=raw['פיקדון']||[];
+  }catch(e){console.warn('טעינת המאגר נכשלה',e)}
+  SCH.forEach(s=>{const r=DB.scholarships.find(x=>(x['מלגה']||'').includes(s.key));s.min=r?r['סכום מינימלי (₪)']:null;s.max=r?r['סכום מקסימלי (₪)']:null;s.amount=s.min||s.max||0;});
+  $('schList').innerHTML=SCH.map(s=>`<label class="chk"><input type="checkbox" id="sch_${s.id}"><span>${esc(s.name)} – ${s.amount?(s.min&&s.max&&s.min!==s.max?`${nf(s.min)}–${nf(s.max)} ₪ לשנה`:`עד ${nf(s.amount)} ₪ לשנה`):UNK}<small>${esc(s.note)}${s.amount?' · בחישוב: '+nf(s.amount)+' ₪':''}</small></span></label>`).join('');
+  const withDeg=new Set(DB.degrees.map(d=>d['מזהה מוסד']));
+  const insts=DB.institutions.filter(i=>withDeg.has(i['מזהה'])).sort((a,b)=>a['שם המוסד'].localeCompare(b['שם המוסד'],'he'));
+  $('inst').innerHTML=insts.map(i=>`<option value="${esc(i['מזהה'])}">${esc(i['שם המוסד'])}</option>`).join('');
+  const sp=new URLSearchParams(location.search);
+  if(sp.get('inst')&&insts.some(i=>i['מזהה']===sp.get('inst')))$('inst').value=sp.get('inst');
+  onInst(sp.get('deg'));
+  bind();
+  if(!restore())recalc();
+}
+const instObj=()=>DB.institutions.find(i=>i['מזהה']===$('inst').value)||{};
+const degObj=()=>DB.degrees.find(d=>d['מזהה מוסד']===$('inst').value&&d['תחום לימוד']===$('deg').value)||null;
+function cityRent(inst){const c=inst['עיר']||'';return DB.living.find(x=>x['עיר']===c)||DB.living.find(x=>(x['מוסדות']||'').split(/,\s*/).includes(inst['מזהה']))||null}
+function dormsFor(inst){const n=inst['שם המוסד']||'';return DB.dorms.filter(d=>{const k=String(d['מוסד']).split(' – ')[0].trim();return k&&n.includes(k)})}
+
+function onInst(wantDeg){
+  const id=$('inst').value;const degs=DB.degrees.filter(d=>d['מזהה מוסד']===id).map(d=>d['תחום לימוד']).sort((a,b)=>a.localeCompare(b,'he'));
+  $('deg').innerHTML=degs.map(d=>`<option>${esc(d)}</option>`).join('');
+  if(wantDeg&&degs.includes(wantDeg))$('deg').value=wantDeg;
+  const inst=instObj();
+  // תשלומים נלווים
+  const fee=(Number(inst['דמי אבטחה שנתיים – חובה (₪)'])||0)+(Number(inst['רווחה + אגודה – רשות (₪)'])||0);
+  $('fees').value=fee||'';
+  $('feesNote').innerHTML=fee?`דמי אבטחה ${nf(inst['דמי אבטחה שנתיים – חובה (₪)']||0)} ₪ + רווחה ואגודה ${nf(inst['רווחה + אגודה – רשות (₪)']||0)} ₪${inst['דמי רישום (₪)']?` · דמי רישום חד-פעמיים: ${nf(inst['דמי רישום (₪)'])} ₪ (נוספים לשנה א׳)`:''}`:`<span class="unk">${UNK} – הזינו לפי אתר המוסד</span>`;
+  // מעונות
+  const ds=dormsFor(inst);
+  $('dormSel').innerHTML=ds.length?ds.map((d,i)=>{const mn=d['מחיר מינימלי (₪)'],mx=d['מחיר מקסימלי (₪)'];return `<option value="${Math.round(((mn||0)+(mx||mn||0))/2)}">${esc(d['סוג יחידה'])} – ${mn===mx?nf(mn):nf(mn)+'–'+nf(mx)} ₪</option>`}).join('')+'<option value="">אחר – אזין בעצמי</option>':'<option value="">אין מחירון במאגר – אזין בעצמי</option>';
+  $('dormNote').textContent=ds.length?'מחירון המוסד (בחישוב: אמצע הטווח). '+(ds[0]['מה כלול']||''):'מחירי המעונות של המוסד הזה: '+UNK+'.';
+  onDeg();
+}
+function onDeg(){
+  const d=degObj();const t=d?Number(d['שכר לימוד שנתי (₪)'])||0:0;
+  $('tuition').value=t||'';$('tuitionNote').innerHTML=t?'לפי המאגר':`<span class="unk">${UNK} – הזינו לפי אתר המוסד</span>`;
+  $('years').value=(d&&d['משך (שנים)'])||3;
+  applyHousing(true);
+}
+function applyHousing(resetRent){
+  qsa('#housing button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===housing)));
+  $('hDorm').classList.toggle('hidden',housing!=='dorm');$('hShared').classList.toggle('hidden',housing!=='shared');
+  $('hRent').classList.toggle('hidden',housing==='parents');$('hMonths').classList.toggle('hidden',housing==='parents');
+  if(!resetRent)return;
+  const inst=instObj();const cr=cityRent(inst);
+  if(housing==='dorm'){$('rent').value=$('dormSel').value||'';$('bills').value=$('dormSel').value?150:350;$('rentNote').textContent=$('dormSel').value?'לפי מחירון המעונות':UNK;}
+  else if(housing==='shared'||housing==='alone'){
+    if(cr&&cr['שכ"ד']){const div=housing==='shared'?Math.max(2,num('mates')||3):1;$('rent').value=Math.round(cr['שכ"ד']/div/50)*50;$('bills').value=housing==='shared'?350:600;
+      $('rentNote').textContent=`ממוצע הלמ״ס בעיר ${cr['עיר']}: ${nf(cr['שכ"ד'])} ₪ לדירה${div>1?` ÷ ${div} דיירים`:''}. זו הערכה – בדירה ספציפית המחיר אחר.`}
+    else{$('rent').value='';$('rentNote').innerHTML=`<span class="unk">שכר הדירה הממוצע בעיר: ${UNK}</span>`}
+  }
+}
+const qsa=(s,el=document)=>[...el.querySelectorAll(s)];
+
+function depositCalc(){const t=$('svcType').value,m=num('svcMonths');if(!t||!m){$('svcNote').textContent='';return{dep:0,grant:0}}
+  const col={combat:'לוחם (₪ לחודש שירות)',support:'תומך לחימה (₪ לחודש שירות)',rear:'עורפי (₪ לחודש שירות)'}[t];
+  const dR=DB.deposit.find(x=>x['רכיב']==='פיקדון אישי'),gR=DB.deposit.find(x=>x['רכיב']==='מענק שחרור');
+  const dep=dR&&dR[col]?dR[col]*m:0,grant=gR&&gR[col]?gR[col]*m:0;
+  $('svcNote').textContent=dep?`פיקדון אישי: כ-${nf(dep)} ₪ (מותר לשימוש ללימודים) · מענק שחרור: כ-${nf(grant)} ₪${gR&&gR['אמינות']!=='מאומת'?' (לוודא)':''}. שניהם נכנסים לחיסכון ההתחלתי.`:UNK;
+  return{dep,grant}}
+
+function simulate(){
+  const Y=Math.max(1,Math.min(7,Math.round(num('years'))||3));
+  const inst=instObj();const reg=Number(inst['דמי רישום (₪)'])||0;
+  const tuition=num('tuition'),fees=num('fees');
+  const rentM=housing==='parents'?0:num('rent')+num('bills'),months=housing==='parents'?0:Math.max(1,Math.min(12,num('hMonthsN')||12));
+  const liveM=num('food')+num('transport')+num('phone')+num('other');
+  const books=num('books');
+  const work=num('hours')*num('wage')*STUDY_WEEKS+num('summerHours')*num('wage')*num('summerWeeks');
+  const chosen=SCH.filter(s=>$('sch_'+s.id)&&$('sch_'+s.id).checked);
+  const schTuition=chosen.filter(s=>s.tuitionOnly).reduce((a,s)=>a+Math.min(s.amount,tuition),0);
+  const schCash=chosen.filter(s=>!s.tuitionOnly).reduce((a,s)=>a+s.amount,0)+num('otherSch');
+  const parents=num('parents')*12;
+  const {dep,grant}=depositCalc();
+  const start=num('savings')+dep+grant;
+  const loanY=num('loan'),rate=num('rate')/100,repayN=Math.max(1,num('repay')||5);
+  let bal=start,debt=0;const rows=[];
+  for(let y=1;y<=Y;y++){
+    const c={tuition:Math.max(0,tuition-schTuition)+(y===1?reg:0),fees,rent:rentM*months,living:liveM*12+books};
+    const inc={work,sch:schCash,parents,loan:loanY};
+    const cost=c.tuition+c.fees+c.rent+c.living,income=inc.work+inc.sch+inc.parents+inc.loan;
+    debt=debt*(1+rate)+loanY;bal+=income-cost;
+    rows.push({y,c,inc,cost,income,net:income-cost,bal,schTuition});
+  }
+  const r=rate/12,n=repayN*12;const pay=debt?(r?debt*r/(1-Math.pow(1+r,-n)):debt/n):0;
+  const totalCost=rows.reduce((a,x)=>a+x.cost,0)+schTuition*Y,totalIn=rows.reduce((a,x)=>a+x.income,0)+schTuition*Y;
+  const firstNeg=rows.find(x=>x.bal<0);
+  return{Y,rows,start,dep,grant,totalCost,totalIn,end:bal,debt,pay,firstNeg,monthlyGap:(rows.reduce((a,x)=>a+x.net,0))/(Y*12),rentM,liveM,work,schCash,schTuition,tuition,reg};
+}
+
+function recalc(){
+  const S=simulate();
+  const v=$('verdict');
+  if(S.end>=0&&!S.firstNeg){v.className='verdict good';v.innerHTML=`✓ התוכנית מחזיקה: בסוף התואר יישארו לכם כ-<b>${money(S.end)}</b>${S.debt?` (וחוב הלוואה של ${money(S.debt)})`:''}.`}
+  else if(S.firstNeg){const short=-Math.min(...S.rows.map(x=>x.bal));const perM=short/(S.Y*12);v.className=S.end<0?'verdict bad':'verdict mid';
+    v.innerHTML=`⚠ הכסף נגמר ב<b>שנה ${'אבגדהוז'[S.firstNeg.y-1]}׳</b>. חסרים בסך הכול כ-<b>${money(short)}</b> – בערך <b>${money(perM)}</b> בחודש לאורך התואר, או כ-${Math.ceil(perM/Math.max(1,num('wage'))/4.33)} שעות עבודה נוספות בשבוע.`}
+  if(housing!=='parents'&&$('rent').value===''){v.className='verdict mid';v.innerHTML='⚠ '+(housing==='dorm'?'מחיר המעונות':'שכר הדירה')+` במקום הזה: ${UNK}. הזינו את שכר הדירה החודשי כדי שהחישוב יכלול אותו – בינתיים הוא לא נספר.`}
+  $('kpis').innerHTML=[
+    ['עלות כוללת לתואר',money(S.totalCost),''],
+    ['הכנסות, מלגות ועזרה',money(S.totalIn),''],
+    ['פער חודשי ממוצע',money(S.monthlyGap),S.monthlyGap>=0?'good':'bad'],
+    ['יתרה בסוף התואר',money(S.end),S.end>=0?'good':'bad'],
+    ...(S.debt?[['חוב הלוואה בסיום',money(S.debt),''],['החזר חודשי אחרי התואר',money(S.pay)+(num('rate')?'':' *'),'']]:[]),
+  ].map(([l,b,c])=>`<div class="kpi ${c}"><span>${l}</span><b>${b}</b></div>`).join('');
+  $('mobEnd').textContent=money(S.end);
+  drawChart(S);drawTable(S);drawTips(S);
+}
+
+function drawChart(S){
+  const W=640,H=300,P={l:64,r:16,t:16,b:34};const cols=[['tuition','שכר לימוד','var(--c1)'],['fees','תשלומים נלווים','var(--c5)'],['rent','מגורים','var(--c3)'],['living','מחיה וציוד','var(--c4)']];
+  const maxC=Math.max(1,...S.rows.map(r=>Math.max(r.cost,r.income)));const bals=[S.start,...S.rows.map(r=>r.bal)];const bMin=Math.min(0,...bals),bMax=Math.max(1,...bals);
+  const iw=W-P.l-P.r,ih=H-P.t-P.b,bw=Math.min(70,iw/S.Y/3);const x0=i=>P.l+iw*(S.Y-i-.5)/S.Y;
+  const yC=v=>P.t+ih-(v/maxC)*ih;const yB=v=>P.t+ih-((v-bMin)/(bMax-bMin))*ih;
+  let g='';
+  // קווי רשת + ציר יתרה מימין
+  for(let k=0;k<=4;k++){const v=bMin+(bMax-bMin)*k/4;const y=yB(v);g+=`<line x1="${P.l}" x2="${W-P.r}" y1="${y}" y2="${y}" stroke="var(--line)" stroke-width="1"/><text x="${P.l-6}" y="${y+4}" font-size="11" fill="var(--muted)" text-anchor="end">${nfK(v)}</text>`}
+  if(bMin<0){const y=yB(0);g+=`<line x1="${P.l}" x2="${W-P.r}" y1="${y}" y2="${y}" stroke="var(--hard)" stroke-dasharray="4 3" stroke-width="1.2"/>`}
+  S.rows.forEach((r,i)=>{let acc=0;const xc=x0(i);
+    cols.forEach(([k,,c])=>{const v=r.c[k];if(v<=0)return;const y1=yC(acc+v),y2=yC(acc);g+=`<rect x="${xc+2}" y="${y1}" width="${bw}" height="${Math.max(0,y2-y1-1)}" fill="${c}" rx="2"><title>${k}: ${nf(v)} ₪</title></rect>`;acc+=v});
+    const hi=yC(r.income);g+=`<rect x="${xc-bw-2}" y="${hi}" width="${bw}" height="${Math.max(0,yC(0)-hi)}" fill="var(--c2)" opacity=".55" rx="2"><title>הכנסות: ${nf(r.income)} ₪</title></rect>`;
+    g+=`<text x="${xc}" y="${H-12}" font-size="12" fill="var(--muted)" text-anchor="middle">שנה ${'אבגדהוז'[i]}׳</text>`});
+  const pts=bals.map((b,i)=>[i===0?P.l+4:x0(i-1)+bw/2+2+ (i===0?0:0),yB(b)]);
+  pts[0][0]=W-P.r-4;for(let i=1;i<pts.length;i++)pts[i][0]=x0(i-1);
+  g+=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>`;
+  pts.forEach((p,i)=>{const b=bals[i];g+=`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="${b<0?'var(--hard)':'var(--ink)'}"><title>${i?'יתרה בסוף שנה '+'אבגדהוז'[i-1]+'׳':'חיסכון בהתחלה'}: ${nf(b)} ₪</title></circle>`});
+  $('chart').innerHTML=g;
+  $('legend').innerHTML=cols.map(([,l,c])=>`<span><i style="background:${c}"></i>${l}</span>`).join('')+`<span><i style="background:var(--c2);opacity:.55"></i>הכנסות</span><span><i style="background:var(--ink);height:3px"></i>יתרה מצטברת (ציר שמאלי)</span>`;
+}
+function nfK(v){const a=Math.abs(v);return (v<0?'−':'')+(a>=1000?Math.round(a/1000)+'K':Math.round(a))}
+
+function drawTable(S){
+  const h=`<thead><tr><th>שנה</th><th>שכ״ל ונלווים</th><th>מגורים</th><th>מחיה וציוד</th><th>עבודה</th><th>מלגות ועזרה</th>${num('loan')?'<th>הלוואה</th>':''}<th>נטו</th><th>יתרה</th></tr></thead>`;
+  const tr=S.rows.map(r=>`<tr><td>${'אבגדהוז'[r.y-1]}׳</td><td>${nf(r.c.tuition+r.c.fees)}</td><td>${nf(r.c.rent)}</td><td>${nf(r.c.living)}</td><td>${nf(r.inc.work)}</td><td>${nf(r.inc.sch+r.inc.parents)}</td>${num('loan')?`<td>${nf(r.inc.loan)}</td>`:''}<td class="${r.net<0?'neg':'pos'}">${money(r.net)}</td><td class="${r.bal<0?'neg':''}">${money(r.bal)}</td></tr>`).join('');
+  const sum=k=>S.rows.reduce((a,r)=>a+k(r),0);
+  const tot=`<tr class="tot"><td>סה״כ</td><td>${nf(sum(r=>r.c.tuition+r.c.fees))}</td><td>${nf(sum(r=>r.c.rent))}</td><td>${nf(sum(r=>r.c.living))}</td><td>${nf(sum(r=>r.inc.work))}</td><td>${nf(sum(r=>r.inc.sch+r.inc.parents))}</td>${num('loan')?`<td>${nf(sum(r=>r.inc.loan))}</td>`:''}<td class="${sum(r=>r.net)<0?'neg':'pos'}">${money(sum(r=>r.net))}</td><td></td></tr>`;
+  $('yt').innerHTML=h+'<tbody>'+`<tr><td colspan="${num('loan')?8:7}">חיסכון בתחילת התואר${S.dep||S.grant?' (כולל פיקדון ומענק שחרור)':''}</td><td>${money(S.start)}</td></tr>`+tr+tot+'</tbody>'+(S.schTuition?`<caption style="caption-side:bottom;text-align:start;font-size:.8rem;color:var(--muted);padding-top:6px">שכר הלימוד בטבלה הוא אחרי ממדים ללימודים (${nf(S.schTuition)} ₪ בשנה ממומנים ישירות).</caption>`:'');
+}
+
+function drawTips(S){
+  const t=[];const w=Math.max(1,num('wage'));
+  if(housing!=='parents'&&num('rent')){const save=S.rentM*(num('hMonthsN')||12)*S.Y;t.push(`מגורים אצל ההורים היו חוסכים כ-<b>${money(save)}</b> לאורך התואר${housing!=='dorm'&&dormsFor(instObj()).length?'. גם מעונות יכולים להיות זולים משכירות – בדקו את מחירון המוסד':''}.`)}
+  if(!$('sch_milgo').checked||!$('sch_perach').checked)t.push('מלגות שלא סימנתם, כמו מיל-GO ופר״ח, יכולות להוסיף אלפי שקלים בשנה. הרשימה המלאה ותנאי הזכאות נמצאים ב<a href="data.html#scholarships">מאגר המלגות</a>.');
+  if($('svcType').value&&!$('sch_mimadim').checked&&$('svcType').value==='combat')t.push('לוחמים משוחררים זכאים בדרך כלל ל<b>ממדים ללימודים</b>, שמממנת את שכר הלימוד. סמנו אותה כדי לראות את ההשפעה.');
+  if(S.monthlyGap<0)t.push(`עוד <b>${Math.ceil(-S.monthlyGap/w/4.33)} שעות</b> עבודה בשבוע בשכר של ${w} ₪ לשעה סוגרות את הפער החודשי.`);
+  if(num('summerWeeks')<12&&S.monthlyGap<0)t.push(`כל שבוע עבודה נוסף בקיץ (${num('summerHours')||30} שעות) מוסיף כ-<b>${money((num('summerHours')||30)*w)}</b>.`);
+  if(num('loan')&&!num('rate'))t.push('הזינו את ריבית ההלוואה כדי לחשב את ההחזר החודשי האמיתי. בינתיים ההחזר מחושב בלי ריבית (*).');
+  if(!num('tuition'))t.push(`שכר הלימוד של התואר הזה במאגר: ${UNK}. הזינו אותו ידנית כדי שהחישוב יהיה מלא.`);
+  $('tips').innerHTML=t.map(x=>`<li>${x}</li>`).join('')||'<li>נראה טוב! אפשר לשמור את התרחיש ולנסות גרסה אחרת (עיר אחרת, מגורים אחרים).</li>';
+}
+
+// ===== תרחישים להשוואה =====
+const scen=[];
+function saveScenario(){const S=simulate();if(scen.length>=4)scen.shift();
+  const hn={parents:'אצל ההורים',dorm:'מעונות',shared:'דירת שותפים',alone:'דירה לבד'}[housing];
+  scen.push({name:`${$('deg').value} · ${(instObj()['שם המוסד']||'').replace(/^(האוניברסיטה|אוניברסיטת|המכללה האקדמית|המרכז האקדמי)\s*/,'')}`,h:hn,hours:num('hours'),S});drawScen();
+  showMsg('✓ התרחיש נשמר. שנו משהו (מוסד, מגורים, שעות עבודה) ושמרו שוב כדי להשוות.')}
+function drawScen(){$('scenCard').hidden=!scen.length;
+  const rows=[['מגורים',s=>s.h],['שעות עבודה בשבוע',s=>s.hours],['עלות כוללת',s=>money(s.S.totalCost)],['הכנסות ומלגות',s=>money(s.S.totalIn)],['פער חודשי',s=>`<span class="${s.S.monthlyGap<0?'neg':'pos'}">${money(s.S.monthlyGap)}</span>`],['יתרה בסוף',s=>`<span class="${s.S.end<0?'neg':'pos'}">${money(s.S.end)}</span>`]];
+  $('scenT').innerHTML=`<thead><tr><th></th>${scen.map((s,i)=>`<th>${esc(s.name)} <button type="button" data-rm="${i}" aria-label="הסרת התרחיש" style="border:0;background:none;cursor:pointer;color:var(--muted)">✕</button></th>`).join('')}</tr></thead><tbody>${rows.map(([l,f])=>`<tr><th scope="row">${l}</th>${scen.map(s=>`<td>${f(s)}</td>`).join('')}</tr>`).join('')}</tbody>`;
+  qsa('[data-rm]',$('scenT')).forEach(b=>b.onclick=()=>{scen.splice(+b.dataset.rm,1);drawScen()})}
+
+// ===== שיתוף =====
+function snap(){const o={h:housing,inst:$('inst').value,deg:$('deg').value,v:{}};qsa('#f input,#f select').forEach(el=>{if(!el.id||el.id==='inst'||el.id==='deg')return;if(el.type==='checkbox'){if(el.checked)o.v[el.id]=1}else if(el.value!=='')o.v[el.id]=el.value});return o}
+function enc(s){const b=new TextEncoder().encode(s);let x='';b.forEach(c=>x+=String.fromCharCode(c));return btoa(x).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function dec(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return new TextDecoder().decode(Uint8Array.from(atob(s),c=>c.charCodeAt(0)))}
+function restore(){const m=location.hash.match(/^#s=([\w-]+)/);if(!m)return false;try{const o=JSON.parse(dec(m[1]));
+  if(o.inst&&[...$('inst').options].some(x=>x.value===o.inst)){$('inst').value=o.inst;onInst(o.deg)}housing=o.h||'parents';applyHousing(false);
+  qsa('#f input,#f select').forEach(el=>{if(!el.id||el.id==='inst'||el.id==='deg')return;if(el.type==='checkbox')el.checked=!!o.v[el.id];else if(o.v[el.id]!==undefined)el.value=o.v[el.id]});
+  recalc();return true}catch(e){console.warn('קישור לא תקין',e);return false}}
+async function share(){const url=location.href.split('#')[0].split('?')[0]+'#s='+enc(JSON.stringify(snap()));try{history.replaceState(null,'',url)}catch(e){}
+  if(navigator.share&&/Mobi|Android|iPhone/i.test(navigator.userAgent)){try{await navigator.share({title:'הסימולציה הפיננסית שלי – כיוון',url});showMsg('✓ הקישור שותף.');return}catch(e){}}
+  try{await navigator.clipboard.writeText(url);showMsg('✓ הקישור הועתק. הוא יחזיר בדיוק את הנתונים האלה.')}catch(e){showMsg(`העתיקו את הקישור: <input type="text" readonly value="${esc(url)}" style="width:100%" onclick="this.select()">`)}}
+function showMsg(t){const m=$('msg');m.innerHTML=t;m.hidden=false}
+
+function bind(){
+  $('inst').addEventListener('change',()=>{onInst();recalc()});
+  $('deg').addEventListener('change',()=>{onDeg();recalc()});
+  qsa('#housing button').forEach(b=>b.addEventListener('click',()=>{housing=b.dataset.v;applyHousing(true);recalc()}));
+  $('dormSel').addEventListener('change',()=>{applyHousing(true);recalc()});
+  $('mates').addEventListener('input',()=>{applyHousing(true);recalc()});
+  qsa('#f input,#f select').forEach(el=>{if(['inst','deg','dormSel','mates'].includes(el.id))return;el.addEventListener(el.type==='checkbox'||el.tagName==='SELECT'?'change':'input',recalc)});
+  $('shareBtn').onclick=share;$('saveScen').onclick=saveScenario;$('printBtn').onclick=()=>window.print();
+}
+load();
+})();
+</script>
+</body>
+</html>

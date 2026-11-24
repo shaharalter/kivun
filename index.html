@@ -244,6 +244,7 @@ body.cmp-on{padding-bottom:120px}
     <a href="#" id="tabMatch" aria-current="page">התאמה אישית</a>
     <a href="data.html" target="_blank" rel="noopener">מאגר הנתונים</a>
     <a href="curricula.html" target="_blank" rel="noopener">תוכניות לימודים</a>
+    <a href="finance.html" target="_blank" rel="noopener">סימולטור פיננסי</a>
   </nav>
 </div></header>
 
@@ -2097,6 +2098,7 @@ body.cmp-on{padding-bottom:120px}
                 ${inst && inst['הרשמה – קישור'] ? `<a href="${inst['הרשמה – קישור']}" target="_blank" rel="noopener" class="btn small">📝 להרשמה ↗</a>` : ''}
                 ${d['מקור (קישור)'] ? `<a href="${d['מקור (קישור)']}" target="_blank" rel="noopener" class="btn ghost small">לאתר התואר ↗</a>` : ''}
                 ${(CUR_AVAIL[d['מזהה מוסד']]||[]).includes(d['תחום לימוד']) ? `<a href="curricula.html?inst=${encodeURIComponent(d['מזהה מוסד'])}&deg=${encodeURIComponent(d['תחום לימוד'])}" target="_blank" rel="noopener" class="btn ghost small">📚 תוכנית לימודים</a>` : ''}
+                <a href="finance.html?inst=${encodeURIComponent(d['מזהה מוסד'])}&deg=${encodeURIComponent(d['תחום לימוד'])}" target="_blank" rel="noopener" class="btn ghost small">💰 סימולציה פיננסית</a>
               </div>
             </div>
           `}).join('')}
