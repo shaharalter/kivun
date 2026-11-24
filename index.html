@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>כיוון – הכוונה ללימודים, קבלה וחיי סטודנט</title>
+<meta name="description" content="כיוון – מה ללמוד, איפה, איך מתקבלים וכמה זה עולה. שאלון התאמה, חישוב סיכויי קבלה לפי ממוצע בגרות ופסיכומטרי, תוכניות לימודים, מעונות ועלויות – לתואר ראשון בישראל.">
+<meta property="og:title" content="כיוון – הכוונה ללימודים, קבלה וחיי סטודנט">
+<meta property="og:description" content="כיוון – מה ללמוד, איפה, איך מתקבלים וכמה זה עולה. שאלון התאמה, חישוב סיכויי קבלה לפי ממוצע בגרות ופסיכומטרי, תוכניות לימודים, מעונות ועלויות – לתואר ראשון בישראל.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="he_IL">
+<meta name="theme-color" content="#1f4d3d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f4d3d'/%3E%3Cpath d='M32 10 L44 34 L32 28 L20 34 Z' fill='%23f4c542'/%3E%3Ccircle cx='32' cy='44' r='8' fill='none' stroke='%23fff' stroke-width='4'/%3E%3C/svg%3E">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Suez+One&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1061,7 +1069,7 @@ body.cmp-on{padding-bottom:120px}
       return `
         <div class="subj fixed" data-midx="${idx}">
           <div class="s-title">${s.name} ${bonus ? `<span class="bonus-pill">+${bonus} בונוס</span>` : ''}<span class="s-tag">${s.tag}</span></div>
-          <select class="mand-u">
+          <select class="mand-u" aria-label="יחידות לימוד – ${s.name}">
             ${s.options.map(u => `<option value="${u}" ${s.units == u ? 'selected' : ''}>${u} יח״ל</option>`).join('')}
           </select>
           <input type="number" min="0" max="100" value="${s.grade}" placeholder="ציון" class="mand-g">
@@ -1111,7 +1119,7 @@ body.cmp-on{padding-bottom:120px}
     $('majors').innerHTML = STATE.majors.map((m, i) => `
       <div class="subj" data-idx="${i}">
         <input type="text" list="majorList" value="${m.name}" placeholder="בחר מרשימה (א׳–ב׳) או הקלד..." class="m-name">
-        <select class="m-units">
+        <select class="m-units" aria-label="יחידות לימוד במגמה">
           <option value="5" ${m.units == 5 ? 'selected' : ''}>5 יח״ל</option>
           <option value="4" ${m.units == 4 ? 'selected' : ''}>4 יח״ל</option>
           <option value="3" ${m.units == 3 ? 'selected' : ''}>3 יח״ל</option>
