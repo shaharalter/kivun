@@ -208,6 +208,9 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
 .cmp-check input{width:20px;height:20px;accent-color:var(--pine)}
 #cmpBar{position:fixed;inset-inline:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:40;max-width:720px;margin:0 auto;background:var(--pine);color:var(--on-pine);border-radius:18px;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:0 8px 28px rgba(0,0,0,.25)}
 #cmpBar.hidden{display:none}
+.res-actions{display:flex;gap:8px;flex-wrap:wrap}
+.share-msg{background:var(--pine-soft);border-radius:12px;padding:10px 14px;margin:8px 0}
+.share-msg.hidden{display:none}
 .improve{margin-top:8px;background:var(--pine-soft);border-radius:12px;padding:8px 12px;font-size:.92rem}
 .improve summary{cursor:pointer;font-weight:600;color:var(--pine)}
 .improve ul{margin:6px 0;padding-inline-start:18px}
@@ -802,7 +805,8 @@ body.cmp-on{padding-bottom:120px}
     const allCities = [...new Set([...ISRAEL_SETTLEMENTS, ...DB.living.map(c => c['עיר'])])].sort((a, b) => a.localeCompare(b, 'he'));
     $('cityList').innerHTML = allCities.map(c => `<option value="${c}">`).join('');
   }
-  loadDB();
+  const DB_READY = loadDB();
+  DB_READY.then(() => setTimeout(() => { try { restoreFromHash(); } catch (e) { console.warn(e); } }, 0));
 
   $('homeCity').addEventListener('input', validateHomeCity);
 
@@ -1545,6 +1549,7 @@ body.cmp-on{padding-bottom:120px}
         <thead><tr><th scope="col"></th>${items.map(it => `<th scope="col">${it.d['מוסד']}</th>`).join('')}</tr></thead>
         <tbody>${rows.map(([h, cells]) => `<tr><th scope="row">${h}</th>${cells.map(cell).join('')}</tr>`).join('')}</tbody>
       </table></div>
+      ${(() => { const cu = items.filter(it => (CUR_AVAIL[it.d['מזהה מוסד']] || []).includes(it.d['תחום לימוד'])); return cu.length >= 2 ? `<p style="margin-top:12px"><a class="btn small" href="curricula.html?cmp=${encodeURIComponent(cu.slice(0, 3).map(it => it.d['מזהה מוסד'] + '::' + it.d['תחום לימוד']).join('|'))}" target="_blank" rel="noopener">📚 השוואת תוכניות הלימודים זו לצד זו ↗</a></p>` : ''; })()}
       <p class="note" style="margin-top:12px">✓ = הזול ביותר מבין המוסדות שנבחרו. שכר הדירה הוא ממוצע עירוני (למ"ס) ולא מחיר דירה ספציפית. הנתונים להכוונה בלבד – יש לוודא מול המוסד.</p>`;
     $('cmpModal').classList.remove('hidden');
     $('cmpClose').focus();
@@ -1842,6 +1847,111 @@ body.cmp-on{padding-bottom:120px}
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // ===== שמירה ושיתוף התוצאות בקישור =====
+  function snapshotState() {
+    const st = {};
+    Object.entries(STATE).forEach(([k, v]) => { st[k] = v instanceof Set ? { __set: [...v] } : v; });
+    const inputs = {};
+    qsa('#wizard input[id], #wizard select[id], #wizard textarea[id]').forEach(el => {
+      if (el.type === 'checkbox' || el.type === 'radio') { if (el.checked) inputs[el.id] = true; }
+      else if (el.value !== '') inputs[el.id] = el.value;
+    });
+    return { v: 1, st, inputs };
+  }
+  function b64urlEncode(str) {
+    const bytes = new TextEncoder().encode(str); let bin = '';
+    bytes.forEach(b => { bin += String.fromCharCode(b); });
+    return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+  function b64urlDecode(s) {
+    s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '=';
+    const bin = atob(s); return new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0)));
+  }
+  function shareUrl() {
+    return location.href.split('#')[0] + '#r=' + b64urlEncode(JSON.stringify(snapshotState()));
+  }
+  async function shareResults() {
+    const url = shareUrl();
+    try { history.replaceState(null, '', url); } catch (e) {}
+    const msg = $('shareMsg');
+    const show = t => { msg.innerHTML = t; msg.classList.remove('hidden'); };
+    if (navigator.share && /Mobi|Android|iPhone/i.test(navigator.userAgent)) {
+      try { await navigator.share({ title: 'התוכנית שלי ב"כיוון"', url }); show('✓ הקישור שותף. אפשר לחזור לתוצאות בכל זמן דרך הקישור.'); return; } catch (e) { /* בוטל – ממשיכים להעתקה */ }
+    }
+    try { await navigator.clipboard.writeText(url); show('✓ הקישור הועתק. הדביקו אותו בוואטסאפ, במייל או בשמורים – הוא יחזיר בדיוק את התשובות והתוצאות האלה.'); }
+    catch (e) { show(`העתיקו את הקישור: <input type="text" readonly value="${url.replace(/"/g, '&quot;')}" style="width:100%" onclick="this.select()">`); }
+  }
+  function restoreFromHash() {
+    const m = location.hash.match(/^#r=([A-Za-z0-9_-]+)/);
+    if (!m) return false;
+    let snap;
+    try { snap = JSON.parse(b64urlDecode(m[1])); } catch (e) { console.warn('קישור שיתוף לא תקין', e); return false; }
+    if (!snap || !snap.st) return false;
+    Object.entries(snap.st).forEach(([k, v]) => {
+      if (!(k in STATE)) return;
+      STATE[k] = (v && v.__set) ? new Set(v.__set) : v;
+    });
+    qsa('#wizard input[id], #wizard select[id], #wizard textarea[id]').forEach(el => {
+      const v = (snap.inputs || {})[el.id];
+      if (el.type === 'checkbox' || el.type === 'radio') el.checked = !!v;
+      else if (v !== undefined) el.value = v;
+    });
+    qsa('.q[data-qid]').forEach(q => {
+      const val = STATE.answers[q.dataset.qid];
+      qsa('.opt', q).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.val === val)));
+    });
+    qsa('#interests .chip').forEach(c => c.setAttribute('aria-pressed', String(STATE.interests.has(c.dataset.cat))));
+    try { renderMandatoryList(); renderMajors(); renderChosenProgs(); updateQuizCounters(); updateBagrutSummary(); } catch (e) { console.warn(e); }
+    $('home').classList.add('hidden');
+    buildResults();
+    return true;
+  }
+
+  // ===== מועדי הרשמה לקובץ יומן (ics) =====
+  function downloadRegistrationIcs(registry) {
+    const seen = new Set(), events = [];
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    (registry || []).forEach(entry => {
+      const inst = entry && entry.inst; if (!inst || seen.has(inst['מזהה'])) return;
+      seen.add(inst['מזהה']);
+      const txt = inst['הרשמה – מועדים'] || '';
+      const re = /(\d{1,2})\.(\d{1,2})\.(\d{4})/g; let mm;
+      while ((mm = re.exec(txt))) {
+        const d = new Date(+mm[3], +mm[2] - 1, +mm[1]);
+        if (isNaN(d) || d < today) continue;
+        const ctx = (txt.length <= 320 ? txt : txt.slice(Math.max(0, mm.index - 120), mm.index + 80)).replace(/\s+/g, ' ').trim();
+        events.push({ d, title: `הרשמה – ${inst['שם המוסד']}`, desc: `${ctx}\nלפרטים והרשמה: ${inst['הרשמה – קישור'] || ''}\nמקור: ${inst['הרשמה – מקור'] || ''}\nיש לוודא את המועד באתר המוסד.` });
+      }
+    });
+    // סגירת הרשמה לפסיכומטרי (שני המועדים הקרובים) – רלוונטי למי שעוד ניגש או משפר
+    const psyG = Number(($('psyG') || {}).value) || 0;
+    PSY_SESSIONS.filter(x => new Date(x.reg) >= today).slice(0, 2).forEach(x => {
+      events.push({ d: new Date(x.reg), title: `סגירת הרשמה לפסיכומטרי – מועד ${x.label}`, desc: `${psyG ? 'אם תרצו לשפר את הציון' : 'אם עוד לא ניגשתם'} – זה היום האחרון להירשם למבחן של ${x.label} (בדמי רישום רגילים).\nהרשמה: https://www.nite.org.il/\nיש לוודא את המועד באתר מאל"ו.` });
+    });
+    events.sort((a, b) => a.d - b.d);
+    const msg = $('shareMsg');
+    if (!events.length) {
+      msg.innerHTML = 'למוסדות שבתוצאות עדיין לא פורסמו מועדי הרשמה עתידיים עם תאריך מדויק. נעדכן כשיפורסמו – בינתיים כדאי לבדוק באתרי המוסדות.';
+      msg.classList.remove('hidden'); return;
+    }
+    const pad = n => String(n).padStart(2, '0');
+    const ymd = d => `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
+    const esc = t => String(t).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+    const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+    const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//kivun//registration//HE', 'CALSCALE:GREGORIAN'];
+    events.forEach((e, i) => {
+      const end = new Date(e.d); end.setDate(end.getDate() + 1);
+      lines.push('BEGIN:VEVENT', `UID:kivun-${ymd(e.d)}-${i}@shaharalter.github.io`, `DTSTAMP:${stamp}`, `DTSTART;VALUE=DATE:${ymd(e.d)}`, `DTEND;VALUE=DATE:${ymd(end)}`, `SUMMARY:${esc(e.title)}`, `DESCRIPTION:${esc(e.desc)}`,
+        'BEGIN:VALARM', 'TRIGGER:-P3D', 'ACTION:DISPLAY', `DESCRIPTION:${esc(e.title)}`, 'END:VALARM', 'END:VEVENT');
+    });
+    lines.push('END:VCALENDAR');
+    const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'kivun-registration.ics';
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+    msg.innerHTML = `✓ הורד קובץ יומן עם ${events.length} מועדי הרשמה (כולל תזכורת 3 ימים לפני). פתחו אותו כדי להוסיף ליומן בטלפון או במחשב.`;
+    msg.classList.remove('hidden');
+  }
+
   function buildResults() {
     const sc = calcHollandScores();
     const topCodes = Object.entries(sc).sort((a, b) => b[1] - a[1]).slice(0, 3).map(x => x[0]);
@@ -1876,8 +1986,13 @@ body.cmp-on{padding-bottom:120px}
     let html = `
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
         <h2>התוכנית האישית שלך</h2>
-        <button type="button" class="btn ghost small" id="editQuizBtn">חזרה לעריכה והמשך מילוי</button>
+        <div class="res-actions">
+          <button type="button" class="btn small" id="shareBtn">🔗 שמירה ושיתוף</button>
+          <button type="button" class="btn ghost small" id="icsBtn">📅 מועדי הרשמה ליומן</button>
+          <button type="button" class="btn ghost small" id="editQuizBtn">חזרה לעריכה והמשך מילוי</button>
+        </div>
       </div>
+      <p class="share-msg hidden" id="shareMsg" role="status"></p>
       <p class="traits">פרופיל הולנד הבולט שלך: <strong>${topCodes.map(c => HOLLAND_NAMES[c]).join(' • ')}</strong></p>
       ${Object.keys(axProf.top).length ? `<p class="traits">${Object.entries(axProf.top).map(([ax, p]) => `${AXES[ax].n}: <strong>${AXES[ax].poles[p]}</strong>`).join(' · ')}</p>` : ''}
       <div class="stats">
@@ -2021,6 +2136,8 @@ body.cmp-on{padding-bottom:120px}
       });
     });
 
+    $('shareBtn').addEventListener('click', shareResults);
+    $('icsBtn').addEventListener('click', () => downloadRegistrationIcs(cardRegistry));
     $('editQuizBtn').addEventListener('click', () => {
       $('results').classList.add('hidden');
       $('wizard').classList.remove('hidden');
