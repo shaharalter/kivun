@@ -79,6 +79,9 @@ table.yt{border-collapse:collapse;width:100%;font-size:.88rem;font-variant-numer
 .foot{font-size:.8rem;color:var(--muted);margin:16px 0 40px}
 .foot a{color:inherit}
 .hidden{display:none!important}
+.inval{display:block;font-size:.78rem;color:var(--hard);font-weight:600;margin-top:3px}
+input[aria-invalid="true"]{border-color:var(--hard)!important}
+.warnf{display:block;font-size:.78rem;color:var(--mid);margin-top:3px}
 .mobbar{display:none}
 @media (max-width:900px){.mobbar{display:flex;position:fixed;inset-inline:10px;bottom:10px;z-index:8;background:var(--pine);color:var(--on-pine);border-radius:14px;padding:10px 14px;justify-content:space-between;align-items:center;gap:10px;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.2);font-size:.92rem}.mobbar b{font-size:1.05rem}body{padding-bottom:70px}}
 @media print{.mobbar{display:none!important}}
@@ -106,10 +109,10 @@ table.yt{border-collapse:collapse;width:100%;font-size:.88rem;font-variant-numer
     <div class="field"><label for="inst">מוסד</label><select id="inst"></select></div>
     <div class="field"><label for="deg">תואר</label><select id="deg"></select></div>
     <div class="row2">
-      <div class="field"><label for="tuition">שכר לימוד לשנה (₪)</label><input type="number" id="tuition" min="0" step="100"><p class="hint" id="tuitionNote"></p></div>
+      <div class="field"><label for="tuition">שכר לימוד לשנה (₪)</label><input type="number" id="tuition" min="0" max="200000" step="100"><p class="hint" id="tuitionNote"></p></div>
       <div class="field"><label for="years">שנות לימוד</label><input type="number" id="years" min="1" max="7" step="1"></div>
     </div>
-    <div class="field"><label for="fees">תשלומים נלווים לשנה (₪)</label><input type="number" id="fees" min="0" step="10"><p class="hint" id="feesNote"></p></div>
+    <div class="field"><label for="fees">תשלומים נלווים לשנה (₪)</label><input type="number" id="fees" min="0" max="20000" step="10"><p class="hint" id="feesNote"></p></div>
   </section>
 
   <section class="card">
@@ -123,8 +126,8 @@ table.yt{border-collapse:collapse;width:100%;font-size:.88rem;font-variant-numer
     <div id="hDorm" class="field hidden"><label for="dormSel">יחידת מגורים</label><select id="dormSel"></select><p class="unk" id="dormNote"></p></div>
     <div id="hShared" class="field hidden"><label for="mates">כמה גרים בדירה (כולל אתכם)</label><input type="number" id="mates" min="2" max="8" value="3"></div>
     <div id="hRent" class="row2 hidden">
-      <div class="field"><label for="rent">שכר דירה – החלק שלכם (₪ לחודש)</label><input type="number" id="rent" min="0" step="50"><p class="hint" id="rentNote"></p></div>
-      <div class="field"><label for="bills">חשבונות וארנונה (₪ לחודש)</label><input type="number" id="bills" min="0" step="25" value="350"><p class="hint">הערכה – הזינו את הסכום שלכם</p></div>
+      <div class="field"><label for="rent">שכר דירה – החלק שלכם (₪ לחודש)</label><input type="number" id="rent" min="0" max="20000" step="50"><p class="hint" id="rentNote"></p></div>
+      <div class="field"><label for="bills">חשבונות וארנונה (₪ לחודש)</label><input type="number" id="bills" min="0" max="5000" step="25" value="350"><p class="hint">הערכה – הזינו את הסכום שלכם</p></div>
     </div>
     <div id="hMonths" class="field hidden"><label for="hMonthsN">חודשי שכירות בשנה</label><input type="number" id="hMonthsN" min="1" max="12" value="12"><p class="hint">במעונות לפעמים משלמים רק על חודשי הלימודים – בדקו בחוזה</p></div>
   </section>
@@ -133,19 +136,19 @@ table.yt{border-collapse:collapse;width:100%;font-size:.88rem;font-variant-numer
     <h2>🛒 הוצאות מחיה בחודש</h2>
     <p class="hint" style="margin-top:-4px">אלה ערכי פתיחה להמחשה בלבד. כל אחד מוציא אחרת, אז הזינו את הסכומים שלכם.</p>
     <div class="row2">
-      <div class="field"><label for="food">אוכל וקניות (₪)</label><input type="number" id="food" min="0" step="50" value="1200"></div>
-      <div class="field"><label for="transport">תחבורה / דלק (₪)</label><input type="number" id="transport" min="0" step="25" value="250"><p class="hint">לסטודנטים יש הנחה בתחבורה הציבורית</p></div>
-      <div class="field"><label for="phone">טלפון, אינטרנט, מנויים (₪)</label><input type="number" id="phone" min="0" step="10" value="120"></div>
-      <div class="field"><label for="other">בילויים ושונות (₪)</label><input type="number" id="other" min="0" step="50" value="400"></div>
+      <div class="field"><label for="food">אוכל וקניות (₪)</label><input type="number" id="food" min="0" max="10000" step="50" value="1200"></div>
+      <div class="field"><label for="transport">תחבורה / דלק (₪)</label><input type="number" id="transport" min="0" max="5000" step="25" value="250"><p class="hint">לסטודנטים יש הנחה בתחבורה הציבורית</p></div>
+      <div class="field"><label for="phone">טלפון, אינטרנט, מנויים (₪)</label><input type="number" id="phone" min="0" max="3000" step="10" value="120"></div>
+      <div class="field"><label for="other">בילויים ושונות (₪)</label><input type="number" id="other" min="0" max="10000" step="50" value="400"></div>
     </div>
-    <div class="field"><label for="books">ספרים, ציוד ומחשב (₪ לשנה)</label><input type="number" id="books" min="0" step="100" value="1000"></div>
+    <div class="field"><label for="books">ספרים, ציוד ומחשב (₪ לשנה)</label><input type="number" id="books" min="0" max="30000" step="100" value="1000"></div>
   </section>
 
   <section class="card">
     <h2>💼 עבודה</h2>
     <div class="row2">
       <div class="field"><label for="hours">שעות בשבוע בתקופת הלימודים</label><input type="number" id="hours" min="0" max="45" step="1" value="12"></div>
-      <div class="field"><label for="wage">שכר לשעה (₪, ברוטו)</label><input type="number" id="wage" min="0" step="0.5" value="35.40"><p class="hint">שכר המינימום מ-1.4.2026: 35.40 ₪ לשעה</p></div>
+      <div class="field"><label for="wage">שכר לשעה (₪, ברוטו)</label><input type="number" id="wage" min="0" max="500" step="0.5" value="35.40"><p class="hint">שכר המינימום מ-1.4.2026: 35.40 ₪ לשעה</p></div>
       <div class="field"><label for="summerHours">שעות בשבוע בחופשת הקיץ</label><input type="number" id="summerHours" min="0" max="45" step="1" value="30"></div>
       <div class="field"><label for="summerWeeks">שבועות עבודה בקיץ</label><input type="number" id="summerWeeks" min="0" max="16" step="1" value="10"></div>
     </div>
@@ -156,8 +159,8 @@ table.yt{border-collapse:collapse;width:100%;font-size:.88rem;font-variant-numer
     <h2>🎁 מלגות, עזרה וחסכונות</h2>
     <div id="schList"></div>
     <div class="row2">
-      <div class="field"><label for="otherSch">מלגה אחרת (₪ לשנה)</label><input type="number" id="otherSch" min="0" step="500" value="0"></div>
-      <div class="field"><label for="parents">עזרה מההורים (₪ לחודש)</label><input type="number" id="parents" min="0" step="100" value="0"></div>
+      <div class="field"><label for="otherSch">מלגה אחרת (₪ לשנה)</label><input type="number" id="otherSch" min="0" max="200000" step="500" value="0"></div>
+      <div class="field"><label for="parents">עזרה מההורים (₪ לחודש)</label><input type="number" id="parents" min="0" max="30000" step="100" value="0"></div>
     </div>
     <div class="field"><label class="lbl" for="svcType">שירות צבאי / לאומי (לחישוב פיקדון ומענק שחרור)</label>
       <div class="row2">
@@ -166,13 +169,13 @@ table.yt{border-collapse:collapse;width:100%;font-size:.88rem;font-variant-numer
       </div>
       <p class="hint" id="svcNote"></p>
     </div>
-    <div class="field"><label for="savings">חסכונות אחרים בתחילת התואר (₪)</label><input type="number" id="savings" min="0" step="1000" value="0"></div>
+    <div class="field"><label for="savings">חסכונות אחרים בתחילת התואר (₪)</label><input type="number" id="savings" min="0" max="2000000" step="1000" value="0"></div>
   </section>
 
   <section class="card">
     <h2>🏦 הלוואה (לא חובה)</h2>
     <div class="row2">
-      <div class="field"><label for="loan">סכום הלוואה לשנה (₪)</label><input type="number" id="loan" min="0" step="1000" value="0"></div>
+      <div class="field"><label for="loan">סכום הלוואה לשנה (₪)</label><input type="number" id="loan" min="0" max="500000" step="1000" value="0"></div>
       <div class="field"><label for="rate">ריבית שנתית (%)</label><input type="number" id="rate" min="0" max="20" step="0.1" value=""><p class="unk">הריבית לא ידועה. יש לוודא ולבדוק מול הבנק או הקרן.</p></div>
       <div class="field"><label for="repay">שנים להחזר אחרי התואר</label><input type="number" id="repay" min="1" max="15" value="5"></div>
     </div>
@@ -340,7 +343,7 @@ function recalc(){
     ...(S.debt?[['חוב הלוואה בסיום',money(S.debt),''],['החזר חודשי אחרי התואר',money(S.pay)+(num('rate')?'':' *'),'']]:[]),
   ].map(([l,b,c])=>`<div class="kpi ${c}"><span>${l}</span><b>${b}</b></div>`).join('');
   $('mobEnd').textContent=money(S.end);
-  drawChart(S);drawTable(S);drawTips(S);
+  drawChart(S);drawTable(S);drawTips(S);sanity();
 }
 
 function drawChart(S){
@@ -409,7 +412,38 @@ async function share(){const url=location.href.split('#')[0].split('?')[0]+'#s='
   try{await navigator.clipboard.writeText(url);showMsg('✓ הקישור הועתק. הוא יחזיר בדיוק את הנתונים האלה.')}catch(e){showMsg(`העתיקו את הקישור: <input type="text" readonly value="${esc(url)}" style="width:100%" onclick="this.select()">`)}}
 function showMsg(t){const m=$('msg');m.innerHTML=t;m.hidden=false}
 
+// ===== בדיקת קלט: רק מספרים, בטווח, ואזהרות סבירות =====
+const LBL={tuition:'שכר הלימוד',years:'מספר השנים',fees:'התשלומים הנלווים',mates:'מספר הדיירים',rent:'שכר הדירה',bills:'החשבונות',hMonthsN:'מספר החודשים',food:'סכום האוכל',transport:'סכום התחבורה',phone:'הסכום',other:'הסכום',books:'הסכום',hours:'מספר השעות',wage:'השכר לשעה',summerHours:'מספר השעות',summerWeeks:'מספר השבועות',otherSch:'סכום המלגה',parents:'הסכום',svcMonths:'מספר חודשי השירות',savings:'החיסכון',loan:'סכום ההלוואה',rate:'הריבית',repay:'מספר השנים'};
+const INT_ONLY=['years','mates','hMonthsN','hours','summerHours','summerWeeks','svcMonths','repay'];
+function tip(el,cls,text){let t=el.parentElement.querySelector(':scope > .'+cls);if(!text){if(t)t.remove();if(cls==='inval')el.removeAttribute('aria-invalid');return}
+  if(cls==='inval')el.setAttribute('aria-invalid','true');if(!t){t=document.createElement('span');t.className=cls;if(cls==='inval')t.setAttribute('role','alert');el.insertAdjacentElement('afterend',t)}t.textContent=text}
+function checkField(el,final){if(el.type!=='number')return;if(el.value===''){tip(el,'inval','');return}
+  let v=Number(el.value);const min=el.min!==''?Number(el.min):0,max=el.max!==''?Number(el.max):Infinity,n=LBL[el.id]||'הערך';
+  if(!isFinite(v)){el.value='';tip(el,'inval','אפשר להזין רק מספרים');return}
+  if(INT_ONLY.includes(el.id)&&!Number.isInteger(v)){v=Math.round(v);el.value=v}
+  if(v<0){el.value='';tip(el,'inval','אפשר להזין רק מספר חיובי');return}
+  if(v>max){el.value=max;tip(el,'inval',`${n} לא יכול להיות יותר מ-${nf(max)}`);return}
+  if(final&&v<min){tip(el,'inval',`${n} צריך להיות לפחות ${nf(min)}`);return}
+  tip(el,'inval','')}
+function sanity(){
+  const w={};const wage=num('wage');
+  if(wage&&wage<35.40)w.wage='נמוך משכר המינימום (35.40 ₪ לשעה מ-1.4.2026) – מעסיק חייב לשלם לפחות את זה';
+  if(num('hours')>25)w.hours='יותר מ-25 שעות בשבוע לצד לימודים מלאים זה עומס כבד – שווה לבדוק שזה ריאלי';
+  if(num('hours')+num('summerHours')>0&&num('summerHours')>45)w.summerHours='יותר משבוע עבודה מלא';
+  if($('food').value!==''&&num('food')<400)w.food='נמוך מאוד לחודש שלם של אוכל – ודאו שהסכום נכון';
+  if(housing!=='parents'&&$('rent').value!==''&&num('rent')<400)w.rent='שכר דירה נמוך מאוד – ודאו שהזנתם את החלק החודשי שלכם';
+  if(housing!=='parents'&&num('rent')>9000)w.rent='שכר דירה גבוה מאוד לסטודנט – ודאו שהסכום נכון';
+  const d=degObj();const t0=d?Number(d['שכר לימוד שנתי (₪)'])||0:0;
+  if(t0&&num('tuition')&&Math.abs(num('tuition')-t0)/t0>0.5)w.tuition=`שונה מאוד משכר הלימוד במאגר (${nf(t0)} ₪) – ודאו שהזנתם סכום שנתי`;
+  if(num('rate')>15)w.rate='ריבית גבוהה מאוד להלוואת סטודנטים – בדקו את ההצעה';
+  if(num('years')>6)w.years='רוב התארים הראשונים נמשכים 3–4 שנים (רפואה ואדריכלות יותר)';
+  ['wage','hours','summerHours','food','rent','tuition','rate','years'].forEach(id=>tip($(id),'warnf',w[id]?'⚠ '+w[id]:''));
+}
 function bind(){
+  $('f').addEventListener('keydown',e=>{const el=e.target;if(el.type!=='number')return;if(['e','E','+','-'].includes(e.key))e.preventDefault();if(INT_ONLY.includes(el.id)&&(e.key==='.'||e.key===','))e.preventDefault()});
+  $('f').addEventListener('input',e=>checkField(e.target,false),true);
+  $('f').addEventListener('change',e=>checkField(e.target,true),true);
+  $('f').addEventListener('paste',e=>{const el=e.target;if(el.type!=='number')return;const t=(e.clipboardData||window.clipboardData).getData('text');if(!/^\s*\d+([.,]\d+)?\s*$/.test(t)){e.preventDefault();tip(el,'inval','אפשר להדביק רק מספר')}});
   $('inst').addEventListener('change',()=>{onInst();recalc()});
   $('deg').addEventListener('change',()=>{onDeg();recalc()});
   qsa('#housing button').forEach(b=>b.addEventListener('click',()=>{housing=b.dataset.v;applyHousing(true);recalc()}));
