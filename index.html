@@ -1658,7 +1658,7 @@ body.cmp-on{padding-bottom:120px}
         (STATE.relLevel === 'secular' && vibe.rel === 'secular');
       if (matchRel) bonus += STATE.relWeight * 15;
     }
-    if (STATE.budgetWeight > 0 && tuition <= 13000) bonus += STATE.budgetWeight * 12;
+    if (STATE.budgetWeight > 0 && tuition > 0 && tuition <= 13000) bonus += STATE.budgetWeight * 12;
     const home = $('homeCity').value.trim();
     if (STATE.locWeight > 0 && home && (inst['עיר'] || '').includes(home)) bonus += STATE.locWeight * 20;
     return bonus;
@@ -1826,7 +1826,7 @@ body.cmp-on{padding-bottom:120px}
       const allForField = DB.degrees.filter(d => d['תחום לימוד'] === item.field);
       let options = [...allForField];
 
-      if (STATE.budgetWeight === 3) options = options.filter(d => Number(d['שכר לימוד שנתי (₪)']) <= 13000);
+      if (STATE.budgetWeight === 3) options = options.filter(d => { const v = Number(d['שכר לימוד שנתי (₪)']) || 0; return v > 0 && v <= 13000; });
       if (STATE.type !== 'any') {
         options = options.filter(d => {
           const inst = DB.institutions.find(x => x['מזהה'] === d['מזהה מוסד']);
