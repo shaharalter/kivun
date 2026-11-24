@@ -212,6 +212,16 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
 .inval{display:block;font-size:.8rem;color:var(--hard);font-weight:600;margin-top:3px}
 input[aria-invalid="true"]{border-color:var(--hard)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--hard) 25%,transparent)}
 .plaus{margin-top:8px;padding:8px 12px;border-radius:10px;background:color-mix(in srgb,var(--hard) 12%,transparent);font-size:.92rem}
+.tr-box h3{font-size:1.15rem;color:var(--pine);margin:6px 0}.tr-box h4{font-size:1rem;color:var(--pine);margin:14px 0 6px}
+.tr-note{font-size:.84rem;color:var(--muted);margin:4px 0}
+.tr-opt{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;background:var(--paper)}
+.tr-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:.92rem}
+.tr-legs{margin:8px 0 0;padding-inline-start:20px;font-size:.9rem}.tr-legs li{margin:4px 0}.tr-legs li.walk{color:var(--muted);list-style:'· '}
+.tr-tab{border-collapse:collapse;width:100%;font-size:.86rem}.tr-tab th,.tr-tab td{padding:5px 6px;border-bottom:1px solid var(--line);text-align:start}
+.tr-lines{display:flex;flex-wrap:wrap;gap:5px}.tr-lines span{border:1px solid var(--line);border-radius:8px;padding:2px 8px;font-weight:600;font-size:.88rem;background:var(--surface)}.tr-lines small{font-weight:400;color:var(--muted)}
+.tr-st{margin:0;padding-inline-start:18px;font-size:.9rem}
+.tr-links{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:.9rem}.tr-links a{color:var(--pine)}
+.tr-badge{background:var(--sun-soft);border-radius:99px;padding:0 8px;font-size:.8rem}
 .why-box{margin:8px 0;padding:8px 12px;border-radius:12px;background:var(--pine-soft);font-size:.92rem}
 .why-box ul{margin:4px 0 0;padding-inline-start:18px}.why-box li{margin:2px 0}.why-box li.neg{color:var(--hard)}
 .sch-pill.fit{background:var(--pine);color:var(--on-pine);border-color:var(--pine)}
@@ -251,6 +261,7 @@ body.cmp-on{padding-bottom:120px}
     <a href="data.html" target="_blank" rel="noopener">מאגר הנתונים</a>
     <a href="curricula.html" target="_blank" rel="noopener">תוכניות לימודים</a>
     <a href="finance.html" target="_blank" rel="noopener">סימולטור פיננסי</a>
+    <a href="transit.html" target="_blank" rel="noopener">זמני נסיעה</a>
   </nav>
 </div></header>
 
@@ -601,6 +612,7 @@ body.cmp-on{padding-bottom:120px}
 </footer>
 <datalist id="progList"></datalist><datalist id="cityList"></datalist><datalist id="majorList"></datalist>
 
+<script src="transit/transit.js"></script>
 <script>
 (function(){
   const $ = id => document.getElementById(id);
@@ -1824,6 +1836,20 @@ body.cmp-on{padding-bottom:120px}
     return Math.round(2 * R * Math.asin(Math.sqrt(a)));
   }
 
+  // ===== זמני נסיעה אמיתיים (לוח הזמנים של משרד התחבורה) =====
+  let TRANSIT = { home: null, data: null, city: null, loading: false };
+  function ensureTransit() {
+    const home = $('homeCity').value.trim();
+    if (!home || !window.KivunTransit || TRANSIT.home === home) return;
+    TRANSIT = { home, data: null, city: null, loading: true };
+    KivunTransit.forCity(home).then(r => {
+      if (TRANSIT.home !== home) return;
+      TRANSIT = { home, data: r ? r.data : null, city: r ? r.city : null, loading: false };
+      if (r && !$('results').classList.contains('hidden') && $('detailView').classList.contains('hidden')) buildResults();
+    }).catch(() => { TRANSIT.loading = false; });
+  }
+  function transitBest(inst) { return TRANSIT.data && inst ? KivunTransit.best(TRANSIT.data[inst['מזהה']]) : null; }
+
   function scoreInstitutionPreference(inst, vibe, tuition) {
     let bonus = 0;
     if (STATE.relWeight > 0) {
@@ -1836,8 +1862,9 @@ body.cmp-on{padding-bottom:120px}
     }
     if (STATE.budgetWeight > 0 && tuition > 0 && tuition <= 13000) bonus += STATE.budgetWeight * 12;
     const home = $('homeCity').value.trim();
-    const km = instDistanceKm(inst);
-    if (STATE.locWeight > 0 && km != null) bonus += STATE.locWeight * Math.max(0, 20 - km / 5);
+    const km = instDistanceKm(inst), tb = transitBest(inst);
+    if (STATE.locWeight > 0 && tb) bonus += STATE.locWeight * Math.max(0, 20 - Math.max(0, tb.dur - 15) / 5);
+    else if (STATE.locWeight > 0 && km != null) bonus += STATE.locWeight * Math.max(0, 20 - km / 5);
     else if (STATE.locWeight > 0 && home && (inst['עיר'] || '').includes(home)) bonus += STATE.locWeight * 20;
     return bonus;
   }
@@ -1881,6 +1908,7 @@ body.cmp-on{padding-bottom:120px}
           <a href="${moovitUrl}" target="_blank" rel="noopener" class="btn ghost small">🚌 מסלולי אוטובוס ורכבת ב-Moovit</a>
         </div>
         <iframe class="map-frame" src="${embedMapUrl}" loading="lazy" title="מפת ${instName}"></iframe>
+        <div id="trDetail" class="tr-box"><p class="tr-note">טוען זמני נסיעה, קווים ותחנות…</p></div>
         <p class="meta"><strong>תחבורה וחניה בקמפוס:</strong> ${inst['תחבורה'] && inst['תחבורה'] !== '—' ? inst['תחבורה'] + ' • ' : ''}חניה: ${inst['חניה'] && !/^לבדיקה/.test(inst['חניה']) ? inst['חניה'] : 'לא ידוע. יש לוודא ולבדוק'}</p>
       </div>
 
@@ -1945,6 +1973,7 @@ body.cmp-on{padding-bottom:120px}
     $('results').classList.add('hidden');
     $('detailView').innerHTML = html;
     $('detailView').classList.remove('hidden');
+    if (window.KivunTransit) KivunTransit.fullHtml(home, inst['מזהה'], instName).then(h => { const el = $('trDetail'); if (el) el.innerHTML = h + `<p class="tr-note"><a href="transit.html?home=${encodeURIComponent(home)}&inst=${encodeURIComponent(inst['מזהה'] || '')}" target="_blank" rel="noopener">זמני הנסיעה מ${home || 'הבית'} לכל המוסדות ↗</a></p>`; }).catch(() => { const el = $('trDetail'); if (el) el.innerHTML = '<p class="tr-note">זמני הנסיעה: לא ידוע. יש לוודא ולבדוק.</p>'; });
     $('backToResultsBtn').addEventListener('click', () => {
       $('detailView').classList.add('hidden');
       $('results').classList.remove('hidden');
@@ -2074,7 +2103,16 @@ body.cmp-on{padding-bottom:120px}
     else if (adm.status === 'mid') neg.push(`הקבלה גבולית: ${adm.label}`);
     // מרחק
     const km = instDistanceKm(inst); const home = $('homeCity').value.trim();
-    if (km != null) {
+    const tb = transitBest(inst);
+    if (tb) {
+      const how = tb.walkOnly ? 'ברגל' : (tb.transfers === 0 ? 'בקו ישיר' : tb.transfers === 1 ? 'עם החלפה אחת' : `עם ${tb.transfers} החלפות`);
+      const txt = `כ-${tb.dur} דק׳ בתחבורה ציבורית מ${home} ${how} (יציאה ${KivunTransit.hm(tb.leave)}, הגעה ${KivunTransit.hm(tb.arr)})`;
+      if (tb.dur <= 50) pos.push(`${txt} – אפשר לנסוע מהבית כל יום`);
+      else if (tb.dur <= 90) (STATE.housing === 'parents' ? neg : pos).push(`${txt} – נסיעה ארוכה${STATE.housing === 'parents' ? ', ואמרת שאת/ה מעדיפ/ה לנסוע מהבית' : ' או מגורים ליד הקמפוס'}`);
+      else (STATE.housing === 'parents' ? neg : pos).push(`${txt} – ${STATE.housing === 'parents' ? 'רחוק לנסיעה יומית, כנראה יצריך מעבר דירה' : 'מתאים למי שמוכנ/ה לעבור לגור ליד הלימודים'}`);
+    } else if (TRANSIT.data && home && inst) {
+      neg.push(`לא נמצאה נסיעה בתחבורה ציבורית מ${home} שמגיעה עד 11:00 – זמן הנסיעה לא ידוע. יש לוודא ולבדוק`);
+    } else if (km != null) {
       if (km <= 5) pos.push(`המוסד ממש קרוב לבית – ב${inst['עיר'] || 'עיר שלך'}`);
       else if (km <= 35) pos.push(`כ-${km} ק״מ מ${home} בקו אווירי – אפשר לנסוע מהבית כל יום`);
       else if (km <= 70) (STATE.housing === 'parents' ? neg : pos).push(`כ-${km} ק״מ מ${home} בקו אווירי – נסיעה ארוכה${STATE.housing === 'parents' ? ', ואמרת שאת/ה מעדיפ/ה לנסוע מהבית' : ' או מגורים ליד הקמפוס'}`);
@@ -2102,6 +2140,7 @@ body.cmp-on{padding-bottom:120px}
   }
 
   function buildResults() {
+    ensureTransit();
     const sc = calcHollandScores();
     const topCodes = Object.entries(sc).sort((a, b) => b[1] - a[1]).slice(0, 3).map(x => x[0]);
     const axProf = axisProfile();
