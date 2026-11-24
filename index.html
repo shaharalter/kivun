@@ -297,6 +297,10 @@ body.cmp-on{padding-bottom:120px}
     <p class="hint">דמיינו את עצמכם בעוד כמה שנים, בעבודה שמתאימה לכם.</p>
     <div id="quizB"></div>
     <div class="summary" id="quizCount1">ענית על 0 מתוך 3 שאלות בשלב זה (אפשר להמשיך בחופשיות).</div>
+    <h3 style="margin-top:28px">איך אני עובד/ת ומה מניע אותי</h3>
+    <p class="hint">12 שאלות קצרות על סגנון עבודה, חוזקות, מוטיבציה ודרך פתרון בעיות. אין תשובה נכונה – בחרו מה שהכי קרוב אליכם.</p>
+    <div id="quizD"></div>
+    <div class="summary" id="quizCountD">ענית על 0 מתוך 12 שאלות בחלק זה.</div>
   </div>
 
   <!-- שלב 2: העדפות וסינונים -->
@@ -917,7 +921,61 @@ body.cmp-on{padding-bottom:120px}
     ]}
   ];
 
+  // ===== צירי סגנון עבודה, חוזקות, מוטיבציה ופתרון בעיות (שאלות עקיפות) =====
+  const AXES = {
+    work: { n: 'סגנון עבודה', poles: { solo: 'עבודה עצמאית וממוקדת', team: 'עבודה בצוות ושיתוף פעולה', field: 'עבודה בשטח, בתנועה ומול אנשים', desk: 'עבודה מול מסך או במשרד' } },
+    str: { n: 'חוזקות', poles: { analytic: 'חשיבה כמותית ואנליטית', verbal: 'קריאה, כתיבה וניסוח', people: 'הבנת אנשים והקשבה', creative: 'יצירתיות ודמיון', practical: 'ביצוע מעשי וידיים טובות' } },
+    mot: { n: 'מה מניע אותי', poles: { impact: 'לעזור ולהשפיע על אנשים', money: 'ביטחון כלכלי ויציבות', curiosity: 'סקרנות ולמידה', status: 'הובלה, השפעה והכרה', creation: 'ביטוי אישי ויצירה' } },
+    prob: { n: 'גישה לפתרון בעיות', poles: { systematic: 'שיטתית – שלב אחר שלב', intuitive: 'אינטואיטיבית ויצירתית', collaborative: 'בהתייעצות ובשיח', handson: 'ניסוי וטעייה בידיים' } }
+  };
+  const QUIZ_D = [
+    { id: 'd1', ax: 'work', q: 'יש לכם פרויקט גדול להגשה בעוד שבוע. איך תעדיפו לעבוד עליו?', opts: [['לבד, בשקט, עם אוזניות', 'solo'], ['בקבוצה, לחלק משימות ולהיפגש', 'team'], ['לצאת לשטח, לראיין ולאסוף חומר', 'field'], ['מול המחשב, עם קבצים וטבלאות מסודרים', 'desk']] },
+    { id: 'd2', ax: 'work', q: 'איזה יום עבודה ישאיר אתכם עם הכי הרבה אנרגיה?', opts: [['יום שבו התרכזתי בדבר אחד עד הסוף', 'solo'], ['יום עם הרבה שיחות וישיבות טובות', 'team'], ['יום שבו לא ישבתי רגע', 'field'], ['יום שבו סגרתי הרבה משימות מהמחשב', 'desk']] },
+    { id: 'd3', ax: 'work', q: 'במשמרת או בתורנות, מה הכי התאים לכם?', opts: [['משימה שקיבלתי אחריות עליה לבד', 'solo'], ['להיות חלק מצוות מגובש', 'team'], ['תנועה, סיורים ופעילות בחוץ', 'field'], ['עבודה מבצעית מול מסכים ומערכות', 'desk']] },
+    { id: 'd4', ax: 'str', q: 'על מה הכי הרבה מחמיאים לכם?', opts: [['"איך הבנת את זה כל כך מהר?"', 'analytic'], ['"כתבת את זה מעולה"', 'verbal'], ['"רק איתך אפשר לדבר ככה"', 'people'], ['"מאיפה הרעיון הזה?"', 'creative'], ['"יש לך ידיים טובות"', 'practical']] },
+    { id: 'd5', ax: 'str', q: 'בעבודה בקבוצה בתיכון, איזה חלק תמיד נפל עליכם?', opts: [['החישובים, הגרפים והנתונים', 'analytic'], ['הכתיבה והעריכה', 'verbal'], ['לגשר בין כולם ולוודא שכולם בעניין', 'people'], ['העיצוב והמצגת', 'creative'], ['הבנייה, הדגם או ההפקה בפועל', 'practical']] },
+    { id: 'd6', ax: 'str', q: 'איזה מבחן הייתם הכי שמחים לקבל?', opts: [['שאלות חשיבה ובעיות לוגיות', 'analytic'], ['חיבור או ניתוח טקסט', 'verbal'], ['ראיון אישי או סימולציה מול אנשים', 'people'], ['פרויקט יצירה חופשי', 'creative'], ['מבחן מעשי – לעשות משהו בפועל', 'practical']] },
+    { id: 'd7', ax: 'mot', q: 'הציעו לכם שתי משרות. מה יכריע?', opts: [['איפה אני באמת עוזר לאנשים', 'impact'], ['איפה השכר והביטחון גבוהים יותר', 'money'], ['איפה אלמד הכי הרבה', 'curiosity'], ['איפה אוכל להתקדם ולהוביל', 'status'], ['איפה יהיה לי חופש ליצור', 'creation']] },
+    { id: 'd8', ax: 'mot', q: 'מה הכי יבאס אתכם בעבודה?', opts: [['להרגיש שמה שאני עושה לא משנה לאף אחד', 'impact'], ['חוסר ודאות לגבי המשכורת', 'money'], ['שגרה בלי שום דבר חדש', 'curiosity'], ['שאין לי השפעה על החלטות', 'status'], ['שאין מקום לרעיונות שלי', 'creation']] },
+    { id: 'd9', ax: 'mot', q: 'בעוד 15 שנה, מה תרצו שיגידו עליכם?', opts: [['"שינית לי את החיים"', 'impact'], ['"בנית לעצמך ביטחון ובית יציב"', 'money'], ['"את/ה מומחה/ית אמיתי/ת בתחום"', 'curiosity'], ['"את/ה מוביל/ה בתחום"', 'status'], ['"יצרת משהו שנשאר"', 'creation']] },
+    { id: 'd10', ax: 'prob', q: 'המחשב או האפליקציה קורסים לפני הגשה. מה אתם עושים?', opts: [['בודק/ת אפשרויות אחת אחרי השנייה', 'systematic'], ['מנסה פתרון עוקף יצירתי', 'intuitive'], ['שואל/ת מישהו שמבין', 'collaborative'], ['לוחץ/ת על כל כפתור עד שזה עובד', 'handson']] },
+    { id: 'd11', ax: 'prob', q: 'קיבלתם ריהוט להרכבה. מה הצעד הראשון?', opts: [['קורא/ת את כל ההוראות קודם', 'systematic'], ['מסתכל/ת על התמונה ומתחיל/ה', 'intuitive'], ['קורא/ת למישהו להרכיב איתי', 'collaborative'], ['פותח/ת את הקופסה ומתחיל/ה להבריג', 'handson']] },
+    { id: 'd12', ax: 'prob', q: 'צריך להחליט על משהו גדול (דירה, טיול, רכב). איך?', opts: [['טבלת השוואה עם יתרונות וחסרונות', 'systematic'], ['הולך/ת עם התחושה', 'intuitive'], ['מתייעץ/ת עם כמה אנשים', 'collaborative'], ['הולך/ת לראות ולנסות בעצמי', 'handson']] }
+  ];
+  // מיפוי תחומי לימוד לצירים (לפי אופי הלימודים והעבודה הנפוצה בתחום)
+  const FIELD_TRAITS = [
+    [/הנדס|מחשב|נתונים|מערכות מידע|בינה מלאכותית/, ['analytic', 'desk', 'systematic', 'money', 'curiosity', 'team']],
+    [/רפואת שיניים|רפואה|סיעוד|פיזיותרפיה|ריפוי בעיסוק|הפרעות בתקשורת|פרמדיק|רפואת חירום|מעבדה רפואית/, ['people', 'impact', 'field', 'handson', 'team', 'practical']],
+    [/רוקחות|תזונה/, ['analytic', 'people', 'impact', 'systematic', 'money']],
+    [/משפט/, ['verbal', 'status', 'money', 'systematic', 'solo']],
+    [/חינוך|הוראה|עבודה סוציאלית|קרימינולוג|פסיכולוג|מדעי ההתנהגות|ייעוץ|גיל הרך/, ['people', 'impact', 'verbal', 'collaborative', 'team', 'field']],
+    [/אמנות|עיצוב|מוזיק|תיאטרון|קולנוע|אדריכל|חזותית|אופנה/, ['creative', 'creation', 'intuitive', 'solo', 'handson', 'practical']],
+    [/כלכלה|מנהל עסקים|חשבונאות|ניהול/, ['analytic', 'money', 'status', 'systematic', 'desk', 'team']],
+    [/היסטוריה|פילוסופיה|ספרות|יהדות|מזרח תיכון|שפה|לשון/, ['verbal', 'curiosity', 'solo', 'systematic']],
+    [/ביולוג|כימיה|פיזיקה|מתמטיקה|מדעי המוח|סביבה|כדור הארץ|חקלאות|ביוטכנולוגיה/, ['analytic', 'curiosity', 'systematic', 'solo', 'handson']],
+    [/^תקשורת$/, ['verbal', 'creative', 'team', 'status', 'intuitive']],
+    [/מדע המדינה|סוציולוג|גאוגרפ|מדיניות/, ['verbal', 'curiosity', 'impact', 'collaborative']],
+    [/הנדסאי/, ['practical', 'handson', 'field', 'money']]
+  ];
+  function axisProfile() {
+    const cnt = {};
+    QUIZ_D.forEach(x => { const v = STATE.answers[x.id]; if (v) cnt[v] = (cnt[v] || 0) + 1; });
+    const top = {};
+    Object.entries(AXES).forEach(([ax, def]) => {
+      const best = Object.keys(def.poles).map(p => [p, cnt[p] || 0]).sort((a, b) => b[1] - a[1])[0];
+      if (best && best[1] > 0) top[ax] = best[0];
+    });
+    return { cnt, top };
+  }
+  function axisFieldBonus(field, prof) {
+    const rule = FIELD_TRAITS.find(([re]) => re.test(field));
+    if (!rule) return 0;
+    return rule[1].reduce((a, t) => a + (prof.cnt[t] || 0) * 2.5, 0);
+  }
+
   function updateQuizCounters() {
+    const dDone = QUIZ_D.filter(x => STATE.answers[x.id]).length;
+    if ($('quizCountD')) $('quizCountD').textContent = `ענית על ${dDone} מתוך ${QUIZ_D.length} שאלות בחלק זה.`;
     const aDone = QUIZ_A.filter(x => STATE.answers[x.id]).length;
     const bDone = QUIZ_B.filter(x => STATE.answers[x.id]).length;
     if ($('quizCount0')) $('quizCount0').textContent = `ענית על ${aDone} מתוך ${QUIZ_A.length} שאלות בשלב זה (אפשר להמשיך בחופשיות).`;
@@ -947,6 +1005,7 @@ body.cmp-on{padding-bottom:120px}
   renderQuizBlock('quizA', QUIZ_A);
   renderQuizBlock('quizB', QUIZ_B);
   renderQuizBlock('quizC', QUIZ_C);
+  renderQuizBlock('quizD', QUIZ_D);
 
   const CATS = ['מחשבים', 'הנדסה', 'בריאות', 'טיפול', 'עסקים', 'משפטים', 'חברה', 'חינוך', 'מדעים', 'רוח', 'אמנויות'];
   $('interests').innerHTML = CATS.map(c => `<button type="button" class="chip" data-cat="${c}" aria-pressed="false">${c}</button>`).join('');
@@ -1778,6 +1837,7 @@ body.cmp-on{padding-bottom:120px}
   function buildResults() {
     const sc = calcHollandScores();
     const topCodes = Object.entries(sc).sort((a, b) => b[1] - a[1]).slice(0, 3).map(x => x[0]);
+    const axProf = axisProfile();
     const bag = getComputedBagrut();
     const psy = $('noPsy').checked ? 0 : (Number($('psyG').value) || Number($('psyQ').value) || Number($('psyV').value) || 0);
     const eng = getEnglishPlacement();
@@ -1790,6 +1850,7 @@ body.cmp-on{padding-bottom:120px}
       const sample = DB.degrees.find(d => d['תחום לימוד'] === f);
       if (sample && STATE.interests.has(sample['קטגוריה'])) score += 12;
       if (STATE.chosenProgs.has(f)) score += 35;
+      score += axisFieldBonus(f, axProf);
       if (STATE.answers.c1 === 'no' && /חינוך|הוראה/.test(f)) score -= 15;
       if (STATE.answers.c2 === 'no' && /רפואה|סיעוד|פיזיותרפיה/.test(f)) score -= 15;
       if (STATE.answers.c3 === 'no' && /מתמטיקה|פיזיקה|הנדס|מחשב/.test(f)) score -= 12;
@@ -1810,6 +1871,7 @@ body.cmp-on{padding-bottom:120px}
         <button type="button" class="btn ghost small" id="editQuizBtn">חזרה לעריכה והמשך מילוי</button>
       </div>
       <p class="traits">פרופיל הולנד הבולט שלך: <strong>${topCodes.map(c => HOLLAND_NAMES[c]).join(' • ')}</strong></p>
+      ${Object.keys(axProf.top).length ? `<p class="traits">${Object.entries(axProf.top).map(([ax, p]) => `${AXES[ax].n}: <strong>${AXES[ax].poles[p]}</strong>`).join(' · ')}</p>` : ''}
       <div class="stats">
         <div class="stat"><span>ממוצע בגרות משוקלל</span><b>${bag.finalAvg || 'טרם הוזן'}</b></div>
         <div class="stat"><span>פסיכומטרי</span><b>${psy || ($('noPsy').checked ? 'ללא פסיכומטרי' : 'טרם הוזן')}</b></div>
