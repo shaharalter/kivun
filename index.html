@@ -209,6 +209,12 @@ footer{color:var(--muted);font-size:.85rem;padding:18px 18px 44px;text-align:cen
 #cmpBar{position:fixed;inset-inline:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:40;max-width:720px;margin:0 auto;background:var(--pine);color:var(--on-pine);border-radius:18px;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:0 8px 28px rgba(0,0,0,.25)}
 #cmpBar.hidden{display:none}
 .res-actions{display:flex;gap:8px;flex-wrap:wrap}
+.inval{display:block;font-size:.8rem;color:var(--hard);font-weight:600;margin-top:3px}
+input[aria-invalid="true"]{border-color:var(--hard)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--hard) 25%,transparent)}
+.plaus{margin-top:8px;padding:8px 12px;border-radius:10px;background:color-mix(in srgb,var(--hard) 12%,transparent);font-size:.92rem}
+.why-box{margin:8px 0;padding:8px 12px;border-radius:12px;background:var(--pine-soft);font-size:.92rem}
+.why-box ul{margin:4px 0 0;padding-inline-start:18px}.why-box li{margin:2px 0}.why-box li.neg{color:var(--hard)}
+.sch-pill.fit{background:var(--pine);color:var(--on-pine);border-color:var(--pine)}
 .share-msg{background:var(--pine-soft);border-radius:12px;padding:10px 14px;margin:8px 0}
 .share-msg.hidden{display:none}
 .improve{margin-top:8px;background:var(--pine-soft);border-radius:12px;padding:8px 12px;font-size:.92rem}
@@ -346,7 +352,7 @@ body.cmp-on{padding-bottom:120px}
         <label class="lbl" for="avg">ממוצע בגרות משוקלל (כולל בונוסים) *
           <span class="sub-hint">המספר הזה יישאר קבוע לחישוב הסכם ולא ישתנה כשתוסיפו מקצועות 5 יח״ל למטה.</span>
         </label>
-        <input type="number" id="avg" min="40" max="127" step="0.1" placeholder="לדוגמה: 104.5">
+        <input type="number" id="avg" min="40" max="127" step="0.01" inputmode="decimal" placeholder="לדוגמה: 104.5">
       </div>
 
       <div class="field">
@@ -357,13 +363,13 @@ body.cmp-on{padding-bottom:120px}
           <label>מתמטיקה – יח״ל
             <div class="seg" data-group="mathU"><button type="button" data-v="3" aria-pressed="false">3 יח״ל</button><button type="button" data-v="4" aria-pressed="true">4 יח״ל</button><button type="button" data-v="5" aria-pressed="false">5 יח״ל</button></div>
           </label>
-          <label>ציון במתמטיקה<input type="number" id="mathG" min="0" max="100" placeholder="0–100"></label>
+          <label>ציון במתמטיקה<input type="number" id="mathG" min="0" max="100" step="1" inputmode="numeric" placeholder="0–100"></label>
         </div>
         <div class="row">
           <label>אנגלית – יח״ל
             <div class="seg" data-group="engU"><button type="button" data-v="3" aria-pressed="false">3 יח״ל</button><button type="button" data-v="4" aria-pressed="false">4 יח״ל</button><button type="button" data-v="5" aria-pressed="true">5 יח״ל</button></div>
           </label>
-          <label>ציון באנגלית<input type="number" id="engG" min="0" max="100" placeholder="0–100"></label>
+          <label>ציון באנגלית<input type="number" id="engG" min="0" max="100" step="1" inputmode="numeric" placeholder="0–100"></label>
         </div>
       </div>
     </div>
@@ -398,17 +404,17 @@ body.cmp-on{padding-bottom:120px}
     <label class="check"><input type="checkbox" id="noPsy"> <strong>עוד לא נבחנתי בפסיכומטרי</strong> (הציגו לי מסלולי בגרות בלבד / מכינה)</label>
     <div id="psyFields" style="margin-top:14px">
       <div class="field"><span class="lbl">ציונים משוקללים (200–800) *</span>
-        <div class="row"><label>רב-תחומי<input type="number" id="psyG" min="200" max="800" placeholder="לדוגמה 640"></label>
-        <label>בדגש כמותי<input type="number" id="psyQ" min="200" max="800"></label>
-        <label>בדגש מילולי<input type="number" id="psyV" min="200" max="800"></label></div></div>
+        <div class="row"><label>רב-תחומי<input type="number" id="psyG" min="200" max="800" step="1" inputmode="numeric" placeholder="לדוגמה 640"></label>
+        <label>בדגש כמותי<input type="number" id="psyQ" min="200" max="800" step="1" inputmode="numeric"></label>
+        <label>בדגש מילולי<input type="number" id="psyV" min="200" max="800" step="1" inputmode="numeric"></label></div></div>
       <div class="field">
         <span class="lbl">ציון פרק האנגלית בפסיכומטרי / מבחן אמירנט (50–150)
           <span class="sub-hint">קובע כמה קורסי אנגלית תצטרכו לקחת בתואר (טרום בסיסי, בסיסי, מתקדמים א׳/ב׳ או פטור) וכמה זה מוסיף לשכר הלימוד!</span>
         </span>
         <div class="row">
-          <label>אנגלית (50–150)<input type="number" id="secE" min="50" max="150" placeholder="לדוגמה 115"></label>
-          <label>חשיבה מילולית<input type="number" id="secV" min="50" max="150"></label>
-          <label>חשיבה כמותית<input type="number" id="secQ" min="50" max="150"></label>
+          <label>אנגלית (50–150)<input type="number" id="secE" min="50" max="150" step="1" inputmode="numeric" placeholder="לדוגמה 115"></label>
+          <label>חשיבה מילולית<input type="number" id="secV" min="50" max="150" step="1" inputmode="numeric"></label>
+          <label>חשיבה כמותית<input type="number" id="secQ" min="50" max="150" step="1" inputmode="numeric"></label>
         </div>
         <table class="eng-table" id="engLevelsTable">
           <thead><tr><th>טווח ציון</th><th>רמת אנגלית</th><th>קורסים עד לפטור</th><th>השפעה על שכר הלימוד</th></tr></thead>
@@ -1077,7 +1083,7 @@ body.cmp-on{padding-bottom:120px}
           <select class="mand-u" aria-label="יחידות לימוד – ${s.name}">
             ${s.options.map(u => `<option value="${u}" ${s.units == u ? 'selected' : ''}>${u} יח״ל</option>`).join('')}
           </select>
-          <input type="number" min="0" max="100" value="${s.grade}" placeholder="ציון" class="mand-g">
+          <input type="number" min="0" max="100" step="1" inputmode="numeric" value="${s.grade}" placeholder="ציון" class="mand-g">
           <span></span>
         </div>
       `;
@@ -1130,7 +1136,7 @@ body.cmp-on{padding-bottom:120px}
           <option value="3" ${m.units == 3 ? 'selected' : ''}>3 יח״ל</option>
           <option value="2" ${m.units == 2 ? 'selected' : ''}>2 יח״ל</option>
         </select>
-        <input type="number" min="0" max="100" value="${m.grade}" placeholder="ציון" class="m-grade">
+        <input type="number" min="0" max="100" step="1" inputmode="numeric" value="${m.grade}" placeholder="ציון" class="m-grade">
         <button type="button" class="x" title="הסרה">✕</button>
       </div>
     `).join('');
@@ -1243,6 +1249,76 @@ body.cmp-on{padding-bottom:120px}
     return { avg: Math.round(avg * 100) / 100, units: sumU, dropped };
   }
 
+  // ===== בדיקת קלט בשדות ציונים: רק ספרות, ובטווח החוקי =====
+  const FIELD_NAMES = { psyG: 'ציון פסיכומטרי', psyQ: 'ציון פסיכומטרי', psyV: 'ציון פסיכומטרי', secE: 'ציון בתחום', secV: 'ציון בתחום', secQ: 'ציון בתחום', avg: 'ממוצע הבגרות', mathG: 'ציון בגרות', engG: 'ציון בגרות', svcMon: 'חודשי שירות', mechAvg: 'ממוצע מכינה' };
+  function fieldMsg(el, text) {
+    let tip = el.parentElement.querySelector(':scope > .inval');
+    if (!text) { el.removeAttribute('aria-invalid'); if (tip) tip.remove(); return; }
+    el.setAttribute('aria-invalid', 'true');
+    if (!tip) { tip = document.createElement('span'); tip.className = 'inval'; tip.setAttribute('role', 'alert'); el.insertAdjacentElement('afterend', tip); }
+    tip.textContent = text;
+  }
+  function gradeName(el) { return FIELD_NAMES[el.id] || (el.classList.contains('mand-g') || el.classList.contains('m-grade') ? 'ציון בגרות' : 'הערך'); }
+  function checkNumField(el, final) {
+    if (el.type !== 'number' || el.value === '') { fieldMsg(el, ''); return true; }
+    const min = el.min !== '' ? Number(el.min) : -Infinity, max = el.max !== '' ? Number(el.max) : Infinity;
+    const intOnly = el.step === '1';
+    let v = Number(el.value);
+    if (!isFinite(v)) { el.value = ''; fieldMsg(el, 'אפשר להזין רק מספרים'); return false; }
+    if (intOnly && !Number.isInteger(v)) { v = Math.round(v); el.value = v; }
+    if (v > max) { el.value = max; fieldMsg(el, `${gradeName(el)} לא יכול להיות יותר מ-${max}`); return false; }
+    if (v < 0) { el.value = ''; fieldMsg(el, 'אפשר להזין רק מספר חיובי'); return false; }
+    if (final && v < min) { fieldMsg(el, `${gradeName(el)} מתחיל ב-${min}. בדקו את המספר.`); return false; }
+    fieldMsg(el, ''); return true;
+  }
+  $('wizard').addEventListener('keydown', e => {
+    const el = e.target;
+    if (el.tagName === 'INPUT' && el.type === 'number' && ['e', 'E', '+', '-'].includes(e.key)) e.preventDefault();
+    if (el.tagName === 'INPUT' && el.type === 'number' && el.step === '1' && (e.key === '.' || e.key === ',')) e.preventDefault();
+  });
+  $('wizard').addEventListener('input', e => { if (e.target.type === 'number') checkNumField(e.target, false); }, true);
+  $('wizard').addEventListener('change', e => { if (e.target.type === 'number') checkNumField(e.target, true); }, true);
+  $('wizard').addEventListener('paste', e => {
+    const el = e.target; if (el.type !== 'number') return;
+    const t = (e.clipboardData || window.clipboardData).getData('text');
+    if (!/^\s*\d+([.,]\d+)?\s*$/.test(t)) { e.preventDefault(); fieldMsg(el, 'אפשר להדביק רק מספר'); }
+  });
+
+  // ===== בדיקת סבירות: האם הממוצע מסתדר עם מתמטיקה ואנגלית =====
+  function bagPlausibility() {
+    const w = [];
+    if (STATE.bagMode !== 'known') return w;
+    const avg = Number($('avg').value) || 0;
+    if (!avg) return w;
+    const mu = STATE.mathU, eu = STATE.engU;
+    const mg = $('mathG').value !== '' ? Number($('mathG').value) : 100;
+    const eg = $('engG').value !== '' ? Number($('engG').value) : 100;
+    const bonus = (subj, u, g) => g < 60 ? 0 : (u >= 5 ? (subj === 'math' ? 35 : 25) : u === 4 ? 12.5 : 0);
+    // הכי טוב שאפשר: 100 בכל מקצועות החובה (כ-10 יח״ל בלי בונוס) ושלוש מגמות 5 יח״ל ב-100 (125 עם בונוס)
+    const sum = 10 * 100 + 15 * 125 + mu * (mg + bonus('math', mu, mg)) + eu * (eg + bonus('eng', eu, eg));
+    const maxAvg = Math.round(sum / (10 + 15 + mu + eu) * 10) / 10;
+    if (avg > maxAvg + 1.5) {
+      const parts = [`מתמטיקה ${mu} יח״ל${$('mathG').value !== '' ? ` בציון ${mg}` : ''}`, `אנגלית ${eu} יח״ל${$('engG').value !== '' ? ` בציון ${eg}` : ''}`];
+      w.push(`ממוצע ${avg} לא מסתדר עם ${parts.join(' ועם ')}. גם עם 100 בכל שאר המקצועות ושלוש מגמות מוגברות, הממוצע המקסימלי הוא בערך <b>${maxAvg}</b>. בדקו שהזנתם נכון את הממוצע, את היחידות ואת הציונים.`);
+    }
+    if (avg > 121) w.push(`ממוצע ${avg} גבוה מאוד ונדיר. ממוצעים משוקללים מעל 120 כמעט לא קיימים – כדאי לבדוק בתעודה.`);
+    if (avg >= 110 && (mg < 70 || eg < 70) && ($('mathG').value !== '' || $('engG').value !== '')) w.push(`ממוצע ${avg} עם ציון נמוך מ-70 במתמטיקה או באנגלית הוא חריג. ודאו שהציונים נכונים.`);
+    return w;
+  }
+  function psyPlausibility() {
+    const w = [];
+    const g = Number($('psyG').value) || 0, q = Number($('psyQ').value) || 0, v = Number($('psyV').value) || 0;
+    const E = Number($('secE').value) || 0, V = Number($('secV').value) || 0, Q = Number($('secQ').value) || 0;
+    if (g && E && V && Q) {
+      // הערכה גסה: הציון הרב-תחומי נגזר מ-2 מילולי + 2 כמותי + 1 אנגלית, בסולם 50–150 → 200–800
+      const est = Math.round(200 + ((2 * V + 2 * Q + E) / 5 - 50) * 6);
+      if (Math.abs(est - g) > 110) w.push(`ציון רב-תחומי ${g} לא תואם לציוני התחומים שהזנתם (לפיהם הוא אמור להיות בערך ${est}). בדקו את המספרים בגיליון הציונים.`);
+    }
+    if (g && q && Math.abs(q - g) > 140) w.push(`פער של יותר מ-140 נקודות בין הרב-תחומי (${g}) לבדגש כמותי (${q}) נדיר. ודאו שהזנתם נכון.`);
+    if (g && v && Math.abs(v - g) > 140) w.push(`פער של יותר מ-140 נקודות בין הרב-תחומי (${g}) לבדגש מילולי (${v}) נדיר. ודאו שהזנתם נכון.`);
+    return w;
+  }
+
   function updateBagrutSummary() {
     const b = getComputedBagrut();
     const box = $('bagSummary');
@@ -1270,6 +1346,8 @@ body.cmp-on{padding-bottom:120px}
       box.className = 'summary';
       html += `<br><small>✓ יש לך פיזיקה 5 יח״ל – פטור ממכינת פיזיקה בהנדסה ובמדעים.</small>`;
     }
+    const pw = bagPlausibility();
+    if (pw.length) { box.className = 'summary warn'; html += pw.map(t => `<div class="plaus">⚠️ ${t}</div>`).join(''); }
     box.innerHTML = html;
   }
 
@@ -1324,13 +1402,25 @@ body.cmp-on{padding-bottom:120px}
       html += `<br>רמת אנגלית: <strong>${eng.level}</strong> (${eng.courses} קורסים עד לפטור` +
         (eng.extraCost > 0 ? ` • תוספת מוערכת של <strong>${eng.extraCost.toLocaleString()} ₪</strong> לשכר הלימוד הכולל).` : ` • ללא תוספת עלות).`);
     }
-    $('psySummary').className = eng.extraCost >= 3600 ? 'summary warn' : 'summary';
+    const pw = psyPlausibility();
+    if (pw.length) html += pw.map(t => `<div class="plaus">⚠️ ${t}</div>`).join('');
+    $('psySummary').className = eng.extraCost >= 3600 || pw.length ? 'summary warn' : 'summary';
     $('psySummary').innerHTML = html;
   }
 
   // --- שירות צבאי ומלגות מוכרות ---
+  // סדר המלגות: קודם אלה שמתאימות לפי השירות, אחר כך ללא התנדבות, ואז לפי הסכום
+  function schFit(s) {
+    const svc = ($('svc') || {}).value || '';
+    const fit = { mimadim: svc === 'combat' ? 2 : 0, impact: svc === 'combat' || svc === 'support' ? 2 : 0, periphery: svc ? 2 : 0, miluim: 0, milgo: 1, perach: 1 }[s.id];
+    const why = { mimadim: 'מתאים ללוחמים משוחררים', impact: 'מתאים ללוחמים ותומכי לחימה', periphery: 'מתאים למשוחררי שירות', milgo: 'פתוחה לכל הסטודנטים (לפי מצב סוציו-אקונומי)', perach: 'פתוחה לכל הסטודנטים' }[s.id];
+    return { fit: fit || 0, why: fit ? why : '' };
+  }
   function renderScholarships() {
-    $('schCards').innerHTML = POPULAR_SCHOLARSHIPS.map(s => {
+    const svc = ($('svc') || {}).value || '';
+    const ordered = [...POPULAR_SCHOLARSHIPS].map(s => ({ s, f: schFit(s) })).sort((a, b) =>
+      (b.f.fit - a.f.fit) || ((/^ללא/.test(b.s.vol) ? 1 : 0) - (/^ללא/.test(a.s.vol) ? 1 : 0)) || (b.s.annual - a.s.annual));
+    $('schCards').innerHTML = ordered.map(({ s, f }) => {
       const checked = STATE.selectedSch.has(s.id);
       return `
         <label class="sch-card ${checked ? 'on' : ''}">
@@ -1340,6 +1430,7 @@ body.cmp-on{padding-bottom:120px}
             <small>${s.desc}</small>
             <span class="sch-pill">💰 ${s.amount}</span>
             <span class="sch-pill">🤝 ${s.vol}</span>
+            ${f.fit ? `<span class="sch-pill fit">✓ ${f.why}</span>` : ''}
           </div>
         </label>
       `;
@@ -1378,7 +1469,7 @@ body.cmp-on{padding-bottom:120px}
       renderScholarships();
     }
   }
-  $('svc').addEventListener('change', updateArmyCalc);
+  $('svc').addEventListener('change', () => { updateArmyCalc(); renderScholarships(); });
   $('svcMon').addEventListener('input', updateArmyCalc);
 
   // --- בדיקת חובה (Validation) בשלבי הבגרות והפסיכומטרי ---
@@ -1721,6 +1812,18 @@ body.cmp-on{padding-bottom:120px}
     return { status: 'none', label: 'לא ידוע. יש לוודא ולבדוק', notes, needsMechina };
   }
 
+  // קואורדינטות משוערות של יישובים (למרחק בקו אווירי בלבד)
+  const CITY_LL = {'תל אביב':[32.08,34.78],'ירושלים':[31.78,35.21],'חיפה':[32.79,34.99],'באר שבע':[31.25,34.79],'רמת גן':[32.07,34.82],'ראשון לציון':[31.96,34.80],'רחובות':[31.89,34.81],'הרצליה':[32.16,34.84],'חולון':[32.01,34.78],'נתניה':[32.32,34.86],'אריאל':[32.10,35.17],'אשקלון':[31.67,34.57],'אשדוד':[31.80,34.65],'עכו':[32.93,35.08],'כרמיאל':[32.92,35.30],'צפת':[32.96,35.50],'קצרין':[32.99,35.69],'קריית שמונה':[33.21,35.57],'קריית טבעון':[32.72,35.13],'עמק יזרעאל':[32.61,35.27],'עמק הירדן':[32.71,35.59],'עמק חפר':[32.34,34.91],'נתיבות':[31.42,34.59],'שדרות':[31.52,34.60],'שער הנגב':[31.50,34.60],'קריית מלאכי':[31.73,34.75],'כפר סבא':[32.18,34.91],'קריית אונו':[32.06,34.86],'רעננה':[32.18,34.87],'הוד השרון':[32.15,34.89],'סכנין':[32.86,35.30],'באקה אל-גרביה':[32.42,35.04],'אלון שבות':[31.65,35.13],'אלקנה':[32.11,35.03],'גבעת וושינגטון':[31.79,34.70],'עפולה':[32.61,35.29],'נצרת':[32.70,35.30],'נוף הגליל':[32.71,35.33],'טבריה':[32.79,35.53],'נהריה':[33.01,35.10],'קריית גת':[31.61,34.77],'דימונה':[31.07,35.03],'אילת':[29.56,34.95],'פתח תקווה':[32.09,34.89],'בני ברק':[32.08,34.83],'בת ים':[32.02,34.75],'גבעתיים':[32.07,34.81],'רמלה':[31.93,34.87],'לוד':[31.95,34.90],'מודיעין':[31.90,35.01],'מודיעין-מכבים-רעות':[31.90,35.01],'בית שמש':[31.75,34.99],'מעלה אדומים':[31.78,35.30],'אופקים':[31.31,34.62],'ערד':[31.26,35.21],'יבנה':[31.88,34.74],'נס ציונה':[31.93,34.80],'גדרה':[31.81,34.78],'קריית ביאליק':[32.84,35.09],'קריית אתא':[32.81,35.10],'קריית מוצקין':[32.84,35.08],'קריית ים':[32.85,35.07],'נשר':[32.77,35.04],'טירת כרמל':[32.76,34.97],'זכרון יעקב':[32.57,34.95],'חדרה':[32.44,34.92],'אור עקיבא':[32.51,34.92],'פרדס חנה-כרכור':[32.47,34.97],'עפרה':[31.95,35.26],'עלי':[32.06,35.26],'קדומים':[32.21,35.16],'בית אל':[31.94,35.22],'קרני שומרון':[32.17,35.10],'עמנואל':[32.16,35.14],'אפרת':[31.65,35.15],'קריית ארבע':[31.53,35.12],'שילה':[32.05,35.29],'יקנעם עילית':[32.66,35.11],'מגדל העמק':[32.68,35.24],'בית שאן':[32.50,35.50],'מעלות-תרשיחא':[33.02,35.27],'רהט':[31.39,34.75],'אום אל-פחם':[32.52,35.15],'טייבה':[32.27,35.01],'טירה':[32.23,34.95],'שפרעם':[32.81,35.17],'ראש העין':[32.10,34.96],'אלעד':[32.05,34.95],'יהוד':[32.03,34.89],'יהוד-מונוסון':[32.03,34.89],'אור יהודה':[32.03,34.85],'כפר יונה':[32.32,34.94],'אבן יהודה':[32.27,34.89],'תל מונד':[32.25,34.92],'שוהם':[31.99,34.95],'גני תקווה':[32.06,34.87],'ראש פינה':[32.97,35.54],'מבשרת ציון':[31.80,35.15],'גבעת שמואל':[32.08,34.85],'ביתר עילית':[31.70,35.12],'מודיעין עילית':[31.93,35.04],'כפר קאסם':[32.11,34.98],'קלנסווה':[32.29,34.98],'עראבה':[32.85,35.34],'טמרה':[32.85,35.20],'מגאר':[32.89,35.41],'ירוחם':[30.99,34.93],'מצפה רמון':[30.61,34.80],'שלומי':[33.08,35.14],'מטולה':[33.28,35.58],'כוכב יאיר':[32.22,34.99],'צור הדסה':[31.72,35.10],'גוש עציון':[31.65,35.12],'קריית עקרון':[31.86,34.82],'מזכרת בתיה':[31.85,34.84],'באר יעקב':[31.94,34.84],'קיסריה':[32.50,34.90],'בנימינה':[32.52,34.95],'עתלית':[32.69,34.94],'רמת ישי':[32.70,35.17],'סביון':[32.05,34.88],'כפר ורדים':[32.99,35.27],'חריש':[32.46,35.04],'נוף איילון':[31.87,34.99],'כפר חב״ד':[31.99,34.85]};
+  const INST_LL = { tau:[32.113,34.804], huji:[31.794,35.243], technion:[32.777,35.023], bgu:[31.262,34.801], biu:[32.068,34.843], haifa:[32.761,35.019], ariel:[32.104,35.205] };
+  function cityLL(name) { if (!name) return null; name = String(name).trim(); if (CITY_LL[name]) return CITY_LL[name]; const k = Object.keys(CITY_LL).find(c => name.startsWith(c) || name.includes(c)); return k ? CITY_LL[k] : null; }
+  function instDistanceKm(inst) {
+    const h = cityLL($('homeCity').value), i = (inst && (INST_LL[inst['מזהה']] || cityLL(inst['עיר'])));
+    if (!h || !i) return null;
+    const R = 6371, rad = x => x * Math.PI / 180, dLa = rad(i[0] - h[0]), dLo = rad(i[1] - h[1]);
+    const a = Math.sin(dLa / 2) ** 2 + Math.cos(rad(h[0])) * Math.cos(rad(i[0])) * Math.sin(dLo / 2) ** 2;
+    return Math.round(2 * R * Math.asin(Math.sqrt(a)));
+  }
+
   function scoreInstitutionPreference(inst, vibe, tuition) {
     let bonus = 0;
     if (STATE.relWeight > 0) {
@@ -1733,7 +1836,9 @@ body.cmp-on{padding-bottom:120px}
     }
     if (STATE.budgetWeight > 0 && tuition > 0 && tuition <= 13000) bonus += STATE.budgetWeight * 12;
     const home = $('homeCity').value.trim();
-    if (STATE.locWeight > 0 && home && (inst['עיר'] || '').includes(home)) bonus += STATE.locWeight * 20;
+    const km = instDistanceKm(inst);
+    if (STATE.locWeight > 0 && km != null) bonus += STATE.locWeight * Math.max(0, 20 - km / 5);
+    else if (STATE.locWeight > 0 && home && (inst['עיר'] || '').includes(home)) bonus += STATE.locWeight * 20;
     return bonus;
   }
 
@@ -1953,6 +2058,49 @@ body.cmp-on{padding-bottom:120px}
     msg.classList.remove('hidden');
   }
 
+  // ===== למה התואר/המוסד מופיע: משפטים לפי התשובות =====
+  function whyReasons(entry, item, ctx) {
+    const { d, inst, adm, vibe } = entry; const pos = [], neg = [];
+    const f = d['תחום לימוד'];
+    if (ctx.chosenFields.has(f) || STATE.chosenProgs.has(f)) pos.push('בחרת בתחום הזה בעצמך בשאלון');
+    else if (STATE.interests.has(item.cat)) pos.push(`התחום שייך לתחום העניין „${item.cat}” שסימנת`);
+    const codes = (FIELD_HOLLAND[f] || []).filter(c => ctx.topCodes.includes(c));
+    if (codes.length) pos.push(`התחום מתאים לפרופיל שלך בשאלון האישיות (${codes.map(c => HOLLAND_NAMES[c].replace(/\s*\(.\)/, '')).join(', ')})`);
+    // קבלה
+    const m = (adm.label || '').match(/סכם (\d+(?:\.\d+)?) מול סף (\d+(?:\.\d+)?)/);
+    if (m) { const diff = Math.round((+m[1] - +m[2]) * 10) / 10; diff >= 0 ? pos.push(`הציון המשוקלל שלך (${m[1]}) גבוה מהסף (${m[2]}) ב-${diff} נקודות`) : neg.push(`הציון המשוקלל שלך (${m[1]}) נמוך מהסף (${m[2]}) ב-${Math.abs(diff)} נקודות`); }
+    else if (adm.status === 'good') pos.push(`בגלל הציונים: ${adm.label}`);
+    else if (adm.status === 'hard') neg.push(`בגלל הציונים: ${adm.label}`);
+    else if (adm.status === 'mid') neg.push(`הקבלה גבולית: ${adm.label}`);
+    // מרחק
+    const km = instDistanceKm(inst); const home = $('homeCity').value.trim();
+    if (km != null) {
+      if (km <= 5) pos.push(`המוסד ממש קרוב לבית – ב${inst['עיר'] || 'עיר שלך'}`);
+      else if (km <= 35) pos.push(`כ-${km} ק״מ מ${home} בקו אווירי – אפשר לנסוע מהבית כל יום`);
+      else if (km <= 70) (STATE.housing === 'parents' ? neg : pos).push(`כ-${km} ק״מ מ${home} בקו אווירי – נסיעה ארוכה${STATE.housing === 'parents' ? ', ואמרת שאת/ה מעדיפ/ה לנסוע מהבית' : ' או מגורים ליד הקמפוס'}`);
+      else (STATE.housing === 'parents' ? neg : pos).push(`כ-${km} ק״מ מ${home} בקו אווירי – ${STATE.housing === 'parents' ? 'רחוק לנסיעה יומית, כנראה יצריך מעבר דירה' : 'מתאים למי שמוכנ/ה לעבור לגור ליד הלימודים'}`);
+    } else if (home && STATE.locWeight > 0) neg.push(`המרחק מ${home}: לא ידוע. יש לוודא ולבדוק`);
+    // צביון
+    if (STATE.relWeight > 0) {
+      const ok = (STATE.relLevel === 'religious' && /religious/.test(vibe.rel)) || (STATE.relLevel === 'haredi' && /haredi|religious_strict/.test(vibe.rel)) || (STATE.relLevel === 'secular' && vibe.rel === 'secular') || STATE.relLevel === 'traditional';
+      (ok ? pos : neg).push(ok ? `הצביון (${vibe.tag}) מתאים למה שביקשת` : `הצביון (${vibe.tag}) פחות מתאים למה שביקשת`);
+    }
+    // תקציב
+    const t = Number(d['שכר לימוד שנתי (₪)']) || 0;
+    if (STATE.budgetWeight > 0) {
+      if (!t) neg.push('שכר הלימוד: לא ידוע. יש לוודא ולבדוק');
+      else if (t <= 13000) pos.push(`שכר לימוד מסובסד (${t.toLocaleString()} ₪ לשנה) – מתאים לתקציב${STATE.selectedSch.has('mimadim') ? ', וממדים ללימודים יכולה לכסות אותו' : ''}`);
+      else neg.push(`שכר לימוד גבוה (${t.toLocaleString()} ₪ לשנה), ואמרת שהתקציב חשוב לך`);
+    }
+    if (STATE.type !== 'any') {
+      const tp = inst['סוג'] || '';
+      const want = { uni: 'אוניברסיטה', col: 'מכללה', hand: 'הנדסאים' }[STATE.type];
+      if (want && tp.includes(want)) pos.push(`זה ${tp} – כמו שביקשת`);
+    }
+    (adm.notes || []).slice(0, 1).forEach(n => neg.push(n));
+    return { pos, neg };
+  }
+
   function buildResults() {
     const sc = calcHollandScores();
     const topCodes = Object.entries(sc).sort((a, b) => b[1] - a[1]).slice(0, 3).map(x => x[0]);
@@ -1962,19 +2110,33 @@ body.cmp-on{padding-bottom:120px}
     const eng = getEnglishPlacement();
 
     const allFields = [...new Set(DB.degrees.map(d => d['תחום לימוד']))];
+    const PROG_SYN = { 'מחשב': ['מדעי המחשב', 'הנדסת תוכנה', 'מערכות מידע'], 'תוכנה': ['הנדסת תוכנה', 'מדעי המחשב'], 'הייטק': ['מדעי המחשב', 'הנדסת תוכנה'], 'רופא': ['רפואה'], 'עורך דין': ['משפטים'], 'עו"ד': ['משפטים'], 'פסיכולוג': ['פסיכולוגיה'], 'מורה': ['הוראה', 'חינוך'], 'אחות': ['סיעוד'], 'אח ': ['סיעוד'], 'כלכל': ['כלכלה'], 'מנהל עסקים': ['מנהל עסקים'] };
+    const chosenFields = new Set();
+    [...STATE.chosenProgs].forEach(p => {
+      const q = p.trim();
+      allFields.forEach(f => { if (f === q || f.includes(q) || (q.length >= 4 && q.includes(f))) chosenFields.add(f); });
+      Object.entries(PROG_SYN).forEach(([k, arr]) => { if (q.includes(k.trim())) allFields.forEach(f => { if (arr.some(a => f.includes(a))) chosenFields.add(f); }); });
+    });
     const scoredFields = allFields.map(f => {
       let score = 0;
       const codes = FIELD_HOLLAND[f] || ['I', 'S'];
       codes.forEach((c, idx) => { score += (sc[c] || 1) * (idx === 0 ? 3 : 1.5); });
       const sample = DB.degrees.find(d => d['תחום לימוד'] === f);
-      if (sample && STATE.interests.has(sample['קטגוריה'])) score += 12;
-      if (STATE.chosenProgs.has(f)) score += 35;
+      if (sample && STATE.interests.has(sample['קטגוריה'])) score += 20;
+      if (STATE.chosenProgs.has(f) || chosenFields.has(f)) score += 35;
       score += axisFieldBonus(f, axProf);
       if (STATE.answers.c1 === 'no' && /חינוך|הוראה/.test(f)) score -= 15;
       if (STATE.answers.c2 === 'no' && /רפואה|סיעוד|פיזיותרפיה/.test(f)) score -= 15;
       if (STATE.answers.c3 === 'no' && /מתמטיקה|פיזיקה|הנדס|מחשב/.test(f)) score -= 12;
-      return { field: f, score };
-    }).sort((a, b) => b.score - a.score).slice(0, 6);
+      return { field: f, score, cat: sample ? sample['קטגוריה'] : '' };
+    }).sort((a, b) => b.score - a.score);
+    // מה שבחרתם במפורש תמיד יופיע: תחומים שהקלדתם, והתחום המוביל בכל תחום עניין שסימנתם
+    const must = [];
+    scoredFields.forEach(x => { if (chosenFields.has(x.field) && must.length < 4) must.push(x); });
+    [...STATE.interests].forEach(cat => { const top = scoredFields.filter(x => x.cat === cat).slice(0, 3); top.forEach(x => { if (!must.includes(x) && must.length < 6) must.push(x); }); });
+    must.sort((a, b) => b.score - a.score);
+    const topFields = [...must, ...scoredFields.filter(x => !must.includes(x))].slice(0, Math.max(6, must.length));
+    scoredFields.length = 0; scoredFields.push(...topFields);
 
     const svc = $('svc').value;
     const svcMon = Number($('svcMon').value) || 0;
@@ -2007,6 +2169,7 @@ body.cmp-on{padding-bottom:120px}
     `;
 
     const cardRegistry = [];
+    const whyCtx = { chosenFields, topCodes };
 
     scoredFields.forEach((item, idx) => {
       const allForField = DB.degrees.filter(d => d['תחום לימוד'] === item.field);
@@ -2082,6 +2245,7 @@ body.cmp-on{padding-bottom:120px}
                 <div><span class="inst-name">${d['מוסד']}</span> <span class="meta">(${inst['עיר'] || ''})</span></div>
                 <span class="badge ${adm.status}">${adm.label}</span>
               </div>
+              ${(() => { const w = whyReasons(entry, item, whyCtx); return (w.pos.length || w.neg.length) ? `<div class="why-box"><strong>למה זה מופיע לך:</strong><ul>${w.pos.map(x => `<li>✓ ${x}</li>`).join('')}${w.neg.map(x => `<li class="neg">✗ ${x}</li>`).join('')}</ul></div>` : ''; })()}
               <div class="vibe-tag"><strong>צביון ואופי (${vibe.tag}):</strong> ${vibe.desc}</div>
               <ul>
                 <li><strong>ערוצי קבלה:</strong> ${!d['ערוצי קבלה'] ? 'לא ידוע. יש לוודא ולבדוק' : d['סטטוס'] === 'מאומת חלקית' ? `יש לוודא – תנאי הקבלה במוסד זה דינמיים ומשתנים ואינם מפורסמים באתר <small>(נתון ממקור קודם, לא מאומת: ${d['ערוצי קבלה']})</small>` : d['ערוצי קבלה']}</li>
