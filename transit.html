@@ -52,7 +52,7 @@ h1{font-size:clamp(1.6rem,4vw,2.2rem);color:var(--pine);margin:22px 0 6px}
 .tr-note{font-size:.84rem;color:var(--muted);margin:4px 0}
 .tr-opt{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;background:var(--paper)}
 .tr-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:.92rem}
-.tr-legs{margin:8px 0 0;padding-inline-start:20px;font-size:.9rem}.tr-legs li{margin:4px 0}.tr-legs li.walk{color:var(--muted);list-style:'· '}
+.tr-legs{margin:8px 0 0;padding-inline-start:6px;font-size:.9rem;list-style:none}.tr-legs li{margin:4px 0}.tr-legs li.walk{color:var(--muted);list-style:none}
 .tr-ico{margin-inline-end:4px}
 .tr-tab{border-collapse:collapse;width:100%;font-size:.86rem}.tr-tab th,.tr-tab td{padding:5px 6px;border-bottom:1px solid var(--line);text-align:start}
 .tr-lines{display:flex;flex-wrap:wrap;gap:5px}.tr-lines span{border:1px solid var(--line);border-radius:8px;padding:2px 8px;font-weight:600;font-size:.88rem;background:var(--surface)}.tr-lines small{font-weight:400;color:var(--muted)}
@@ -99,7 +99,7 @@ h1{font-size:clamp(1.6rem,4vw,2.2rem);color:var(--pine);margin:22px 0 6px}
     <button type="button" data-f="60" aria-pressed="false">עד שעה</button>
     <button type="button" data-f="direct" aria-pressed="false">בלי החלפות</button>
   </div>
-  <table class="tlist"><thead><tr><th>מוסד</th><th>זמן נסיעה</th><th>איך</th></tr></thead><tbody id="tb"></tbody></table>
+  <div style="overflow-x:auto"><table class="tlist"><thead><tr><th>מוסד</th><th>זמן נסיעה</th><th>איך</th></tr></thead><tbody id="tb"></tbody></table></div>
 </section>
 <p class="foot">מקור: לוח הזמנים הרשמי של התחבורה הציבורית (GTFS, משרד התחבורה – gtfs.mot.gov.il), גרסה מ-23.11.2026, מחושב ליום שלישי 1.12.2026. הנסיעה מתחילה מאמצע היישוב (התחנות העמוסות בו) ומסתיימת בקמפוס, עם הליכה בקצוות ועד 3 החלפות. זמני הרכב הם הערכה לפי מרחק. זמנים בפועל משתנים – לפני נסיעה בדקו במוביט או בגוגל מפות.</p>
 </main>
@@ -139,7 +139,7 @@ function render(){
   const max=Math.max(60,...rows.filter(r=>r.b).map(r=>r.b.dur));
   $('tb').innerHTML=rows.map(({i,e,b})=>{
     const id=i['מזהה'];const how=b?(b.walkOnly?'ברגל':(e.o.find(o=>o[0]===b.arr)||e.o[0])[3].map(l=>l[0]==='rail'?'🚆 רכבת':(l[0]==='lrt'?'🚈 ':l[0]==='cable'?'🚡 ':'🚌 ')+l[1]).join(' ← ')):'';
-    const direct=e&&e.d&&e.d.length?`<span class="chip">${e.d.length} קווים ישירים</span>`:'';
+    const direct=e&&e.d&&e.d.length?`<span class="chip">${b&&b.transfers>0?`יש גם ${e.d.length} קווים ישירים בבוקר`:`${e.d.length} קווים ישירים`}</span>`:'';
     return `<tr data-id="${esc(id)}" aria-expanded="${open===id}"><td><b>${esc(i['שם המוסד'])}</b><br><small style="color:var(--muted)">${esc(i['עיר']||'')}</small></td><td class="t">${b?b.dur+' דק׳':'—'}${b?`<div class="bar" style="width:${Math.max(6,b.dur/max*100)}%"></div>`:''}</td><td>${b?`${how}<br><small style="color:var(--muted)">${b.walkOnly?'':b.transfers===1?'החלפה אחת':b.transfers?b.transfers+' החלפות':'ישיר'} · יציאה ${KivunTransit.hm(b.leave)} · הגעה ${KivunTransit.hm(b.arr)}</small>`:'<small>לא נמצאה נסיעה עד 11:00 – זמן הנסיעה לא ידוע. יש לוודא ולבדוק</small>'} ${direct}</td></tr>`+
       (open===id?`<tr class="det"><td colspan="3"><div class="detail" id="det-${esc(id)}">טוען…</div></td></tr>`:'');
   }).join('')||'<tr><td colspan="3">אין מוסדות שמתאימים לסינון.</td></tr>';

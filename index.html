@@ -37,7 +37,7 @@
 }
 *,*::before,*::after{box-sizing:inherit}
 html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px)}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans Hebrew","Arial Hebrew",Arial,sans-serif;font-size:18px;line-height:1.65}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans Hebrew","Arial Hebrew",Arial,sans-serif;font-size:18px;line-height:1.65;overflow-x:clip}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
 h1,h2,h3,h4{font-family:"Suez One","IBM Plex Sans Hebrew",Georgia,serif;font-weight:400;line-height:1.25;margin:0}
 button,input,select{font:inherit;color:inherit}
@@ -690,7 +690,8 @@ body.cmp-on{padding-bottom:120px}
 
 <footer>
   <strong>© 2026 כיוון – כל הזכויות שמורות.</strong><br>
-  הנתונים במערכת מבוססים על פרסומי המוסדות, המל״ג, הלמ״ס ומשרד הביטחון (תשפ״ז) ונועדו להכוונה בלבד. לפני קבלת החלטה או הרשמה יש לוודא את התנאים העדכניים מול המוסד הרלוונטי.
+  הנתונים במערכת מבוססים על פרסומי המוסדות, המל״ג, הלמ״ס ומשרד הביטחון (תשפ״ז) ונועדו להכוונה בלבד. לפני קבלת החלטה או הרשמה יש לוודא את התנאים העדכניים מול המוסד הרלוונטי.<br>
+  <span style="display:inline-block;margin-top:8px"><a href="curricula.html">תוכניות לימודים</a> · <a href="combos.html">שילובי תארים</a> · <a href="finance.html">סימולטור פיננסי</a> · <a href="transit.html">זמני נסיעה</a> · <a href="data.html">מאגר הנתונים</a></span>
 </footer>
 <datalist id="progList"></datalist><datalist id="cityList"></datalist><datalist id="majorList"></datalist>
 
@@ -1146,7 +1147,7 @@ body.cmp-on{padding-bottom:120px}
   });
   function renderChosenProgs() {
     $('chosenProgs').innerHTML = [...STATE.chosenProgs].map(p =>
-      `<button type="button" class="chip" aria-pressed="true" data-p="${p}">${p} ✕</button>`
+      `<button type="button" class="chip" aria-pressed="true" data-p="${p}">${p} &times;</button>`
     ).join('');
     qsa('#chosenProgs .chip').forEach(b => b.addEventListener('click', () => {
       STATE.chosenProgs.delete(b.dataset.p);
@@ -1240,7 +1241,7 @@ body.cmp-on{padding-bottom:120px}
           <option value="2" ${m.units == 2 ? 'selected' : ''}>2 יח״ל</option>
         </select>
         <input type="number" min="0" max="100" step="1" inputmode="numeric" value="${m.grade}" placeholder="ציון" class="m-grade">
-        <button type="button" class="x" title="הסרה">✕</button>
+        <button type="button" class="x" title="הסרה">&times;</button>
       </div>
     `).join('');
 
@@ -1614,7 +1615,7 @@ body.cmp-on{padding-bottom:120px}
     $('backBtn').style.visibility = STATE.step === 0 ? 'hidden' : 'visible';
     $('nextBtn').textContent = STATE.step === TOTAL_STEPS - 1 ? 'הצג את התוכנית שלי' : 'המשך לשלב הבא';
     $('err').textContent = '';
-    window.scrollTo({ top: $('wizard').offsetTop - 70, behavior: 'smooth' });
+    window.scrollTo({ top: Math.max(0, $('wizard').getBoundingClientRect().top + window.scrollY - 70), behavior: 'smooth' });
   }
 
   // ===== מסך פתיחה לשאלון + שמירת טיוטה בדפדפן =====
@@ -1628,6 +1629,7 @@ body.cmp-on{padding-bottom:120px}
     $('qiReset').classList.toggle('hidden', !d);
     $('qiStart').textContent = d ? 'להתחיל שאלון חדש' : 'להתחיל את השאלון';
     $('qiDraftNote').textContent = d ? `נמצא שאלון שהתחלתם (נשמר ב-${new Date(d.t).toLocaleDateString('he-IL')} ${new Date(d.t).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}).` : '';
+    if (location.hash !== '#quiz') history.replaceState(null, '', '#quiz');
     window.scrollTo({ top: 0 });
   }
   $('startBtn').addEventListener('click', showIntro);
@@ -1708,7 +1710,7 @@ body.cmp-on{padding-bottom:120px}
     document.body.appendChild(bar);
     const modal = document.createElement('div');
     modal.id = 'cmpModal'; modal.className = 'hidden'; modal.setAttribute('role', 'dialog'); modal.setAttribute('aria-modal', 'true'); modal.setAttribute('aria-labelledby', 'cmpTitle');
-    modal.innerHTML = '<div class="box"><button type="button" class="x" id="cmpClose" aria-label="סגירה">✕</button><h2 id="cmpTitle">השוואה בין מוסדות</h2><div id="cmpBody"></div></div>';
+    modal.innerHTML = '<div class="box"><button type="button" class="x" id="cmpClose" aria-label="סגירה">&times;</button><h2 id="cmpTitle">השוואה בין מוסדות</h2><div id="cmpBody"></div></div>';
     document.body.appendChild(modal);
     $('cmpOpen').addEventListener('click', openCmp);
     $('cmpClear').addEventListener('click', () => { CMP.clear(); qsa('.cmp-box').forEach(b => b.checked = false); updateCmpBar(); });

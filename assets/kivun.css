@@ -23,7 +23,7 @@
   --line:#263449; --good:#6FD19C; --mid:#F0B86B; --hard:#F08C78; --on-pine:#0F1622;
   --blaze-w:#E6ECF4; --blaze-b:#82B2EC; --blaze-o:#F59E52; color-scheme:dark;
 }
-body{font-family:var(--kv-body) !important;background:var(--paper);color:var(--ink);font-size:18px}
+body{font-family:var(--kv-body) !important;background:var(--paper);color:var(--ink);font-size:18px;overflow-x:clip}
 h1,h2,h3,.brand,.kv-display{font-family:var(--kv-display) !important;font-weight:400 !important;letter-spacing:0}
 h1{line-height:1.15}
 a{color:var(--pine)}

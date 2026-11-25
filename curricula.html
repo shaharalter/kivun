@@ -30,11 +30,11 @@ a{color:var(--pine)}
 .wrap{max-width:1080px;margin:0 auto;padding:0 16px 60px}
 h1{font-family:"Suez One",serif;font-weight:400;font-size:clamp(2rem,5vw,3rem);line-height:1.1;margin:32px 0 6px;color:var(--pine)}
 .lead{color:var(--muted);margin:0 0 22px;max-width:62ch}
-.picker{display:grid;grid-template-columns:220px 1fr;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px}
+.picker{display:grid;grid-template-columns:minmax(240px,310px) 1fr;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px}
 @media (max-width:700px){.picker{grid-template-columns:1fr}}
 label.sm{display:block;font-size:.85rem;font-weight:600;color:var(--muted);margin-bottom:4px}
 select,input[type=search]{width:100%;font:inherit;font-size:1rem;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink)}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;max-height:150px;overflow:auto}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;max-height:240px;overflow:auto;padding-bottom:4px}
 .chip{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:5px 12px;font:inherit;font-size:.9rem;cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--pine);border-color:var(--pine);color:var(--on-pine)}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:22px;margin-top:18px}
@@ -141,8 +141,9 @@ function renderYears(I,p){const U=p.unit?p.unit.replace('"','״'):'נ״ז';const
  if(cats.length){h+=`<div class="bar" role="img" aria-label="חלוקת הנקודות">${cats.map((c,i)=>`<i style="width:${parseFloat(c[1])/tot*100}%;background:${colors[i%5]}"></i>`).join('')}</div><div class="legend">${cats.map((c,i)=>`<span style="--k:${colors[i%5]}">${esc(c[0])}: <b>${esc(c[1])}</b> ${U}</span>`).join('')}</div>`}
  if(p.pdfv){const ng=p.years.reduce((a,y)=>a+y.groups.length,0),nk=p.years.reduce((a,y)=>a+y.groups.filter(g=>g.ok).length,0);h+=`<div class="verify${nk===ng?'':' warn'}">${nk===ng?'✓':'⚠'} <span>התוכנית חולצה מקובץ השנתון הרשמי (PDF) של ${esc(I.short||I.name)}. ב-${nk} מתוך ${ng} הסמסטרים סכום הנקודות של הקורסים תואם לסיכום שמופיע בשנתון.${p.auto?' החילוץ אוטומטי מטבלאות הקובץ, ולכן ייתכנו שיבושים בשמות קורסים או בשיוך שלהם – חשוב לבדוק בשנתון לפני תכנון.':''}</span></div>`}else if(p.auto)h+=`<div class="verify warn">⚠ <span>התוכנית חולצה אוטומטית מ${p.pdf?'קובץ השנתון (PDF)':'טקסט השנתון הדיגיטלי'} של ${esc(I.short||I.name)}. הטקסט שם כתוב באופן שונה בכל חוג, ולכן ייתכנו קורסים חסרים, קבוצות שלא שויכו נכון או ערבוב בין מסלולים – חשוב לבדוק בשנתון לפני תכנון.</span></div>`;else h+=`<div class="verify">✓ <span>הנתונים נשלפו ישירות ממאגר ${I.unit?'הידיעון':'השנתון'} הרשמי של ${esc(I.short||I.name)}: הקורסים, ${p.unit?'השעות':'נקודות הזכות'} והדרישות בכל קבוצה כפי שהם מופיעים שם.${p.unit?' ב-ת״א מודדים בש״ס – שעות סמסטריאליות (שעה שבועית לאורך סמסטר).':''}</span></div>`;
  if(p.info)h+=`<details class="el" style="margin-top:14px"><summary>מידע כללי על התוכנית</summary><div class="elin" style="white-space:pre-line;font-size:.92rem">${esc(p.info)}</div></details>`;
+ if(p.years.length>1)h+=`<div class="chips" style="margin-top:14px" role="group" aria-label="סינון לפי שנה"><button type="button" class="chip" data-yr="all" aria-pressed="true">כל השנים</button>${p.years.map((y,yi)=>`<button type="button" class="chip" data-yr="${yi}" aria-pressed="false">${y.label?esc(y.label):'שנה '+(YN[y.y-1]||y.y)}</button>`).join('')}</div>`;
  h+='<div class="years">';
- for(const y of p.years){h+=`<section class="year"><h3>${y.label?esc(y.label):'שנה '+(YN[y.y-1]||y.y)}${y.tot?` <small>${y.tot} ${U}</small>`:''}</h3>`;
+ for(let yi=0;yi<p.years.length;yi++){const y=p.years[yi];h+=`<section class="year" data-yi="${yi}"><h3>${y.label?esc(y.label):'שנה '+(YN[y.y-1]||y.y)}${y.tot?` <small>${y.tot} ${U}</small>`:''}</h3>`;
   for(const g of y.groups){const many=!g.m&&g.c.length>8;const span=g.span?` <span class="sm2">· שנים ${g.span.map(x=>YN[x-1]).join('–')}</span>`:'';const req=g.min?(g.m?`${g.min} ${U}`:`לפחות ${g.min} ${U}`):(g.m?'':'רשות');
    const head=`<span><span class="gt ${g.m?'m':'e'}">${esc(g.t||'')}</span>${span}</span><span class="sm2">${req}${g.n?` · ${g.n} קורסים`:''}${g.ok?' · <span class="tag ok">סכום תואם</span>':''}</span>`;
    const body=`${g.note?`<div class="gnote">${esc(g.note)}</div>`:''}<table><tbody>${g.c.map(c=>`<tr><td>${esc(c[1])}${c[3]?`<span class="semt">${esc(semN[c[3]]||c[3])}</span>`:''}<span class="num">${esc(c[0])}</span></td><td class="cr">${esc(c[2]!=null?(+c[2]).toFixed(1):'')}</td></tr>`).join('')}</tbody></table>${g.n>g.c.length?`<div class="semsum"><span>מוצגים ${g.c.length} מתוך ${g.n} קורסים – הרשימה המלאה במקור</span></div>`:''}`;
@@ -166,9 +167,10 @@ function render(){const I=DATA.institutions[cur.inst];chips();if(cur.deg&&!I.pro
  h+=`<div class="stats"><div class="stat"><b>${esc(p.total||'—')}</b><span>נקודות זכות לתואר</span></div><div class="stat"><b>${years}</b><span>שנות לימוד בתוכנית</span></div><div class="stat"><b>${sems.reduce((a,s)=>a+s.c.filter(c=>c[0]).length,0)}</b><span>קורסי חובה בשיבוץ</span></div><div class="stat"><b>${p.elect.length}</b><span>קורסי בחירה ברשימה</span></div></div>`;
  if(cats.length){h+=`<div class="bar" role="img" aria-label="חלוקת הנקודות">${cats.map((c,i)=>`<i style="width:${Math.max(2,parseFloat(c[1])/tot*100)}%;background:${colors[i%5]}"></i>`).join('')}</div><div class="legend">${cats.map((c,i)=>`<span style="--k:${colors[i%5]}">${esc(catNice(c[0]))}: <b>${esc(c[1])}</b> נק׳</span>`).join('')}</div>`}
  h+= okN===sems.length?`<div class="verify">✓ <span>כל ${sems.length} הסמסטרים אומתו: סכום הנקודות של הקורסים בכל סמסטר תואם לסיכום שמופיע בקטלוג.</span></div>`:`<div class="verify warn">⚠ <span>${okN} מתוך ${sems.length} סמסטרים אומתו מול הסיכום שבקטלוג. סמסטרים המסומנים ״לבדיקה״ כוללים בעיקר אפשרויות בחירה – כדאי לבדוק אותם בקטלוג המקורי.</span></div>`;
+ if(years>1)h+=`<div class="chips" style="margin-top:14px" role="group" aria-label="סינון לפי שנה"><button type="button" class="chip" data-yr="all" aria-pressed="true">כל השנים</button>${Array.from({length:years},(_,yi)=>`<button type="button" class="chip" data-yr="${yi}" aria-pressed="false">שנה ${YN[yi]||yi+1}</button>`).join('')}</div>`;
  h+='<div class="years">';
  for(let y=1;y<=years;y++){const ss=sems.filter(s=>Math.ceil(s.n/2)===y);if(!ss.length)continue;const ysum=ss.reduce((a,s)=>a+(parseFloat(s.tot)||s.sum||0),0);
-  h+=`<section class="year"><h3>שנה ${YN[y-1]||y} <small>${ysum?ysum.toFixed(1)+' נק׳':''}</small></h3><div class="sems">`;
+  h+=`<section class="year" data-yi="${y-1}"><h3>שנה ${YN[y-1]||y} <small>${ysum?ysum.toFixed(1)+' נק׳':''}</small></h3><div class="sems">`;
   for(const s of ss){h+=`<div class="sem"><header><b>סמסטר ${s.n} <small style="font-weight:400;color:var(--muted)">(${s.n%2?'חורף':'אביב'})</small></b>${s.ok?'<span class="tag ok" title="סכום הנקודות תואם לקטלוג">אומת</span>':'<span class="tag chk" title="לא ניתן היה לאמת אוטומטית">לבדיקה</span>'}</header><table><tbody>`;
    for(const c of s.c){const el=!c[0];h+=`<tr class="${el?'el':''}"><td>${esc(c[1])}${c[0]?`<span class="num">${esc(c[0])}</span>`:''}${c[3]&&Array.isArray(c[3])?`<span class="alt">או: ${esc(c[3][1])} (${esc(c[3][0])})</span>`:''}</td><td class="cr">${esc(cr(c[2]))}</td></tr>`}
    h+=`</tbody></table><div class="semsum"><span>סה״כ בסמסטר</span><b>${esc(s.tot||s.sum)} נק׳</b></div></div>`}
@@ -194,7 +196,7 @@ function toggleCmp(){const i=CMP.findIndex(x=>x.inst===cur.inst&&x.deg===cur.deg
 function bindAdd(){const b=$('addcmp');if(b)b.onclick=toggleCmp}
 function alertBar(t){drawBar(t)}
 function drawBar(extra){const bar=$('cmpbar');if(!CMP.length&&!extra){bar.classList.add('hidden');return}bar.classList.remove('hidden');
- bar.innerHTML=`<b>להשוואה:</b>${CMP.map((x,i)=>`<span class="it">${esc(x.deg)} · ${esc(DATA.institutions[x.inst].short||DATA.institutions[x.inst].name)}<button type="button" data-rm="${i}" aria-label="הסרה מההשוואה">✕</button></span>`).join('')}${CMP.length>=2?'<button type="button" class="btn" id="docmp">השוואה זו לצד זו ←</button>':'<span class="inst">בחרו עוד תוכנית אחת לפחות (גם ממוסד אחר)</span>'}${extra?`<span class="inst" style="color:var(--hard)">${esc(extra)}</span>`:''}`;
+ bar.innerHTML=`<b>להשוואה:</b>${CMP.map((x,i)=>`<span class="it">${esc(x.deg)} · ${esc(DATA.institutions[x.inst].short||DATA.institutions[x.inst].name)}<button type="button" data-rm="${i}" aria-label="הסרה מההשוואה">&times;</button></span>`).join('')}${CMP.length>=2?'<button type="button" class="btn" id="docmp">השוואה זו לצד זו ←</button>':'<span class="inst">בחרו עוד תוכנית אחת לפחות (גם ממוסד אחר)</span>'}${extra?`<span class="inst" style="color:var(--hard)">${esc(extra)}</span>`:''}`;
  bar.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{CMP.splice(+b.dataset.rm,1);const a=$('addcmp');if(a){a.outerHTML=cmpBtn();bindAdd()}drawBar();setUrl()});
  const d=$('docmp');if(d)d.onclick=showCompare}
 const SYN=[[/חדו\s?א|חשבון דיפרנציאלי ואינטגרלי/g,'חשבון אינפיניטסימלי'],[/^אלגברה( א| 1)?$/,'אלגברה לינארית'],[/ (למדמ ח|למדעי המחשב|להנדסה|למדעים|לתלמידי [^ ]+)$/,''],[/^מבוא לתכנות( בשפת [^ ]+)?$/,'מבוא למדעי המחשב'],[/מבני נתונים ואלגוריתמים/,'מבני נתונים']];
@@ -216,7 +218,7 @@ function showCompare(){$('out').innerHTML='<div class="card empty">טוען את
   const maxY=Math.max(...items.map(it=>it.S.years.length));
   const row=(h,f)=>`<tr><th scope="row">${h}</th>${items.map(it=>`<td>${f(it)}</td>`).join('')}</tr>`;
   const list=arr=>{if(!arr||!arr.length)return '<span class="inst">אין קורסי חובה בשיבוץ לשנה זו</span>';const L=12;return `<ul>${arr.slice(0,L).map(n=>`<li class="${shared.has(norm(n))?'sh':''}">${esc(n)}</li>`).join('')}</ul>${arr.length>L?`<details><summary class="more">ועוד ${arr.length-L}</summary><ul>${arr.slice(L).map(n=>`<li class="${shared.has(norm(n))?'sh':''}">${esc(n)}</li>`).join('')}</ul></details>`:''}`};
-  let h=`<article class="card"><div class="head"><div><h2>השוואת תוכניות לימודים</h2><div class="inst">${items.length} תוכניות זו לצד זו. קורסים <b style="color:var(--pine)">מודגשים בירוק</b> מופיעים כחובה גם בתוכנית אחרת בהשוואה (התאמה לפי שם הקורס).</div></div><button type="button" class="btn" id="backone">חזרה לתוכנית אחת</button></div>`;
+  let h=`<article class="card"><div class="head"><div><h2>השוואת תוכניות לימודים</h2><div class="inst">${items.length} תוכניות זו לצד זו. קורסים <b style="color:var(--pine)">מודגשים בכחול</b> מופיעים כחובה גם בתוכנית אחרת בהשוואה (התאמה לפי שם הקורס).</div></div><button type="button" class="btn" id="backone">חזרה לתוכנית אחת</button></div>`;
   h+=`<div class="cwrap"><table class="ctab" style="min-width:${120+items.length*230}px"><thead><tr><th scope="col"></th>${items.map(it=>`<th scope="col">${esc(it.x.deg)}<br><small style="font-weight:400">${esc(it.I.short||it.I.name)}</small></th>`).join('')}</tr></thead><tbody>`;
   h+=row('היקף התואר',it=>it.S.total?`<b>${esc(it.S.total)}</b> ${esc(it.S.unit)}`:'לא ידוע. יש לוודא ולבדוק');
   h+=row('שנות לימוד',it=>esc(it.S.yn));
@@ -231,6 +233,7 @@ function showCompare(){$('out').innerHTML='<div class="card empty">טוען את
  }).catch(()=>{$('out').innerHTML='<div class="card empty">לא ניתן היה לטעון את התוכניות להשוואה. נסו לרענן את העמוד.</div>'})}
 
 $('chips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;cur.deg=b.dataset.d;render();$('out').scrollIntoView({behavior:'smooth',block:'start'})};
+$('out').addEventListener('click',e=>{const b=e.target.closest('button[data-yr]');if(!b)return;const yr=b.dataset.yr;$('out').querySelectorAll('button[data-yr]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$('out').querySelectorAll('section.year[data-yi]').forEach(s=>{s.style.display=(yr==='all'||s.dataset.yi===yr)?'':'none'})});
 $('q').oninput=chips;
 $('inst').onchange=()=>{cur.inst=$('inst').value;cur.deg=null;render()};
 const _render=render;render=function(){_render();bindAdd();drawBar()};

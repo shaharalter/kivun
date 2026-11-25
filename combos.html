@@ -94,6 +94,7 @@ fetch('combos/combos.json').then(r=>r.json()).then(j=>{D=j;
   onInst();
 });
 function onInst(){cur=$('inst').value;sel=null;const I=D[cur];
+  $('detail').innerHTML='<h2>בחרו חוג</h2><p class="empty">לחצו על חוג ברשימה כדי לראות עם מה אפשר לשלב אותו.</p>';
   $('src').innerHTML=I?`מקור: <a href="${esc(I.source)}" target="_blank" rel="noopener">${esc(I.sourceName)}</a> · נבדק ${esc(I.checked)} · ${I.tracks.length} מסלולים, ${I.links.reduce((a,b)=>a+b.length,0)/2|0} צירופים`:'למוסד הזה עדיין לא מופו צירופי החוגים – מוצגות רק התוכניות המשולבות. צירופי החוגים: לא ידוע. יש לוודא ולבדוק באתר המוסד.';
   $('main').style.display=I?'':'none';renderList();renderSpecial();
   if(I&&$('q').value){const q=$('q').value.trim();let f=I.tracks.findIndex(t=>base(t[1])===q&&t[2]==='D');if(f<0)f=I.tracks.findIndex(t=>t[1]===q+' - דו חוגי');if(f<0)f=I.tracks.findIndex(t=>t[1]===q+' דו מחלקתי'||t[1]===q+' דו-מחלקתי');if(f<0)f=I.tracks.findIndex(t=>base(t[1])===q);if(f<0)f=I.tracks.findIndex(t=>base(t[1])===q);if(f<0)f=I.tracks.findIndex(t=>t[1].startsWith(q));if(f<0)f=I.tracks.findIndex(t=>t[1].includes(q));if(f>=0)pick(f)}}
