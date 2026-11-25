@@ -296,6 +296,25 @@ body.cmp-on{padding-bottom:120px}
 .qi-list li{padding:14px 18px;background:var(--surface);border:1px solid var(--line);border-inline-start:6px solid var(--pine);border-radius:10px}
 .qi-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
 .qi-small{color:var(--muted);font-size:.95rem}
+
+/* דף תואר בלשוניות */
+.dp-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.dp-title{font-size:clamp(1.7rem,4vw,2.4rem);margin:14px 0 4px}
+.dp-title span{display:block;font-family:var(--kv-body);font-size:1.05rem;color:var(--muted);font-weight:600}
+.dp-tabs{display:flex;gap:2px;overflow-x:auto;border-bottom:2px solid var(--line);margin:18px 0 16px;scrollbar-width:thin}
+.dp-tabs button{flex:none;border:0;background:none;font:600 1rem var(--kv-body);color:var(--muted);padding:10px 14px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+.dp-tabs button[aria-selected="true"]{color:var(--pine);border-bottom-color:var(--sun)}
+.dp-tabs button:hover{color:var(--ink)}
+.dp-facts{display:grid;gap:10px;margin:0 0 14px}
+.dp-facts>div{display:grid;grid-template-columns:150px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.dp-facts dt{font-weight:700;color:var(--muted)}.dp-facts dd{margin:0}
+@media (max-width:600px){.dp-facts>div{grid-template-columns:1fr;gap:2px}}
+.dp-actions{display:flex;gap:10px;flex-wrap:wrap}
+.dp-h3{font-size:1.25rem;margin:18px 0 8px}
+.dp-list{padding-inline-start:20px}.dp-list li{margin:0 0 10px}
+.dp-cols{columns:2 240px;padding-inline-start:20px}
+.inst-sum{margin:6px 0;color:var(--ink)}
+.why-mini{list-style:none;padding:0;margin:6px 0;font-size:.95rem}.why-mini li.neg{color:var(--hard)}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/kivun.css">
@@ -2003,118 +2022,131 @@ body.cmp-on{padding-bottom:120px}
     return bonus;
   }
 
-  function openHousingAndMapPlanner(deg, inst, adm) {
-    const home = $('homeCity').value.trim();
-    const instName = deg['מוסד'];
-    const city = inst['עיר'] || '';
-    const vibe = getVibeForInst(inst);
-    const baseRent3 = Number(inst['שכ״ד בעיר ₪']) || 4200;
-    const roomieRent = Math.round(baseRent3 / 3);
-    const dorms = DB.dorms.filter(d => (d['מוסד'] || '').includes(instName.replace('אוניברסיטת ', '').replace('האוניברסיטה ', '')));
-    const dormAvg = dorms.length ? Math.round((Number(dorms[0]['מינימום ₪']) + Number(dorms[0]['מקסימום ₪'])) / 2) : 1150;
+  // ===== דף תואר מלא בלשוניות =====
+  const esc2 = v => String(v == null ? '' : v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  let HOUSING = null;
+  const loadHousing = () => HOUSING || (HOUSING = fetch('housing/housing.json').then(r => r.ok ? r.json() : {}).catch(() => ({})));
+  let COMBOS = null;
+  const loadCombos = () => COMBOS || (COMBOS = fetch('combos/combos.json').then(r => r.json()).catch(() => ({})));
+  const CUR_CACHE = {};
+  const loadCur = id => CUR_CACHE[id] || (CUR_CACHE[id] = fetch('curricula/data/' + id + '.json').then(r => r.ok ? r.json() : {}).catch(() => ({})));
+  const DTABS = [['over', 'סקירה'], ['adm', 'קבלה'], ['study', 'תוכנית לימודים'], ['combo', 'שילובים'], ['go', 'הגעה וחניה'], ['home', 'מגורים'], ['money', 'כסף']];
+  let DCTX = null;
 
-    const annualSch = POPULAR_SCHOLARSHIPS.filter(s => STATE.selectedSch.has(s.id)).reduce((sum, s) => sum + s.annual, 0);
-    const monthlySch = Math.round(annualSch / 12);
-
-    const gmapsDirUrl = home
-      ? `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(home)}&destination=${encodeURIComponent(instName + ' ' + city)}&travelmode=transit`
-      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(instName + ' ' + city)}`;
-    const moovitUrl = `https://moovitapp.com/israel-1/poi/${encodeURIComponent(instName + ' ' + city)}`;
-    const embedMapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(instName + ' ' + city)}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
-
-    const pkg1Total = Math.max(0, dormAvg + 350 + 1300 - monthlySch);
-    const pkg2Total = Math.max(0, Math.round(roomieRent * 0.92) + 450 + 1500 - monthlySch);
-    const pkg3Total = Math.max(0, Math.round(roomieRent * 1.15) + 450 + 1700 - monthlySch);
-
-    let html = `
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
-        <button type="button" class="btn ghost small" id="backToResultsBtn">→ חזרה לרשימת התארים והמוסדות</button>
-        <span class="badge ${adm.status}">${adm.label}</span>
-      </div>
-      <h2>${deg['תחום לימוד']} – ${instName}</h2>
-      <p class="hint">תוכנית הגעה, מפה, ניתוח שכונות ועסקאות חבילה למגורים (${city})</p>
-
-      <div class="sec">
-        <h3>🗺️ מפה ומסלולי הגעה לקמפוס</h3>
-        <p>${home ? `מסלול נסיעה מנקודת המוצא שלך (<strong>${home}</strong>) אל <strong>${instName}</strong>:` : `מיקום הקמפוס של <strong>${instName}</strong> (${city}):`}</p>
-        <div class="route-btns">
-          <a href="${gmapsDirUrl}" target="_blank" rel="noopener" class="btn small">🧭 פתח מסלול נסיעה חי ב-Google Maps</a>
-          <a href="${moovitUrl}" target="_blank" rel="noopener" class="btn ghost small">🚌 מסלולי אוטובוס ורכבת ב-Moovit</a>
-        </div>
-        <iframe class="map-frame" src="${embedMapUrl}" loading="lazy" title="מפת ${instName}"></iframe>
-        <div id="trDetail" class="tr-box"><p class="tr-note">טוען זמני נסיעה, קווים ותחנות…</p></div>
-        <p class="meta"><strong>תחבורה וחניה בקמפוס:</strong> ${inst['תחבורה'] && inst['תחבורה'] !== '—' ? inst['תחבורה'] + ' • ' : ''}חניה: ${inst['חניה'] && !/^לבדיקה/.test(inst['חניה']) ? inst['חניה'] : 'לא ידוע. יש לוודא ולבדוק'}</p>
-      </div>
-
-      <div class="sec">
-        <h3>🏘️ שכונות מומלצות ליד הקמפוס (שקט מול חיי חברה ותחב״צ)</h3>
-        ${vibe.hoods.map(h => {
-          const est = Math.round(roomieRent * h.rentFactor);
-          return `
-            <div class="hood-card">
-              <strong>${h.name}</strong>
-              <div class="hood-tags">
-                <span class="htag">🎭 אווירה: ${h.vibe}</span>
-                <span class="htag">🚌 תחב״צ ומרחק: ${h.transit}</span>
-                <span class="htag">💰 שכ״ד משוער לשותף: ~${est.toLocaleString()} ₪/חודש</span>
-              </div>
-            </div>
-          `;
-        }).join('')}
-      </div>
-
-      <div class="sec">
-        <h3>📦 3 עסקאות חבילה למגורים ומחיה (הערכה חודשית כוללת)</h3>
-        <p class="meta">${monthlySch ? `כולל קיזוז אוטומטי של <strong>${monthlySch.toLocaleString()} ₪/חודש</strong> מהמלגות שסימנת!` : 'טיפ: אם תסמנו מלגות בשלב 8 (כמו פר״ח או מיל-GO), הסכום החודשי כאן יתקזז אוטומטית.'}</p>
-        <div class="pkg-grid">
-          <div class="pkg-card">
-            <div>
-              <strong>חבילת חיסכון (מעונות / נסיעה מהבית)</strong>
-              <div class="pkg-price">~${pkg1Total.toLocaleString()} ₪<small style="font-size:.85rem;color:var(--muted)"> / חודש</small></div>
-              <ul class="list" style="font-size:.9rem">
-                <li>מעונות סטודנטים (~${dormAvg.toLocaleString()} ₪) או נסיעות מהבית</li>
-                <li>תחב״צ חופשי-חודשי סטודנט (~150 ₪)</li>
-                <li>מזון והוצאות שוטפות (~1,300 ₪)</li>
-              </ul>
-            </div>
-          </div>
-          <div class="pkg-card featured">
-            <div>
-              <strong>חבילת איזון (שכונה שקטה + תחב״צ) ⭐</strong>
-              <div class="pkg-price">~${pkg2Total.toLocaleString()} ₪<small style="font-size:.85rem;color:var(--muted)"> / חודש</small></div>
-              <ul class="list" style="font-size:.9rem">
-                <li>חדר בדירת 3 שותפים בשכונה שקטה (~${Math.round(roomieRent * 0.92).toLocaleString()} ₪)</li>
-                <li>ארנונה, חשמל, מים ואינטרנט (~450 ₪)</li>
-                <li>מזון, תחב״צ ופנאי (~1,500 ₪)</li>
-              </ul>
-            </div>
-          </div>
-          <div class="pkg-card">
-            <div>
-              <strong>חבילת מרכז העניינים (הליכה + חיי חברה)</strong>
-              <div class="pkg-price">~${pkg3Total.toLocaleString()} ₪<small style="font-size:.85rem;color:var(--muted)"> / חודש</small></div>
-              <ul class="list" style="font-size:.9rem">
-                <li>דירת שותפים במרחק הליכה ממרכז הבילויים (~${Math.round(roomieRent * 1.15).toLocaleString()} ₪)</li>
-                <li>חשבונות שוטפים (~450 ₪)</li>
-                <li>מחיה ובילויים (~1,700 ₪)</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-
+  function openHousingAndMapPlanner(deg, inst, adm, entry) { openDegreePage(entry || { d: deg, inst, adm, vibe: getVibeForInst(inst) }); }
+  function openDegreePage(entry, tab) {
+    const { d, inst, adm } = entry;
+    DCTX = { entry, done: {} };
+    const instName = d['מוסד'];
+    $('detailView').innerHTML = `
+      <div class="dp-top"><button type="button" class="btn ghost small" id="backToResultsBtn">→ חזרה לתוצאות</button><span class="badge ${adm.status}">${adm.label}</span></div>
+      <h2 class="dp-title">${esc2(d['תחום לימוד'])}<span>${esc2(instName)}${inst['עיר'] ? ', ' + esc2(inst['עיר']) : ''}</span></h2>
+      <div class="dp-tabs" role="tablist" aria-label="פרטי התואר">${DTABS.map(([k, n], i) => `<button type="button" role="tab" id="dpt-${k}" aria-controls="dpp-${k}" aria-selected="${i === 0}" data-k="${k}">${n}</button>`).join('')}</div>
+      ${DTABS.map(([k], i) => `<section class="dp-pane" role="tabpanel" id="dpp-${k}" aria-labelledby="dpt-${k}" ${i ? 'hidden' : ''}></section>`).join('')}`;
     $('results').classList.add('hidden');
-    $('detailView').innerHTML = html;
     $('detailView').classList.remove('hidden');
-    if (window.KivunTransit && $('trDetail')) KivunTransit.mount($('trDetail'), home, inst['מזהה'], instName, `<p class="tr-note"><a href="transit.html?home=${encodeURIComponent(home)}&inst=${encodeURIComponent(inst['מזהה'] || '')}" target="_blank" rel="noopener">זמני הנסיעה מ${home || 'הבית'} לכל המוסדות ↗</a></p>`).catch(() => { const el = $('trDetail'); if (el) el.innerHTML = '<p class="tr-note">זמני הנסיעה: לא ידוע. יש לוודא ולבדוק.</p>'; });
-    $('backToResultsBtn').addEventListener('click', () => {
-      $('detailView').classList.add('hidden');
-      $('results').classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    const tabs = qsa('.dp-tabs button', $('detailView'));
+    tabs.forEach(b => b.addEventListener('click', () => showDTab(b.dataset.k)));
+    $('detailView').querySelector('.dp-tabs').addEventListener('keydown', e => {
+      if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+      const i = tabs.findIndex(t => t.getAttribute('aria-selected') === 'true');
+      const n = tabs[(i + (e.key === 'ArrowLeft' ? 1 : -1) + tabs.length) % tabs.length]; n.focus(); showDTab(n.dataset.k);
     });
+    $('backToResultsBtn').addEventListener('click', () => { $('detailView').classList.add('hidden'); $('results').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    showDTab(tab || 'over');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+  function showDTab(k) {
+    qsa('.dp-tabs button', $('detailView')).forEach(b => b.setAttribute('aria-selected', String(b.dataset.k === k)));
+    qsa('.dp-pane', $('detailView')).forEach(p => { p.hidden = p.id !== 'dpp-' + k; });
+    if (DCTX.done[k]) return; DCTX.done[k] = 1;
+    const pane = $('dpp-' + k);
+    const r = DTAB_RENDER[k](DCTX.entry, pane);
+    if (r && r.then) { pane.innerHTML = '<p class="hint">טוען…</p>'; r.then(h => { if (typeof h === 'string') pane.innerHTML = h; }); }
+    else if (typeof r === 'string') pane.innerHTML = r;
+  }
+  const DTAB_RENDER = {
+    over(e) {
+      const { d, inst, vibe } = e; const w = e.why || { pos: [], neg: [] };
+      return `${(w.pos.length || w.neg.length) ? `<div class="why-box"><strong>למה זה מופיע לך</strong><ul>${w.pos.map(x => `<li>✓ ${x}</li>`).join('')}${w.neg.map(x => `<li class="neg">✗ ${x}</li>`).join('')}</ul></div>` : ''}
+      <dl class="dp-facts">
+        <div><dt>משך התואר</dt><dd>${d['משך (שנים)'] ? d['משך (שנים)'] + ' שנים' : UNK}</dd></div>
+        <div><dt>צביון ואופי</dt><dd><b>${esc2(vibe.tag)}</b> – ${esc2(vibe.desc)}</dd></div>
+        <div><dt>מועדי הרשמה</dt><dd>${esc2(inst['הרשמה – מועדים'] || UNK)}${inst['הרשמה – מקור'] ? ` <a href="${inst['הרשמה – מקור']}" target="_blank" rel="noopener">(מקור)</a>` : ''}</dd></div>
+        <div><dt>ייעוץ ורישום</dt><dd>${esc2(d['קשר: יחידה / איש קשר'] || '')}${d['קשר: טלפון'] ? ' – ' + esc2(d['קשר: טלפון']) : (d['קשר: יחידה / איש קשר'] ? '' : UNK)}</dd></div>
+      </dl>
+      <div class="dp-actions">${inst['הרשמה – קישור'] ? `<a href="${inst['הרשמה – קישור']}" target="_blank" rel="noopener" class="btn small sun">להרשמה ↗</a>` : ''}${d['מקור (קישור)'] ? `<a href="${d['מקור (קישור)']}" target="_blank" rel="noopener" class="btn ghost small">לאתר התואר ↗</a>` : ''}</div>`;
+    },
+    adm(e) {
+      const { d, adm } = e;
+      return `<dl class="dp-facts"><div><dt>ערוצי קבלה</dt><dd>${!d['ערוצי קבלה'] ? UNK : d['סטטוס'] === 'מאומת חלקית' ? `יש לוודא – תנאי הקבלה במוסד זה דינמיים ומשתנים ואינם מפורסמים באתר <small>(נתון ממקור קודם, לא מאומת: ${esc2(d['ערוצי קבלה'])})</small>` : esc2(d['ערוצי קבלה'])}</dd></div>
+        ${d['דרישות בגרות'] ? `<div><dt>דרישות בגרות</dt><dd>${esc2(d['דרישות בגרות'])}</dd></div>` : ''}
+        ${d['ראיון / מבחן'] ? `<div><dt>ראיון / מבחן</dt><dd>${esc2(d['ראיון / מבחן'])}</dd></div>` : ''}
+        ${d['דרישות נוספות'] ? `<div><dt>דרישות נוספות</dt><dd>${esc2(d['דרישות נוספות'])}</dd></div>` : ''}
+        <div><dt>מקור</dt><dd>${d['מקור (קישור)'] ? `<a href="${d['מקור (קישור)']}" target="_blank" rel="noopener">אתר המוסד ↗</a>` : UNK} ${d['תאריך בדיקה'] ? `<small>(נבדק ${esc2(d['תאריך בדיקה'])})</small>` : ''}</dd></div></dl>
+        ${adm.notes.map(n => `<div class="note">⚠️ ${n}</div>`).join('')}
+        ${adm.improve || (adm.status === 'good' ? '<p class="hint">לפי הנתונים שהזנתם אתם עומדים בתנאי הקבלה.</p>' : '')}`;
+    },
+    async study(e) {
+      const { d } = e; const id = d['מזהה מוסד']; const deg = d['תחום לימוד'];
+      const C = await loadCur(id); const p = C[deg];
+      const disc = '<p class="note">ⓘ תוכנית הלימודים מבוססת על השנתון האחרון שפורסם (לפעמים של שנים קודמות). היא לא מחייבת לשנים הבאות ומשתנה עם הזמן, אבל נותנת תמונה טובה של מה לומדים.</p>';
+      if (!p) return `<p>${UNK}.</p>${d['מקור (קישור)'] ? `<p><a href="${d['מקור (קישור)']}" target="_blank" rel="noopener">לאתר התואר ↗</a></p>` : ''}${disc}`;
+      if (p.mode === 'link') return `<p>לתואר הזה עוד אין פירוט קורסים אצלנו. תוכנית הלימודים הרשמית: <a href="${esc2(p.url)}" target="_blank" rel="noopener">באתר המוסד ↗</a></p>${p.years ? `<p>משך: ${p.years} שנים</p>` : ''}${disc}`;
+      let courses = [];
+      if (Array.isArray(p.years) && p.years[0]) (p.years[0].groups || []).forEach(g => (g.c || []).forEach(c => courses.push(c)));
+      else if (Array.isArray(p.sems)) [p.sems[0], p.sems[1]].filter(Boolean).forEach(sm => (sm.c || sm.courses || (Array.isArray(sm) ? sm : [])).forEach(c => courses.push(c)));
+      courses = courses.slice(0, 12);
+      return `<p><b>${esc2(p.title || deg)}</b>${p.deg ? ' – ' + esc2(p.deg) : ''}${p.total ? ` · ${esc2(p.total)} ${esc2(p.unit || 'נ"ז')}` : ''}${p.years_n ? ` · ${p.years_n} שנים` : ''}${p.fac ? ' · ' + esc2(p.fac) : ''}</p>
+        ${courses.length ? `<h3 class="dp-h3">כמה מהקורסים בשנה א'</h3><ul class="dp-cols">${courses.map(c => `<li>${esc2(Array.isArray(c) ? c[1] || c[0] : (c.n || c.name || c))}</li>`).join('')}</ul>` : ''}
+        <p><a class="btn small" href="curricula.html?inst=${encodeURIComponent(id)}&deg=${encodeURIComponent(deg)}" target="_blank" rel="noopener">לתוכנית המלאה לפי שנים ↗</a></p>${disc}`;
+    },
+    async combo(e) {
+      const { d } = e; const id = d['מזהה מוסד']; const q = d['תחום לימוד'];
+      const C = await loadCombos(); const I = C[id];
+      if (!I) return `<p>שילובי החוגים במוסד הזה: ${UNK}. עדיין לא מיפינו אותם.</p>`;
+      const base = n => n.split(',')[0].trim();
+      let f = I.tracks.findIndex(t => base(t[1]) === q && t[2] === 'D');
+      if (f < 0) f = I.tracks.findIndex(t => t[1] === q + ' - דו חוגי' || t[1] === q + ' דו מחלקתי' || t[1] === q + ' דו-מחלקתי');
+      if (f < 0) f = I.tracks.findIndex(t => base(t[1]) === q);
+      if (f < 0) f = I.tracks.findIndex(t => t[1].includes(q));
+      const link = `<p><a class="btn small" href="combos.html?inst=${encodeURIComponent(id)}&q=${encodeURIComponent(q)}" target="_blank" rel="noopener">לכל השילובים ותנאי הקבלה ↗</a></p>`;
+      if (f < 0) return `<p>לא מצאנו את התואר הזה ברשימת השילובים של המוסד.</p>${I.rule ? `<p class="note">ⓘ ${esc2(I.rule)}</p>` : ''}${link}`;
+      const L = I.links[f] || []; const t = I.tracks[f];
+      const pop = (I.pop && I.pop[f]) || [];
+      return `<p><b>${esc2(t[1])}</b></p>${I.rule ? `<p class="note">ⓘ ${esc2(I.rule)}</p>` : ''}
+        ${pop.length ? `<p><b>שילובים פופולריים:</b> ${pop.map(j => esc2(I.tracks[j][1])).join(' · ')}</p>` : ''}
+        ${L.length ? `<p>אפשר לשלב עם <b>${L.length}</b> חוגים, למשל: ${L.slice(0, 12).map(j => esc2(I.tracks[j][1])).join(' · ')}${L.length > 12 ? '…' : ''}</p>` : (t[2] === 'S' ? '<p>זה מסלול חד-חוגי – לומדים אותו לבד.</p>' : `<p>${esc2(I.unknownMsg || 'הצירופים למסלול הזה: ' + UNK)}</p>`)}${link}`;
+    },
+    go(e, pane) {
+      const { d, inst } = e; const home = $('homeCity').value.trim(); const instName = d['מוסד'];
+      pane.innerHTML = `<div id="trDetail" class="tr-box"><p class="tr-note">טוען זמני נסיעה, קווים ותחנות…</p></div>
+        <p class="meta"><strong>חניה בקמפוס (לפי המוסד):</strong> ${inst['חניה'] && !/^לבדיקה/.test(inst['חניה']) ? esc2(inst['חניה']) : UNK}</p>`;
+      if (window.KivunTransit) KivunTransit.mount($('trDetail'), home, inst['מזהה'], instName, `<p class="tr-note"><a href="transit.html?home=${encodeURIComponent(home)}&inst=${encodeURIComponent(inst['מזהה'] || '')}" target="_blank" rel="noopener">זמני הנסיעה מ${esc2(home || 'הבית')} לכל המוסדות ↗</a></p>`).catch(() => { $('trDetail').innerHTML = `<p class="tr-note">זמני הנסיעה: ${UNK}.</p>`; });
+    },
+    async home(e) {
+      const { d, inst, vibe } = e; const id = inst['מזהה']; const H = (await loadHousing())[id] || {};
+      const cityRent = Number(inst['שכ"ד ממוצע בעיר (₪/חודש)']) || null;
+      const dorms = H.dorms || DB.dorms.filter(x => x['מזהה'] === id).map(x => ({ name: x['סוג יחידה'], min: x['מחיר מינימלי (₪)'], max: x['מחיר מקסימלי (₪)'], note: x['מה כלול'] || x['הערות'], src: x['מקור'] }));
+      const hoods = H.hoods || [];
+      const price = x => x.min ? (x.max && x.max !== x.min ? `${Number(x.min).toLocaleString()}–${Number(x.max).toLocaleString()} ₪` : `${Number(x.min).toLocaleString()} ₪`) + ' לחודש' : UNK;
+      return `<h3 class="dp-h3">🏠 מעונות סטודנטים</h3>
+        ${H.dormInfo ? `<p>${esc2(H.dormInfo)}</p>` : ''}
+        ${dorms.length ? `<ul class="dp-list">${dorms.map(x => `<li><b>${esc2(x.name)}</b> – ${price(x)}${x.note ? `<br><small>${esc2(x.note)}</small>` : ''}${x.src ? `<br><small class="muted">מקור: ${esc2(x.src)}</small>` : ''}</li>`).join('')}</ul>` : `<p>מחירי המעונות: ${UNK}.</p>`}
+        ${H.dormUrl ? `<p><a href="${esc2(H.dormUrl)}" target="_blank" rel="noopener">לאתר המעונות ↗</a></p>` : ''}
+        <h3 class="dp-h3">🏘️ שכונות מסביב לקמפוס</h3>
+        ${hoods.length ? `<ul class="dp-list">${hoods.map(h => `<li><b>${esc2(h.name)}</b>${h.dist ? ` – ${esc2(h.dist)}` : ''}${h.rent ? `<br>חדר בדירת שותפים: ${esc2(h.rent)}` : ''}${h.vibe ? `<br><small>${esc2(h.vibe)}</small>` : ''}</li>`).join('')}</ul>${H.hoodSrc ? `<p class="note">מקור: ${esc2(H.hoodSrc)}</p>` : ''}`
+          : (vibe.hoods || []).length ? `<ul class="dp-list">${vibe.hoods.map(h => `<li><b>${esc2(h.name)}</b><br><small>${esc2(h.vibe)} · ${esc2(h.transit)}</small></li>`).join('')}</ul>` : `<p>${UNK}.</p>`}
+        <p class="meta">שכר דירה ממוצע בעיר (דירה שלמה, למ"ס): ${cityRent ? cityRent.toLocaleString() + ' ₪ לחודש' : UNK}. מחירי השכונות הם הערכה – יש לוודא מול מודעות עדכניות.</p>`;
+    },
+    money(e) {
+      const { d } = e; const t = Number(d['שכר לימוד שנתי (₪)']) || 0; const eng = getEnglishPlacement();
+      const sch = POPULAR_SCHOLARSHIPS.filter(s => STATE.selectedSch.has(s.id));
+      return `<dl class="dp-facts"><div><dt>שכר לימוד שנתי</dt><dd>${t ? t.toLocaleString() + ' ₪' : UNK}${eng.extraCost > 0 ? ` + כ-${eng.extraCost.toLocaleString()} ₪ קורסי אנגלית (${eng.level})` : ''}${STATE.selectedSch.has('mimadim') && t && t <= 13000 ? ' (מכוסה במלגת ממדים ללימודים)' : ''}</dd></div>
+        ${sch.length ? `<div><dt>מלגות שסימנת</dt><dd>${sch.map(s => esc2(s.name)).join(' · ')}</dd></div>` : ''}</dl>
+        <p><a class="btn small" href="finance.html?inst=${encodeURIComponent(d['מזהה מוסד'])}&deg=${encodeURIComponent(d['תחום לימוד'])}" target="_blank" rel="noopener">לסימולציה פיננסית מלאה ↗</a></p>`;
+    },
+  };
 
   // ===== שמירה ושיתוף התוצאות בקישור =====
   function snapshotState() {
@@ -2413,7 +2445,7 @@ body.cmp-on{padding-bottom:120px}
       html += `
         <div class="prof">
           <div class="prof-head"><span class="rank">#${idx + 1}</span><h3>${item.field}</h3></div>
-          ${fallbackAdvice ? `<div class="tip-box">${fallbackAdvice}</div>` : `<p class="why">מציג ${evaluated.length} מוסדות מובילים לפי השקלול האישי שלך (לחצו על מוסד למפה, מסלולי הגעה ועסקאות חבילה למגורים):</p>`}
+          ${fallbackAdvice ? `<div class="tip-box">${fallbackAdvice}</div>` : `<p class="why">${evaluated.length} מוסדות שמתאימים לך, לפי מה שעניתם. בכל מוסד: "לכל הפרטים" – קבלה, תוכנית לימודים, שילובים, הגעה, מגורים וכסף.</p>`}
           ${evaluated.map(entry => {
             const cIdx = cardRegistry.length;
             cardRegistry.push(entry);
@@ -2427,25 +2459,12 @@ body.cmp-on{padding-bottom:120px}
                 <div><span class="inst-name">${d['מוסד']}</span> <span class="meta">(${inst['עיר'] || ''})</span></div>
                 <span class="badge ${adm.status}">${adm.label}</span>
               </div>
-              ${(() => { const w = whyReasons(entry, item, whyCtx); return (w.pos.length || w.neg.length) ? `<div class="why-box"><strong>למה זה מופיע לך:</strong><ul>${w.pos.map(x => `<li>✓ ${x}</li>`).join('')}${w.neg.map(x => `<li class="neg">✗ ${x}</li>`).join('')}</ul></div>` : ''; })()}
-              <div class="vibe-tag"><strong>צביון ואופי (${vibe.tag}):</strong> ${vibe.desc}</div>
-              <ul>
-                <li><strong>ערוצי קבלה:</strong> ${!d['ערוצי קבלה'] ? 'לא ידוע. יש לוודא ולבדוק' : d['סטטוס'] === 'מאומת חלקית' ? `יש לוודא – תנאי הקבלה במוסד זה דינמיים ומשתנים ואינם מפורסמים באתר <small>(נתון ממקור קודם, לא מאומת: ${d['ערוצי קבלה']})</small>` : d['ערוצי קבלה']}</li>
-                <li><strong>שכר לימוד שנתי:</strong> ${baseTuition ? baseTuition.toLocaleString() + ' ₪' + engNote : 'לא ידוע. יש לוודא ולבדוק'} ${STATE.selectedSch.has('mimadim') && baseTuition <= 13000 ? '(מכוסה ע״י ממדים ללימודים!)' : ''}</li>
-                ${d['קשר: טלפון'] ? `<li><strong>ייעוץ ורישום:</strong> ${d['קשר: יחידה / איש קשר'] || ''} – ${d['קשר: טלפון']}</li>` : ''}
-                <li><strong>📅 מועדי הרשמה:</strong> ${(inst && inst['הרשמה – מועדים']) || 'לא ידוע. יש לוודא ולבדוק'}${inst && inst['הרשמה – מקור'] ? ` <a href="${inst['הרשמה – מקור']}" target="_blank" rel="noopener">(מקור)</a>` : ''}</li>
-              </ul>
-              ${adm.notes.map(n => `<div class="note">⚠️ ${n}</div>`).join('')}
-              ${adm.improve || ''}
-              ${d['סטטוס'] === 'מאומת חלקית' ? `<div class="note">ℹ️ נתוני הקבלה לתואר הזה לא אומתו במלואם מול אתר המוסד${/לא מפרסמת|לא מתפרסמים|בלי ספים|אינו מפרסם|אינם מציגים|נמסרים בפגישת/.test(d['הערות'] || '') ? ' (המוסד לא מפרסם ספים מספריים)' : ''}. כדאי לוודא מול מרכז הרישום${d['קשר: טלפון'] ? ' – ' + d['קשר: טלפון'] : ''}.</div>` : ''}
+              ${(() => { const w = whyReasons(entry, item, whyCtx); entry.why = w; const pos = w.pos.slice(0, 2), neg = w.neg.slice(0, 1); return (pos.length || neg.length) ? `<ul class="why-mini">${pos.map(x => `<li>✓ ${x}</li>`).join('')}${neg.map(x => `<li class="neg">✗ ${x}</li>`).join('')}</ul>` : ''; })()}
+              <p class="inst-sum"><b>קבלה:</b> ${!d['ערוצי קבלה'] ? 'לא ידוע. יש לוודא ולבדוק' : d['סטטוס'] === 'מאומת חלקית' ? 'יש לוודא – תנאי הקבלה במוסד זה דינמיים ומשתנים ואינם מפורסמים באתר' : d['ערוצי קבלה']}</p>
               <div class="inst-actions">
+                <button type="button" class="btn small sun plan-housing-btn" data-cidx="${cIdx}">לכל הפרטים על התואר</button>
+                ${adm.improve ? `<button type="button" class="btn ghost small open-tab-btn" data-cidx="${cIdx}" data-tab="adm">מה צריך כדי להתקבל</button>` : ''}
                 <label class="cmp-check"><input type="checkbox" class="cmp-box" data-cidx="${cIdx}" ${CMP.has(cmpKey(d)) ? 'checked' : ''}> ⚖️ להשוואה</label>
-                <button type="button" class="btn small plan-housing-btn" data-cidx="${cIdx}">🗺️ מפה, מסלולי הגעה ועסקאות חבילה למגורים</button>
-                ${inst && inst['הרשמה – קישור'] ? `<a href="${inst['הרשמה – קישור']}" target="_blank" rel="noopener" class="btn small">📝 להרשמה ↗</a>` : ''}
-                ${d['מקור (קישור)'] ? `<a href="${d['מקור (קישור)']}" target="_blank" rel="noopener" class="btn ghost small">לאתר התואר ↗</a>` : ''}
-                ${(CUR_AVAIL[d['מזהה מוסד']]||[]).includes(d['תחום לימוד']) ? `<a href="curricula.html?inst=${encodeURIComponent(d['מזהה מוסד'])}&deg=${encodeURIComponent(d['תחום לימוד'])}" target="_blank" rel="noopener" class="btn ghost small">📚 תוכנית לימודים</a>` : ''}
-                <a href="finance.html?inst=${encodeURIComponent(d['מזהה מוסד'])}&deg=${encodeURIComponent(d['תחום לימוד'])}" target="_blank" rel="noopener" class="btn ghost small">💰 סימולציה פיננסית</a>
-                ${COMBO_INST.includes(d['מזהה מוסד']) ? `<a href="combos.html?inst=${encodeURIComponent(d['מזהה מוסד'])}&q=${encodeURIComponent(d['תחום לימוד'])}" target="_blank" rel="noopener" class="btn ghost small">🔀 שילובים אפשריים</a>` : ''}
               </div>
             </div>
           `}).join('')}
@@ -2478,10 +2497,10 @@ body.cmp-on{padding-bottom:120px}
     });
     updateCmpBar();
 
-    qsa('.plan-housing-btn', $('results')).forEach(btn => {
+    qsa('.plan-housing-btn, .open-tab-btn', $('results')).forEach(btn => {
       btn.addEventListener('click', () => {
         const entry = cardRegistry[Number(btn.dataset.cidx)];
-        if (entry) openHousingAndMapPlanner(entry.d, entry.inst, entry.adm);
+        if (entry) openDegreePage(entry, btn.dataset.tab);
       });
     });
 

@@ -105,7 +105,8 @@
         L.map(l => `<span title="${esc(l[3])} · ${l[4]} נסיעות בבוקר">${esc(l[1])} <small>${esc(l[2])}</small></span>`).join('') + `</div><p class="tr-note">מספר הנסיעות בבוקר (6:00–12:00) מופיע כשמצביעים על הקו.</p>`;
       if (C.approx) h += `<p class="tr-note">ⓘ מיקום הקמפוס של ${esc(instName || '')} במפה משוער – יש לוודא את הכתובת המדויקת.</p>`;
     }
-    h += `<h4>🗺️ מפה: קווים, תחנות וחניות</h4><p class="tr-note">לחצו על קו כדי לראות את כל המסלול והתחנות שלו. לחיצה על תחנה או חניה מציגה פרטים.</p><div class="tr-mapbox" data-inst="${esc(instId)}"><div class="tr-map"></div><div class="tr-map-side"><div class="tr-map-tools"><label><input type="checkbox" class="tr-pk" checked> 🅿️ חניות</label><button type="button" class="tr-clear">ניקוי המפה</button></div><div class="tr-map-lines">טוען…</div></div></div>`;
+    h += `<h4>🗺️ מפה: קווי אוטובוס, רכבת ותחנות</h4><p class="tr-note">לחצו על קו כדי לראות את כל המסלול והתחנות שלו. לחיצה על תחנה מציגה פרטים.</p><div class="tr-mapbox" data-inst="${esc(instId)}"><div class="tr-map"></div><div class="tr-map-side"><div class="tr-map-tools"><span></span><button type="button" class="tr-clear">ניקוי המפה</button></div><div class="tr-map-lines">טוען…</div></div></div>`;
+    h += `<section class="tr-pkbox" data-inst="${esc(instId)}" aria-label="חניה ליד הקמפוס"><h4>🅿️ חניה ליד הקמפוס</h4><p class="tr-note">חניונים בטווח של עד כ-1.3 ק״מ מהקמפוס, לפי גוגל מפות. מחירים ושעות: לא ידוע. יש לוודא ולבדוק מול החניון.</p><div class="tr-pkgrid"><div class="tr-pkmap"></div><ol class="tr-pklist"><li class="tr-note">טוען…</li></ol></div></section>`;
     const dest = encodeURIComponent((instName || '') + (homeName ? '' : ''));
     h += `<div class="tr-links"><a href="https://www.google.com/maps/dir/?api=1${homeName ? '&origin=' + encodeURIComponent(homeName) : ''}&destination=${C ? C.ll.join(',') : dest}&travelmode=transit" target="_blank" rel="noopener">מסלול בזמן אמת בגוגל מפות ↗</a><a href="https://moovitapp.com/tripplan/israel-1/poi/he?tll=${C ? C.ll.join('_') : ''}" target="_blank" rel="noopener">מוביט ↗</a></div>`;
     return h + '</div>';
@@ -139,15 +140,15 @@
     if (!box || box.dataset.ready) return; box.dataset.ready = '1';
     const inst = box.dataset.inst;
     let M, L;
-    try { [M, L] = await Promise.all([fetch(BASE + 'map/' + inst + '.json').then(r => r.json()), loadLeaflet()]); }
+    const pkSec = box.parentElement && box.parentElement.querySelector(`.tr-pkbox[data-inst="${inst}"]`);
+    try { M = await fetch(BASE + 'map/' + inst + '.json').then(r => r.json()); }
     catch (e) { box.querySelector('.tr-map-lines').textContent = 'לא ניתן היה לטעון את המפה כרגע.'; return; }
+    try { L = await loadLeaflet(); }
+    catch (e) { box.querySelector('.tr-map-lines').textContent = 'לא ניתן היה לטעון את המפה כרגע.'; initParking(pkSec, M, null); return; }
     const map = L.map(box.querySelector('.tr-map'), { scrollWheelZoom: false }).setView(M.ll, 15);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
     L.marker(M.ll, { title: 'הקמפוס' }).addTo(map).bindPopup('<b>🎓 הקמפוס</b>');
-    const pk = L.layerGroup().addTo(map);
-    (M.parking || []).forEach(p => L.circleMarker([p[1], p[2]], { radius: 8, color: '#fff', weight: 2, fillColor: '#2D6CDF', fillOpacity: .95 })
-      .bindPopup(`<b>🅿️ ${esc(p[0])}</b><br>כ-${p[3]} מ׳ מהקמפוס<br><a href="https://www.google.com/maps/dir/?api=1&destination=${p[1]},${p[2]}" target="_blank" rel="noopener">ניווט ↗</a>`).addTo(pk));
-    box.querySelector('.tr-pk').onchange = e => { if (e.target.checked) pk.addTo(map); else map.removeLayer(pk); };
+    initParking(pkSec, M, L);
     const active = new Map(); let ci = 0;
     function toggle(idx) {
       const ln = M.lines[idx]; if (!ln) return;
@@ -164,7 +165,6 @@
     }
     const lb = box.querySelector('.tr-map-lines');
     lb.innerHTML = M.lines.length ? M.lines.map((ln, i) => `<button type="button" class="tr-lbtn" data-i="${i}" aria-pressed="false"><b>${ICON[ln.m] || '🚌'} ${esc(ln.n || MODEN[ln.m])}</b> <small>${esc(ln.a)} · לכיוון ${esc(ln.h)} · ${ln.c} נסיעות בבוקר</small></button>`).join('') : '<p class="tr-note">לא נמצאו קווים ליד הקמפוס.</p>';
-    if (!(M.parking || []).length) lb.insertAdjacentHTML('afterbegin', '<p class="tr-note">🅿️ מידע על חניות ליד הקמפוס: לא ידוע. יש לוודא ולבדוק.</p>');
     lb.addEventListener('click', e => { const b = e.target.closest('.tr-lbtn'); if (b) toggle(+b.dataset.i); });
     box.querySelector('.tr-clear').onclick = () => { [...active.keys()].forEach(toggle); map.setView(M.ll, 15); };
     box._showLine = key => {
@@ -174,6 +174,38 @@
       box.scrollIntoView({ behavior: 'smooth', block: 'center' });
     };
   }
+  function initParking(sec, M, L) {
+    if (!sec || sec.dataset.ready) return; sec.dataset.ready = '1';
+    const P = M.parking || [];
+    const list = sec.querySelector('.tr-pklist');
+    if (!P.length) { list.innerHTML = '<li class="tr-note">מידע על חניונים ליד הקמפוס: לא ידוע. יש לוודא ולבדוק.</li>'; sec.querySelector('.tr-pkmap').remove(); sec.querySelector('.tr-pkgrid').style.display = 'block'; return; }
+    list.innerHTML = P.map((p, i) => `<li><button type="button" data-i="${i}"><b>${esc(p[0])}</b><small>כ-${p[3]} מ׳ · ${Math.max(1, Math.round(p[3] / 75))} דק׳ הליכה</small></button> <a href="https://www.google.com/maps/dir/?api=1&destination=${p[1]},${p[2]}" target="_blank" rel="noopener">ניווט ↗</a></li>`).join('');
+    if (!L) { sec.querySelector('.tr-pkmap').remove(); sec.querySelector('.tr-pkgrid').style.display = 'block'; return; }
+    const map = L.map(sec.querySelector('.tr-pkmap'), { scrollWheelZoom: false }).setView(M.ll, 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
+    L.marker(M.ll, { title: 'הקמפוס', icon: L.divIcon({ className: 'tr-campus-ic', html: '🎓', iconSize: [30, 30] }) }).addTo(map).bindPopup('<b>🎓 הקמפוס</b>');
+    const mk = [];
+    P.forEach((p, i) => {
+      const m = L.marker([p[1], p[2]], { title: p[0], icon: L.divIcon({ className: 'tr-pk-ic', html: `<span>P</span><small>${i + 1}</small>`, iconSize: [30, 30], iconAnchor: [15, 15] }) })
+        .bindPopup(`<b>🅿️ ${esc(p[0])}</b><br>כ-${p[3]} מ׳ מהקמפוס (כ-${Math.max(1, Math.round(p[3] / 75))} דק׳ הליכה)<br><a href="https://www.google.com/maps/dir/?api=1&destination=${p[1]},${p[2]}" target="_blank" rel="noopener">ניווט לחניון ↗</a>`).addTo(map);
+      mk.push(m);
+    });
+    map.fitBounds(L.latLngBounds([M.ll, ...P.map(p => [p[1], p[2]])]), { padding: [30, 30] });
+    list.addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (!b) return; const m = mk[+b.dataset.i]; map.setView(m.getLatLng(), 17); m.openPopup(); });
+  }
+  (function css() {
+    if (document.getElementById('kv-tr-pk-css')) return;
+    const st = document.createElement('style'); st.id = 'kv-tr-pk-css';
+    st.textContent = `.tr-pkbox{margin:18px 0 6px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.tr-pkgrid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:12px}@media (max-width:760px){.tr-pkgrid{grid-template-columns:minmax(0,1fr)}}
+.tr-pkmap{height:340px;border-radius:10px;border:1px solid var(--line);z-index:0}
+.tr-pklist{margin:0;padding:0 18px 0 0;max-height:340px;overflow:auto;font-size:.92rem}.tr-pklist li{margin:0 0 8px}
+.tr-pklist button{border:0;background:none;padding:0;font:inherit;color:var(--ink);cursor:pointer;text-align:start}.tr-pklist button b{display:block;color:var(--pine)}.tr-pklist small{color:var(--muted)}
+.tr-pk-ic span{display:grid;place-items:center;width:30px;height:30px;border-radius:7px;background:#1D4E89;color:#fff;font:700 18px Arial,sans-serif;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.tr-pk-ic small{position:absolute;top:-8px;inset-inline-end:-8px;background:#CF600C;color:#fff;border-radius:99px;font:700 11px Arial,sans-serif;padding:1px 5px}
+.tr-campus-ic{font-size:24px;line-height:30px;text-align:center;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}`;
+    document.head.appendChild(st);
+  })();
   function alertNote(box, t) { let n = box.querySelector('.tr-map-msg'); if (!n) { n = document.createElement('p'); n.className = 'tr-note tr-map-msg'; box.querySelector('.tr-map-side').prepend(n); } n.textContent = t; }
   async function mount(el, homeName, instId, instName, extraHtml) {
     el.innerHTML = await fullHtml(homeName, instId, instName) + (extraHtml || '');
