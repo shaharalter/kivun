@@ -60,7 +60,7 @@ button,input,select{font:inherit;color:inherit}
 .hero-in,.wide-wrap{max-width:1080px;margin:0 auto;padding:0 22px}
 .hero-in{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center}
 .kicker{margin:0 0 10px;font-weight:600;color:var(--sun);font-size:1rem}
-#home h1{font-size:clamp(2.8rem,8.5vw,5.6rem);color:var(--on-pine);line-height:1.02}
+#home .kv-hero h1{line-height:1.05}
 .hero-lead{font-size:clamp(1.1rem,2.2vw,1.35rem);max-width:36ch;margin:18px 0 28px;opacity:.95}
 .hero-cta{display:flex;flex-wrap:wrap;gap:12px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:12px 24px;cursor:pointer;background:var(--pine);color:var(--on-pine);font-weight:600;text-decoration:none;min-height:48px}
@@ -263,7 +263,43 @@ body.cmp-on{padding-bottom:120px}
 .cmp-table small{color:var(--muted)}
 @media (max-width:640px){.cmp-table{font-size:.86rem}.cmp-table tbody th{white-space:normal;width:84px;min-width:84px}.cmp-table th,.cmp-table td{padding:8px}#cmpModal .box{padding:14px 10px 18px}}
 .cmp-table a{color:var(--pine);font-weight:600}
+
+/* דף בית חדש – שלט הכוונה */
+.kv-hero{background:var(--surface);border-bottom:1px solid var(--line)}
+.kv-hero-in{max-width:1180px;margin:0 auto;padding:clamp(28px,6vw,72px) 16px;display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,64px);align-items:center}
+.kv-hero h1{font-size:clamp(2.6rem,7vw,4.6rem);margin:0 0 18px;color:var(--ink)}
+.kv-lead{font-size:clamp(1.05rem,2vw,1.25rem);color:var(--muted);max-width:34em;margin:0}
+.signpost{position:relative;display:flex;flex-direction:column;gap:14px;padding:6px 0 30px}
+.sp-pole{position:absolute;top:-10px;bottom:0;inset-inline-start:34px;width:12px;background:linear-gradient(var(--line),var(--muted));border-radius:6px}
+.sp-board{position:relative;display:block;text-align:start;text-decoration:none;color:var(--on-pine);border:0;cursor:pointer;font:inherit;padding:16px 64px 16px 30px;clip-path:polygon(0 50%,22px 0,100% 0,100% 100%,22px 100%);margin-inline-start:12px;transition:transform .15s}
+.sp-board b{display:block;font-family:var(--kv-display);font-weight:400;font-size:clamp(1.3rem,2.6vw,1.65rem);line-height:1.2}
+.sp-board span{display:block;font-size:1rem;font-weight:600}
+.sp-1{background:var(--sun)}
+.sp-2{background:var(--pine);margin-inline-start:28px}
+.sp-3{background:var(--muted);margin-inline-start:44px}
+.sp-board:hover,.sp-board:focus-visible{transform:translateX(-6px)}
+.sp-board:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+@media (max-width:860px){.kv-hero-in{grid-template-columns:1fr}.sp-board{margin-inline-start:12px !important}}
+.kv-stats{list-style:none;margin:28px 0 8px;padding:0;display:flex;flex-wrap:wrap;gap:8px 28px;color:var(--muted)}
+.kv-stats b{font-family:var(--kv-display);font-weight:400;color:var(--ink);font-size:1.4rem;margin-inline-end:4px}
+.kv-h2{display:flex;align-items:center;gap:12px;font-size:clamp(1.5rem,3vw,2rem);margin:40px 0 16px}
+.kv-tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:2px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.kv-tools a{background:var(--surface);padding:20px 22px;text-decoration:none;color:var(--ink)}
+.kv-tools a b{display:block;font-family:var(--kv-display);font-weight:400;font-size:1.25rem;color:var(--pine)}
+.kv-tools a span{color:var(--muted);font-size:.98rem}
+.kv-tools a:hover{background:var(--pine-soft)}
+/* מסך פתיחה לשאלון */
+.qi{max-width:760px;margin:0 auto;padding:clamp(40px,8vw,90px) 16px}
+.qi h1{font-size:clamp(2.2rem,6vw,3.6rem);margin:0 0 16px}
+.qi-lead{font-size:clamp(1.15rem,2.4vw,1.4rem);margin:0 0 26px}
+.qi-list{list-style:none;padding:0;margin:0 0 30px;display:grid;gap:14px}
+.qi-list li{padding:14px 18px;background:var(--surface);border:1px solid var(--line);border-inline-start:6px solid var(--pine);border-radius:10px}
+.qi-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.qi-small{color:var(--muted);font-size:.95rem}
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/kivun.css">
+<script src="assets/nav.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">דילוג לתוכן</a>
@@ -281,41 +317,54 @@ body.cmp-on{padding-bottom:120px}
 
 <main class="wrap" id="main" tabindex="-1">
 <section id="home" aria-labelledby="homeTitle">
-  <div class="hero-band">
-    <div class="hero-in">
-      <div class="hero-copy">
-        <p class="kicker">הכוונה ללימודים, קבלה וחיי סטודנט</p>
+  <div class="kv-hero">
+    <div class="kv-hero-in">
+      <div class="kv-hero-copy">
         <h1 id="homeTitle">לאן הולכים מכאן?</h1>
-        <p class="hero-lead">שאלון גמיש, הציונים שלכם ומה שחשוב לכם – ובסוף תוכנית שלמה: מה ללמוד, איפה, איך מתקבלים, כמה זה עולה ואיפה גרים.</p>
-        <div class="hero-cta">
-          <button class="btn sun big" id="startBtn" type="button">מתחילים בשאלון</button>
-          <a class="btn line big" href="data.html" target="_blank" rel="noopener">רק לעיין במאגר</a>
-        </div>
-        <p class="hero-small">בלי הרשמה, בלי פרטים אישיים.</p>
+        <p class="kv-lead">כיוון עוזר להחליט מה ללמוד ואיפה: התאמה לפי מה שמעניין אתכם והציונים שלכם, תנאי קבלה מהמוסדות עצמם, שילובי חוגים, עלויות, נסיעה ומגורים. בלי הרשמה ובלי פרטים אישיים.</p>
       </div>
-      <svg class="compass" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
-        <circle class="ring" cx="100" cy="100" r="92"/><g id="ticks"></g>
-        <text class="letter" x="100" y="34">צ</text><text class="letter" x="100" y="176">ד</text>
-        <text class="letter" x="172" y="105">מז</text><text class="letter" x="28" y="105">מע</text>
-        <g id="needle"><polygon fill="var(--sun)" points="100,40 111,100 89,100"/><polygon fill="var(--on-pine)" points="100,160 111,100 89,100"/>
-        <circle cx="100" cy="100" r="7" fill="var(--pine)" stroke="var(--sun)" stroke-width="3"/></g>
-      </svg>
+      <nav class="signpost" aria-label="בחרו מאיפה להתחיל">
+        <span class="sp-pole" aria-hidden="true"></span>
+        <button type="button" class="sp-board sp-1" id="startBtn"><b>סיימתי תיכון או צבא</b><span>מה ללמוד ואיפה – שאלון התאמה ותוכנית אישית</span></button>
+        <a class="sp-board sp-2" href="grad.html"><b>יש לי תואר ראשון</b><span>תואר שני: תוכניות, תנאי קבלה ומסלולים</span></a>
+        <a class="sp-board sp-3" href="data.html"><b>רק רוצה להסתכל</b><span>כל התארים, המוסדות ותנאי הקבלה</span></a>
+      </nav>
     </div>
   </div>
   <div class="wide-wrap">
-    <ul class="statstrip" aria-label="מה יש במאגר">
-      <li><b id="stInst">62</b><span>מוסדות אקדמיים</span></li>
-      <li><b id="stDeg">502</b><span>תארים עם תנאי קבלה</span></li>
-      <li><b id="stProg">72</b><span>תחומי לימוד</span></li>
-      <li><b>12,203 ₪</b><span>שכר לימוד שנתי במוסד מסובסד (מתוקצב), תשפ״ז</span></li>
+    <ul class="kv-stats" aria-label="מה יש במאגר">
+      <li><b id="stInst">62</b> מוסדות אקדמיים</li>
+      <li><b id="stDeg">502</b> תארים עם תנאי קבלה</li>
+      <li><b id="stProg">72</b> תחומי לימוד</li>
+      <li><b>1,177</b> יישובים עם זמני נסיעה לקמפוסים</li>
     </ul>
-    <h2 class="home-h">איך זה עובד</h2>
-    <ol class="how">
-      <li><span class="how-n">1</span><div><h3>מכירים את עצמכם</h3><p>שאלות קצרות על מה שמעניין אתכם (מודל הולנד) — ואפשר לעצור ולראות תוצאות אישיות בכל שלב.</p></div></li>
-      <li><span class="how-n">2</span><div><h3>ציונים, אנגלית, צביון ומרחק</h3><p>מחשבון בגרות מלא, חישוב רמות אנגלית וקורסי השלמה, רמת חשיבות לכל שיקול וזיהוי יישובים מכל הארץ.</p></div></li>
-      <li><span class="how-n">3</span><div><h3>מפה ועסקאות חבילה למגורים</h3><p>אחרי שתבחרו תואר ומוסד ריאלי, תוכלו להיכנס למפה, להשוות שכונות שקטות מול חיי חברה ולבחור חבילת מגורים.</p></div></li>
-    </ol>
-    <div class="final-cta"><button class="btn big" type="button" id="startBtn2">מתחילים בשאלון</button></div>
+    <h2 class="kv-h2"><span class="blaze" aria-hidden="true"><i></i><i></i><i></i></span>כלים שאפשר לפתוח בלי השאלון</h2>
+    <div class="kv-tools">
+      <a href="curricula.html"><b>תוכניות לימודים</b><span>אילו קורסים לומדים בכל שנה, והשוואה בין מוסדות</span></a>
+      <a href="combos.html"><b>שילובי תארים</b><span>אילו חוגים אפשר ללמוד יחד, תארים כפולים ותנאי הקבלה</span></a>
+      <a href="finance.html"><b>סימולטור פיננסי</b><span>כמה יעלה התואר, ומה מכסים מלגות, פיקדון ומענקים</span></a>
+      <a href="transit.html"><b>זמני נסיעה</b><span>כמה זמן לוקח להגיע לכל קמפוס, באיזה קו, ואיפה חונים</span></a>
+    </div>
+    <div class="final-cta"><button class="btn big sun" type="button" id="startBtn2">לשאלון ההתאמה</button></div>
+  </div>
+</section>
+
+<section id="quizIntro" class="hidden" aria-labelledby="qiTitle">
+  <div class="qi">
+    <h1 id="qiTitle">לפני שמתחילים</h1>
+    <p class="qi-lead">השאלון ארוך, וזה בכוונה: ככל שתענו על יותר שאלות, ההתאמה תהיה מדויקת יותר. מילוי מלא יכול לקחת רבע שעה ויותר.</p>
+    <ul class="qi-list">
+      <li><b>לא חובה לענות על הכול.</b> אפשר לדלג על כל שאלה ועל חלקים שלמים.</li>
+      <li><b>אפשר לעצור בכל שלב.</b> הכפתור "סיים והצג תוצאות עכשיו" זמין לאורך כל הדרך, וההתאמה מתעדכנת לפי מה שכבר עניתם.</li>
+      <li><b>אפשר להמשיך אחר כך.</b> התשובות נשמרות בדפדפן הזה, ובפעם הבאה תוכלו להמשיך מאותה נקודה.</li>
+      <li><b>מה שואלים:</b> מה מעניין אתכם, ציוני בגרות ופסיכומטרי, אנגלית, מה חשוב לכם במוסד (מרחק, צביון, תקציב), שירות צבאי ומלגות.</li>
+    </ul>
+    <div class="qi-actions">
+      <button type="button" class="btn big sun" id="qiStart">להתחיל את השאלון</button>
+      <button type="button" class="btn big line hidden" id="qiResume">להמשיך מאיפה שעצרתי</button>
+      <button type="button" class="btn ghost hidden" id="qiReset">להתחיל מחדש ולמחוק את התשובות השמורות</button>
+    </div>
+    <p class="qi-small" id="qiDraftNote"></p>
   </div>
 </section>
 
@@ -839,7 +888,8 @@ body.cmp-on{padding-bottom:120px}
     $('cityList').innerHTML = allCities.map(c => `<option value="${c}">`).join('');
   }
   const DB_READY = loadDB();
-  DB_READY.then(() => setTimeout(() => { try { restoreFromHash(); } catch (e) { console.warn(e); } }, 0));
+  DB_READY.then(() => setTimeout(() => { try { if (!restoreFromHash() && location.hash === '#quiz') showIntro(); } catch (e) { console.warn(e); } }, 0));
+  window.addEventListener('hashchange', () => { if (location.hash === '#quiz') showIntro(); });
 
   $('homeCity').addEventListener('input', validateHomeCity);
 
@@ -1540,18 +1590,39 @@ body.cmp-on{padding-bottom:120px}
     window.scrollTo({ top: $('wizard').offsetTop - 70, behavior: 'smooth' });
   }
 
-  $('startBtn').addEventListener('click', startWizard);
-  $('startBtn2').addEventListener('click', startWizard);
-  function startWizard() {
+  // ===== מסך פתיחה לשאלון + שמירת טיוטה בדפדפן =====
+  const DRAFT_KEY = 'kivun_draft_v1';
+  function readDraft() { try { const d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); return d && d.snap ? d : null; } catch (e) { return null; } }
+  function showIntro() {
+    ['home', 'wizard', 'results', 'detailView'].forEach(id => $(id).classList.add('hidden'));
+    $('quizIntro').classList.remove('hidden');
+    const d = readDraft();
+    $('qiResume').classList.toggle('hidden', !d);
+    $('qiReset').classList.toggle('hidden', !d);
+    $('qiStart').textContent = d ? 'להתחיל שאלון חדש' : 'להתחיל את השאלון';
+    $('qiDraftNote').textContent = d ? `נמצא שאלון שהתחלתם (נשמר ב-${new Date(d.t).toLocaleDateString('he-IL')} ${new Date(d.t).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}).` : '';
+    window.scrollTo({ top: 0 });
+  }
+  $('startBtn').addEventListener('click', showIntro);
+  $('startBtn2').addEventListener('click', showIntro);
+  $('qiStart').addEventListener('click', () => { startWizard(); });
+  $('qiResume').addEventListener('click', () => { const d = readDraft(); if (d) { applySnap(d.snap); startWizard(d.step || 0); } });
+  $('qiReset').addEventListener('click', () => { try { localStorage.removeItem(DRAFT_KEY); } catch (e) {} location.href = location.pathname + '#quiz'; location.reload(); });
+  let draftTimer = null;
+  const saveDraft = () => { clearTimeout(draftTimer); draftTimer = setTimeout(() => { try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ snap: snapshotState(), step: STATE.step || 0, t: Date.now() })); } catch (e) {} }, 400); };
+  ['input', 'change', 'click'].forEach(ev => $('wizard').addEventListener(ev, saveDraft));
+  function startWizard(step) {
+    $('quizIntro').classList.add('hidden');
     $('home').classList.add('hidden');
     $('results').classList.add('hidden');
     $('detailView').classList.add('hidden');
     $('wizard').classList.remove('hidden');
-    showStep(0);
+    showStep(typeof step === 'number' ? step : 0);
   }
 
   $('homeLink').addEventListener('click', e => {
     e.preventDefault();
+    $('quizIntro').classList.add('hidden');
     $('wizard').classList.add('hidden');
     $('results').classList.add('hidden');
     $('detailView').classList.add('hidden');
@@ -2085,6 +2156,12 @@ body.cmp-on{padding-bottom:120px}
     let snap;
     try { snap = JSON.parse(b64urlDecode(m[1])); } catch (e) { console.warn('קישור שיתוף לא תקין', e); return false; }
     if (!snap || !snap.st) return false;
+    applySnap(snap);
+    $('home').classList.add('hidden');
+    buildResults();
+    return true;
+  }
+  function applySnap(snap) {
     Object.entries(snap.st).forEach(([k, v]) => {
       if (!(k in STATE)) return;
       STATE[k] = (v && v.__set) ? new Set(v.__set) : v;
@@ -2100,9 +2177,6 @@ body.cmp-on{padding-bottom:120px}
     });
     qsa('#interests .chip').forEach(c => c.setAttribute('aria-pressed', String(STATE.interests.has(c.dataset.cat))));
     try { renderMandatoryList(); renderMajors(); renderChosenProgs(); updateQuizCounters(); updateBagrutSummary(); } catch (e) { console.warn(e); }
-    $('home').classList.add('hidden');
-    buildResults();
-    return true;
   }
 
   // ===== מועדי הרשמה לקובץ יומן (ics) =====

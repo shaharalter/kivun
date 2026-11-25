@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>כיוון – מאגר הנתונים</title>
-<meta name="description" content="מאגר הנתונים של כיוון: תנאי קבלה לכ-500 תארים ב-62 מוסדות, שכר לימוד, אנשי קשר, עלויות מחיה, מלגות ומעונות – תשפ״ז.">
+<meta name="description" content="מאגר הנתונים של כיוון: תנאי קבלה לכ-500 תארים ב-62 מוסדות, אנשי קשר, עלויות מחיה, מלגות ומעונות – תשפ״ז.">
 <meta property="og:title" content="כיוון – מאגר הנתונים">
-<meta property="og:description" content="מאגר הנתונים של כיוון: תנאי קבלה לכ-500 תארים ב-62 מוסדות, שכר לימוד, אנשי קשר, עלויות מחיה, מלגות ומעונות – תשפ״ז.">
+<meta property="og:description" content="מאגר הנתונים של כיוון: תנאי קבלה לכ-500 תארים ב-62 מוסדות, אנשי קשר, עלויות מחיה, מלגות ומעונות – תשפ״ז.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="he_IL">
 <meta name="theme-color" content="#1f4d3d">
@@ -156,6 +156,9 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--slate);f
 }
 @media (prefers-reduced-motion:no-preference){ .deg[open] .detail{animation:fade .18s ease-out} @keyframes fade{from{opacity:0}to{opacity:1}} }
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/kivun.css">
+<script src="assets/nav.js" defer></script>
 </head>
 <body>
 <header class="top"><div class="wrap">
@@ -196,7 +199,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--slate);f
       <label>מספר שותפים בדירה<input type="number" id="p-rm" min="1" max="8" value="3"></label>
       <label>שירות<select id="p-svc"><option value="">ללא / לא רלוונטי</option><option value="combat">לוחם/ת</option><option value="support">תומך/ת לחימה</option><option value="rear">עורפי</option></select></label>
       <label>חודשי שירות<input type="number" id="p-mon" min="0" max="36" value="32"></label>
-      <label class="chk"><input type="checkbox" id="p-mim"> זכאי/ת למלגת ממדים ללימודים</label>
+      <input type="checkbox" id="p-mim" hidden>
     </div>
     <h2 style="margin-top:34px">בחירת תואר</h2>
     <p class="lead">בחרו תואר מהתחומים שהומלצו (או כל תואר אחר), וראו איפה אפשר ללמוד אותו.</p>
@@ -208,7 +211,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--slate);f
     <h2 style="margin-top:34px">התרחישים שלכם</h2>
     <p class="lead" id="cmp-empty">עוד לא הוספתם תרחישים. בחרו תואר ולחצו „הוספה להשוואה” ליד מוסד – אפשר עד 4.</p>
     <div class="tablewrap" id="cmp-wrap" hidden><table id="cmp"></table></div>
-    <p class="muted" id="cmp-note" hidden>כל הסכומים הם הערכה לכל משך התואר. שכר הלימוד מחושב כשכר שנתי × מספר שנים (בפועל יש חובת תשלום מינימלית של 300%–400% לפי התחום). שכר הדירה לפי ממוצע העיר, 12 חודשים בשנה. מלגת ממדים מחושבת עד גובה שכר הלימוד האוניברסיטאי (12,203 ₪ לשנה). הפיקדון מוצג כמקור מימון אפשרי, לא כהנחה.</p>
+    <p class="muted" id="cmp-note" hidden>כל הסכומים הם הערכה לכל משך התואר, בלי שכר לימוד (לחישוב כולל שכר לימוד – בסימולטור הפיננסי). שכר הדירה לפי ממוצע העיר, 12 חודשים בשנה. מלגת ממדים מחושבת עד גובה שכר הלימוד האוניברסיטאי (12,203 ₪ לשנה). הפיקדון מוצג כמקור מימון אפשרי, לא כהנחה.</p>
   </div>
 </section>
 <section class="view" id="v-degrees">
@@ -288,7 +291,7 @@ const regOf=id=>(inst[id]||{})['אזור']||'';
 // facts
 const active=D['תארים'].filter(r=>r['סטטוס']!=='לא קיים במוסד');
 const lvl=active.filter(r=>r['קשר: רמת פירוט']==='תואר').length;
-$('#facts').innerHTML=`<li><b>${D['מוסדות'].length}</b> מוסדות</li><li><b>${active.length}</b> תארים פעילים</li><li><b>${lvl}</b> תארים עם איש קשר ייעודי</li><li>שכ״ל מתוקצב <b>12,203 ₪</b> לשנה</li>`;
+$('#facts').innerHTML=`<li><b>${D['מוסדות'].length}</b> מוסדות</li><li><b>${active.length}</b> תארים פעילים</li><li><b>${lvl}</b> תארים עם איש קשר ייעודי</li>`;
 // selects
 const uniq=a=>[...new Set(a.filter(Boolean))].sort((x,y)=>String(x).localeCompare(String(y),'he'));
 const fill=(sel,vals)=>{const el=$(sel); vals.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;el.appendChild(o)})};
@@ -299,12 +302,12 @@ let dShown=40;
 function degRow(r){
   const num=(lab,v,key)=>v==null||v===''?'':`<div class="num${key?' key':''}"><strong>${fmt(v)}</strong>${lab}</div>`;
   const st=r['סטטוס']==='לא קיים במוסד'?'<span class="pill gray">לא קיים במוסד</span>':(r['סטטוס']==='מאומת'?'<span class="pill">מאומת</span>':'<span class="pill warn">מאומת חלקית</span>');
-  const F=[['ערוצי קבלה','ערוצי קבלה'],['שיטת חישוב','שיטת חישוב'],['סוג פסיכומטרי','סוג פסיכומטרי'],['דרישות בגרות','דרישות בגרות'],['ראיון / מבחן','ראיון / מבחן'],['דרישות נוספות','דרישות נוספות'],['משך (שנים)','משך (שנים)'],['שכ״ל – הערות','שכ"ל – מקור והערות'],['הערות','הערות']];
+  const F=[['ערוצי קבלה','ערוצי קבלה'],['שיטת חישוב','שיטת חישוב'],['סוג פסיכומטרי','סוג פסיכומטרי'],['דרישות בגרות','דרישות בגרות'],['ראיון / מבחן','ראיון / מבחן'],['דרישות נוספות','דרישות נוספות'],['משך (שנים)','משך (שנים)'],['הערות','הערות']];
   let dl=F.filter(([,k])=>r[k]!=null&&r[k]!=='').map(([l,k])=>`<div><dt>${l}</dt><dd>${fmt(r[k])}</dd></div>`).join('');
   dl+=`<div><dt>איש קשר (${esc(r['קשר: רמת פירוט']||'—')})</dt><dd>${esc(r['קשר: יחידה / איש קשר']||'')}<br>${esc(r['קשר: טלפון']||'')} ${mail(r['קשר: מייל'])}<br><span class="muted">${esc(r['קשר: מקור']||'')}</span></dd></div>`;
   dl+=`<div><dt>מקור תנאי הקבלה</dt><dd>${link(r['מקור (קישור)'])} <span class="muted">${esc(r['תאריך בדיקה']||'')}</span></dd></div>`;
   return `<details class="deg"><summary><div><div class="t">${esc(r['תחום לימוד'])}</div><div class="s">${esc(r['מוסד'])} – ${esc(r["קטגוריה"]||"")} ${st}</div></div>
-  <div class="nums">${num('סף משוקלל',r['סף משוקלל'],1)}${num('בגרות בלבד',r['קבלה ישירה: בגרות'])}${num('פסיכומטרי בלבד',r['קבלה ישירה: פסיכומטרי'])}${num('₪ שכ״ל לשנה',r['שכר לימוד שנתי (₪)'])}</div></summary>
+  <div class="nums">${num('סף משוקלל',r['סף משוקלל'],1)}${num('בגרות בלבד',r['קבלה ישירה: בגרות'])}${num('פסיכומטרי בלבד',r['קבלה ישירה: פסיכומטרי'])}</div></summary>
   <dl class="detail">${dl}</dl></details>`;
 }
 function renderDeg(reset){
@@ -611,8 +614,8 @@ function renderPick(){
   const reg=$('#s-reg').checked&&ST.profile.reg;
   const rows=activeDeg.filter(r=>r['תחום לימוד']===f&&(!reg||regOf(r['מזהה מוסד'])===ST.profile.reg));
   const inS=new Set(ST.scen.map(s=>s.row));
-  $('#s-inst').innerHTML=rows.length?`<div class="tablewrap"><table><thead><tr><th>מוסד</th><th>אזור</th><th>התאמה לציונים שלכם</th><th>שכ״ל לשנה</th><th></th></tr></thead><tbody>`+
-   rows.map(r=>{const id=D['תארים'].indexOf(r); return `<tr><td><strong>${esc(r['מוסד'])}</strong><div class="muted">${esc((inst[r['מזהה מוסד']]||{})['עיר']||'')}</div></td><td>${esc(regOf(r['מזהה מוסד']))}</td><td>${fit(r)}</td><td class="n">${fmt(r['שכר לימוד שנתי (₪)'])}</td><td><button class="addbtn" data-row="${id}" ${inS.has(id)||ST.scen.length>=4?'disabled':''}>${inS.has(id)?'בהשוואה':'הוספה להשוואה'}</button></td></tr>`}).join('')+'</tbody></table></div>'
+  $('#s-inst').innerHTML=rows.length?`<div class="tablewrap"><table><thead><tr><th>מוסד</th><th>אזור</th><th>התאמה לציונים שלכם</th><th></th></tr></thead><tbody>`+
+   rows.map(r=>{const id=D['תארים'].indexOf(r); return `<tr><td><strong>${esc(r['מוסד'])}</strong><div class="muted">${esc((inst[r['מזהה מוסד']]||{})['עיר']||'')}</div></td><td>${esc(regOf(r['מזהה מוסד']))}</td><td>${fit(r)}</td><td><button class="addbtn" data-row="${id}" ${inS.has(id)||ST.scen.length>=4?'disabled':''}>${inS.has(id)?'בהשוואה':'הוספה להשוואה'}</button></td></tr>`}).join('')+'</tbody></table></div>'
    :'<p class="lead">התואר לא נמצא באזור שבחרתם. בטלו את הסינון לפי אזור כדי לראות את כל המוסדות.</p>';
 }
 $('#s-inst').addEventListener('click',e=>{const b=e.target.closest('button[data-row]'); if(!b||b.disabled) return; ST.scen.push({row:+b.dataset.row}); save(); renderPick(); renderCmp(); $('#cmp-wrap').scrollIntoView({behavior:'smooth',block:'start'});});
@@ -631,7 +634,7 @@ function renderCmp(){
     const dorm=dormOf(r['מזהה מוסד']);
     const rentTot=home?0:(per!=null?per*12*y:null);
     const tuTot=tu!=null?tu*y:null; const mimTot=mim&&tu!=null?Math.min(tu,UNI)*y:0;
-    const net=(tuTot!=null&&rentTot!=null)?tuTot-mimTot+fees+rentTot:null;
+    const net=(rentTot!=null)?fees+rentTot:null;
     return {r,i,y,tu,tuTot,fees,per,dorm,rentTot,mimTot,net};});
   const dep=svc?Math.round(svc[0]*months):0, grant=svc?Math.round(svc[1]*months):0;
   const row=(lab,f,cls='')=>`<tr class="${cls}"><td>${lab}</td>${C.map(c=>`<td>${f(c)}</td>`).join('')}</tr>`;
@@ -640,11 +643,9 @@ function renderCmp(){
    row('סיכויי קבלה',c=>fit(c.r))+
    row('ערוצי קבלה',c=>`<span class="muted">${esc(c.r['ערוצי קבלה']||'')}</span>`)+
    row('משך התואר',c=>c.y+' שנים')+
-   row('שכר לימוד',c=>c.tu==null?'<span class="muted">לפי קורס / לא ידוע</span>':`${fmt(c.tu)} ₪ לשנה<br><span class="muted">${fmt(c.tuTot)} ₪ לכל התואר</span>`)+
-   row('מלגת ממדים',c=>mim&&c.tu!=null?`− ${fmt(c.mimTot)} ₪`:'<span class="muted">לא סומנה זכאות</span>')+
    row('דמי רישום ואבטחה',c=>fmt(c.fees)+' ₪')+
    row('מגורים',c=>home?'נשארים בבית':(c.per==null?'<span class="muted">אין נתון לעיר</span>':`${fmt(c.per)} ₪ לחודש לאדם<br><span class="muted">${fmt(c.rentTot)} ₪ לכל התואר</span>`)+(c.dorm?`<br><span class="muted">מעונות: מ-${fmt(c.dorm)} ₪ לחודש</span>`:''))+
-   row('עלות משוערת לכל התואר',c=>sh(c.net),'total')+
+   row('מגורים ודמי רישום לכל התואר',c=>sh(c.net)+'<br><span class="muted">בלי שכר לימוד – <a href="finance.html?inst='+encodeURIComponent(c.r['מזהה מוסד'])+'&deg='+encodeURIComponent(c.r['תחום לימוד'])+'">לחישוב מלא בסימולטור</a></span>','total')+
    row('הגעה',c=>`${esc(c.i['רכבת / רכבת קלה / רכבל']||'')}<br><span class="muted">חניה: ${esc(c.i['חניה']||'')}</span>`)+
    row('אזור',c=>esc(c.i['אזור']||'')+(pr.reg?(c.i['אזור']===pr.reg?' <span class="fit yes">באזור המגורים</span>':''):''))+
    row('איש קשר',c=>`${esc(c.r['קשר: יחידה / איש קשר']||'')}<br>${esc(c.r['קשר: טלפון']||'')} ${mail(c.r['קשר: מייל'])}`)+
