@@ -222,6 +222,8 @@ input[aria-invalid="true"]{border-color:var(--hard)!important;box-shadow:0 0 0 2
 .tr-st{margin:0;padding-inline-start:18px;font-size:.9rem}
 .tr-links{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:.9rem}.tr-links a{color:var(--pine)}
 .tr-badge{background:var(--sun-soft);border-radius:99px;padding:0 8px;font-size:.8rem}
+.stretch-head{margin:14px 0 4px;font-weight:600;color:var(--mid)}
+.inst.stretch{border:2px dashed var(--sun);background:color-mix(in srgb,var(--sun-soft) 45%,var(--surface))}
 .why-box{margin:8px 0;padding:8px 12px;border-radius:12px;background:var(--pine-soft);font-size:.92rem}
 .why-box ul{margin:4px 0 0;padding-inline-start:18px}.why-box li{margin:2px 0}.why-box li.neg{color:var(--hard)}
 .sch-pill.fit{background:var(--pine);color:var(--on-pine);border-color:var(--pine)}
@@ -1715,10 +1717,57 @@ body.cmp-on{padding-bottom:120px}
     if (psyOnly && (!p || p < psyOnly)) out.push({ kind: 'psyOnly', need: psyOnly, gap: psyOnly - (p || 0) });
     return out;
   }
-  function improvementHtml(plan, b, p, units) {
+  // ===== איך מעלים את ממוצע הבגרות: לפי מקצוע, או מקצוע מוגבר נוסף =====
+  function bagSubjectsList() {
+    const out = [];
+    if (STATE.bagMode === 'calc') {
+      STATE.mandatory.forEach(sb => { const g = Number(sb.grade); if (sb.units && g) out.push({ name: sb.name || sb.id, u: Number(sb.units), g }); });
+      STATE.majors.forEach(m => { const g = Number(m.grade); if (m.name && m.units && g) out.push({ name: m.name, u: Number(m.units), g }); });
+    } else {
+      const mg = Number($('mathG').value), eg = Number($('engG').value);
+      if (mg) out.push({ name: 'מתמטיקה', u: STATE.mathU, g: mg });
+      if (eg) out.push({ name: 'אנגלית', u: STATE.engU, g: eg });
+    }
+    return out;
+  }
+  function bagWaysHtml(dx, b, units) {
+    const U = Math.max(units || 0, 21);
+    const subj = bagSubjectsList().map(x => ({ ...x, dg: Math.ceil(dx * U / x.u) })).filter(x => x.g + x.dg <= 100).sort((a, c) => a.dg - c.dg).slice(0, 4);
+    const ways = subj.map(x => `שיפור ב<b>${x.name}</b> (${x.u} יח״ל) מ-${x.g} ל-<b>${x.g + x.dg}</b>`);
+    // מקצוע מוגבר חדש של 5 יח״ל (בונוס 25 בדרך כלל)
+    const G = Math.ceil(((b + dx) * (U + 5) - b * U) / 5 - 25);
+    if (G <= 100) ways.push(`הוספת מקצוע מוגבר חדש של 5 יח״ל בציון <b>${Math.max(G, 60)}</b> לפחות (עם בונוס של 25 נק׳ – בדקו את כללי הבונוס של המוסד)`);
+    if (!ways.length) return `<li>אין שיפור במקצוע בודד שמביא לכך – צריך לשפר כמה מקצועות יחד${STATE.bagMode === 'known' ? ' (הזינו ציונים לפי מקצוע כדי לקבל פירוט)' : ''}.</li>`;
+    return `<li>דרכים להעלות את הממוצע ב-${dx}: <ul>${ways.map(w => `<li>${w}</li>`).join('')}</ul>${STATE.bagMode === 'known' ? '<small>להמלצה מדויקת לפי כל המקצועות – הזינו את הבגרות לפי מקצוע.</small>' : ''}</li>`;
+  }
+  function betterPathHtml(x, b, p, instId, method) {
+    // השוואה: כמה תורמת נקודה אחת בכל רכיב לסכם, ומה החלק היחסי של הפער מהטווח שנותר
+    const dP = p ? (sekhemFor(instId, method, b, Math.min(800, p + 10)) - sekhemFor(instId, method, b, p)) : null;
+    const dB = p ? (sekhemFor(instId, method, Math.min(127, b + 1), p) - sekhemFor(instId, method, b, p)) : null;
+    const rows = [];
+    if (dP !== null && dB !== null) rows.push(`בנוסחה של המוסד: כל 10 נק׳ בפסיכומטרי מוסיפות כ-<b>${(Math.round(dP * 10) / 10)}</b> לסכם, וכל נקודה בממוצע הבגרות מוסיפה כ-<b>${(Math.round(dB * 10) / 10)}</b>.`);
+    let rec = '';
+    if (x.needP && x.needB && p) {
+      const rp = (x.needP - p) / Math.max(1, 800 - p), rb = (x.needB - b) / Math.max(0.1, x.cap - b);
+      rec = rp <= rb ? 'פסיכומטרי' : 'בגרות';
+      rows.push(`הפער בפסיכומטרי הוא ${Math.round(rp * 100)}% מהטווח שנשאר לך לשפר, ובבגרות ${Math.round(rb * 100)}%. לכן <b>נראה שקל יותר לשפר ${rec}</b>.`);
+    } else if (x.needP && !x.needB) { rec = 'פסיכומטרי'; rows.push('רק שיפור בפסיכומטרי מביא לסף – בבגרות לבד זה לא אפשרי.'); }
+    else if (!x.needP && x.needB) { rec = 'בגרות'; rows.push('רק שיפור בבגרות מביא לסף – בפסיכומטרי לבד זה לא אפשרי.'); }
+    else if (!p && x.needP) { rec = 'פסיכומטרי'; }
+    else if (x.comboP) { rec = 'שילוב של שניהם'; rows.push(`אף אחד לבד לא מספיק – צריך גם להעלות את ממוצע הבגרות ל-${x.cap} וגם פסיכומטרי ${x.comboP}. זה יעד ארוך טווח; כדאי לשקול גם את המסלולים החלופיים למטה.`); }
+    rows.push('שיקולים: ציון פסיכומטרי תקף 7 שנים ומשמש בכל המוסדות; שיפור בגרות משפר גם קבלה על סמך בגרות בלבד ובמוסדות שלא דורשים פסיכומטרי. אם מתוכנן שירות צבאי – יש זמן לשני המסלולים.');
+    return `<div class="eff"><strong>🤔 מה עדיף לך?</strong>${rec ? ` <span class="tr-badge">המלצה: ${rec}</span>` : ''}<ul>${rows.map(t => `<li>${t}</li>`).join('')}</ul></div>`;
+  }
+  const ALT_PATHS = `<div class="eff"><strong>🛤️ מסלולים חלופיים</strong><ul>
+    <li><b>מכינה קדם-אקדמית</b> – במוסדות רבים הציון במכינה מחליף את ממוצע הבגרות (למשוחררים יש מימון). תנאי הקבלה דרכה: לא ידוע. יש לוודא ולבדוק מול המוסד.</li>
+    <li><b>לימודים באוניברסיטה הפתוחה ומעבר</b> – לימודים ללא תנאי קבלה, ומעבר אחרי צבירת קורסים בממוצע מסוים. כמה קורסים ובאיזה ממוצע: משתנה בין מוסדות – יש לוודא ולבדוק.</li>
+    <li><b>התחלה בתואר קרוב ומעבר פנימי</b> – בחלק מהמוסדות אפשר לעבור תואר אחרי שנה א׳ בממוצע גבוה. התנאים: יש לוודא ולבדוק.</li>
+    <li><b>מכללה עם סף נמוך יותר</b> באותו תחום – ראו את שאר האפשרויות בכרטיס.</li></ul></div>`;
+  function improvementHtml(plan, b, p, units, deg, open) {
     if (!plan || !plan.length) return '';
     const li = [];
     const eff = [];
+    const extra = [];
     plan.forEach(x => {
       if (x.kind === 'sekhem') {
         if (!p) li.push(x.needP ? `עם ממוצע הבגרות שלך (${b}) נדרש פסיכומטרי <strong>${x.needP}</strong> לפחות כדי להגיע לסף הסכם (${x.T}).` : `עם ממוצע הבגרות הנוכחי גם פסיכומטרי 800 לא מספיק לסף הסכם (${x.T}) – צריך לשפר גם את הבגרות.`);
@@ -1727,7 +1776,9 @@ body.cmp-on{padding-bottom:120px}
           if (x.comboP) li.push(`שילוב: גם עם ממוצע בגרות ${x.cap} נדרש פסיכומטרי <strong>${x.comboP}</strong> לפחות.`);
           else if (x.needP === null && x.needB === null) li.push(`גם שיפור מרבי בשניהם לא מגיע לסף של השנה האחרונה – כדאי לשקול מסלול אחר או מוסד אחר.`);
           li.push(x.needB ? `או: ממוצע בגרות <strong>${x.needB}</strong> (+${Math.round((x.needB - b) * 100) / 100}) עם הפסיכומטרי הנוכחי.` : `שיפור הבגרות לבדו לא מספיק לסף${x.cap < 120 ? ` (המוסד מגביל את הממוצע ל-${x.cap})` : ''}.`);
+          if (x.needB) li.push(bagWaysHtml(Math.round((x.needB - b) * 100) / 100, b, units));
         }
+        if (deg) extra.push(betterPathHtml(x, b, p, deg['מזהה מוסד'], deg['שיטת חישוב'] || ''));
       }
       if (x.kind === 'sekhem' && (x.needP || x.needB)) {
         const ps = nextPsySession(), bs = nextBagrutSession();
@@ -1738,10 +1789,10 @@ body.cmp-on{padding-bottom:120px}
           eff.push(`<strong>בגרות:</strong> העלאת הממוצע ב-${dx} שקולה, למשל, לשיפור של כ-${per5} נקודות בציון מקצוע אחד של 5 יח״ל${per5 > 30 ? ' – כנראה לא ריאלי במקצוע אחד, צריך לשפר כמה מקצועות' : ''}. המועד הקרוב: ${bs.label}, הרשמה ${bs.reg}. אגרת הבחינה: לא ידוע. יש לוודא ולבדוק מול משרד החינוך.`);
         }
       }
-      if (x.kind === 'bagOnly') li.push(`קבלה על סמך בגרות בלבד: נדרש ממוצע <strong>${x.need}</strong> (חסרות ${x.gap} נק׳).`);
+      if (x.kind === 'bagOnly') { li.push(`קבלה על סמך בגרות בלבד: נדרש ממוצע <strong>${x.need}</strong> (חסרות ${x.gap} נק׳).`); li.push(bagWaysHtml(x.gap, b, units)); }
       if (x.kind === 'psyOnly') li.push(`קבלה על סמך פסיכומטרי בלבד: נדרש <strong>${x.need}</strong>${p ? ` (חסרות ${x.gap} נק׳)` : ''}.`);
     });
-    return `<details class="improve"><summary>📈 מה צריך כדי להתקבל?</summary><ul>${li.map(t => `<li>${t}</li>`).join('')}</ul>${eff.length ? `<div class="eff"><strong>⏱️ המסלול היעיל – זמן ועלות</strong><ul>${eff.map(t => `<li>${t}</li>`).join('')}</ul></div>` : ''}<small>החישוב לפי הנוסחה והסף של השנה האחרונה. הספים משתנים משנה לשנה – יש לוודא מול המוסד.</small></details>`;
+    return `<details class="improve"${open ? ' open' : ''}><summary>📈 מה צריך כדי להתקבל?</summary><ul>${li.map(t => `<li>${t}</li>`).join('')}</ul>${extra.join('')}${eff.length ? `<div class="eff"><strong>⏱️ המסלול היעיל – זמן ועלות</strong><ul>${eff.map(t => `<li>${t}</li>`).join('')}</ul></div>` : ''}${ALT_PATHS}<small>החישוב לפי הנוסחה והסף של השנה האחרונה. הספים משתנים משנה לשנה – יש לוודא מול המוסד.</small></details>`;
   }
 
   function evaluateAdmission(deg, bag, psy) {
@@ -2240,7 +2291,7 @@ body.cmp-on{padding-bottom:120px}
         const adm = evaluateAdmission(d, bag, psy);
         if (adm.status !== 'good' && d['סטטוס'] !== 'מאומת חלקית') {
           const bb = (bag.byInst && bag.byInst[d['מזהה מוסד']]) || bag.finalAvg;
-          adm.improve = improvementHtml(improvementPlan(d, bb, psy), bb, psy, bag.totalUnits);
+          adm.improve = improvementHtml(improvementPlan(d, bb, psy), bb, psy, bag.totalUnits, d, isFallback === 'stretch');
         }
         const vibe = getVibeForInst(inst);
         const prefScore = scoreInstitutionPreference(inst, vibe, Number(d['שכר לימוד שנתי (₪)']) || 0);
@@ -2248,9 +2299,13 @@ body.cmp-on{padding-bottom:120px}
         return { d, inst, adm, vibe, totalScore: admRank + prefScore, isFallback };
       };
 
-      let evaluated = options.map(d => rankItem(d, false))
-        .sort((a, b) => b.totalScore - a.totalScore)
-        .slice(0, 5);
+      const allRanked = options.map(d => rankItem(d, false)).sort((a, b) => b.totalScore - a.totalScore);
+      let evaluated = allRanked.slice(0, 5);
+      // 🎯 יעד שאפתני: המוסד שהכי מתאים להעדפות שלך אבל עוד לא מתקבלים אליו – מוצג גם אם הוא מחוץ לחמישייה
+      const stretchCand = allRanked.filter(x => x.adm.status === 'hard' && !evaluated.includes(x)).sort((a, b) => (b.totalScore - 10) - (a.totalScore - 10))[0];
+      if (stretchCand && evaluated.some(x => x.adm.status !== 'hard')) {
+        const st = rankItem(stretchCand.d, 'stretch'); evaluated = [...evaluated, st];
+      }
 
       let fallbackAdvice = '';
       if (evaluated.length === 0 && allForField.length > 0) {
@@ -2279,7 +2334,8 @@ body.cmp-on{padding-bottom:120px}
             const baseTuition = Number(d['שכר לימוד שנתי (₪)']) || 0;
             const engNote = eng.extraCost > 0 ? ` + ~${eng.extraCost.toLocaleString()} ₪ קורסי אנגלית (${eng.level})` : '';
             return `
-            <div class="inst ${isFallback ? 'alt' : ''}">
+            ${isFallback === 'stretch' ? '<div class="stretch-head">🎯 יעד שאפתני – עוד לא מתקבלים, אבל אפשר להגיע. הנה מה שצריך:</div>' : ''}
+            <div class="inst ${isFallback === 'stretch' ? 'stretch' : isFallback ? 'alt' : ''}">
               <div class="inst-top">
                 <div><span class="inst-name">${d['מוסד']}</span> <span class="meta">(${inst['עיר'] || ''})</span></div>
                 <span class="badge ${adm.status}">${adm.label}</span>
