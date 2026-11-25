@@ -2137,7 +2137,7 @@ body.cmp-on{padding-bottom:120px}
         <h3 class="dp-h3">🏘️ שכונות מסביב לקמפוס</h3>
         ${hoods.length ? `<ul class="dp-list">${hoods.map(h => `<li><b>${esc2(h.name)}</b>${h.dist ? ` – ${esc2(h.dist)}` : ''}${h.rent ? `<br>חדר בדירת שותפים: ${esc2(h.rent)}` : ''}${h.vibe ? `<br><small>${esc2(h.vibe)}</small>` : ''}</li>`).join('')}</ul>${H.hoodSrc ? `<p class="note">מקור: ${esc2(H.hoodSrc)}</p>` : ''}`
           : (vibe.hoods || []).length ? `<ul class="dp-list">${vibe.hoods.map(h => `<li><b>${esc2(h.name)}</b><br><small>${esc2(h.vibe)} · ${esc2(h.transit)}</small></li>`).join('')}</ul>` : `<p>${UNK}.</p>`}
-        <p class="meta">שכר דירה ממוצע בעיר (דירה שלמה, למ"ס): ${cityRent ? cityRent.toLocaleString() + ' ₪ לחודש' : UNK}. מחירי השכונות הם הערכה – יש לוודא מול מודעות עדכניות.</p>`;
+        <p class="meta">שכר דירה ממוצע בעיר (דירה שלמה, למ"ס): ${cityRent ? cityRent.toLocaleString() + ' ₪ לחודש' : UNK}. השכונות והמרחקים הם הערכה כללית; שכר דירה לחדר בכל שכונה: לא ידוע. יש לוודא ולבדוק מול מודעות עדכניות.</p>`;
     },
     money(e) {
       const { d } = e; const t = Number(d['שכר לימוד שנתי (₪)']) || 0; const eng = getEnglishPlacement();
