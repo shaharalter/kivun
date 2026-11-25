@@ -110,7 +110,7 @@ const $=id=>document.getElementById(id);let INST=[],DATA=null,CITY=null,filt='al
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 async function init(){
   const [cities,db]=await Promise.all([KivunTransit.loadCities(),fetch('data.html').then(r=>r.text())]);
-  $('cityList').innerHTML=cities.map(c=>`<option value="${esc(c[0])}">`).join('');
+  KivunTransit.allPlaceNames().then(n=>{$('cityList').innerHTML=n.map(c=>`<option value="${esc(c)}">`).join('')});
   const m=db.match(/<script id="data" type="application\/json">([\s\S]*?)<\/script>/);const raw=JSON.parse(m[1]);
   const camp=(await KivunTransit.loadCampus()).campus;
   const withDeg=new Set((raw['תארים']||[]).filter(d=>d['סטטוס']!=='לא קיים במוסד').map(d=>d['מזהה מוסד']));
@@ -125,10 +125,10 @@ async function go(){
   const home=$('home').value.trim();if(!home){$('msg').textContent='הקלידו מאיפה יוצאים.';return}
   $('msg').textContent='מחשב…';
   const r=await KivunTransit.forCity(home).catch(()=>null);
-  if(!r){$('msg').innerHTML=`לא מצאנו את „${esc(home)}” בלוח הזמנים של התחבורה הציבורית. נסו לבחור מהרשימה שנפתחת כשמקלידים.`;$('res').hidden=true;return}
-  try{localStorage.setItem('kivun-home',r.city.name)}catch(e){}
-  DATA=r.data;CITY=r.city;$('msg').textContent=`יוצאים מ${r.city.name}. לחצו על מוסד כדי לראות את כל האפשרויות, הקווים והתחנות.`;
-  const u=new URL(location);u.searchParams.set('home',r.city.name);if($('inst').value)u.searchParams.set('inst',$('inst').value);else u.searchParams.delete('inst');history.replaceState(null,'',u);
+  if(!r){const pi=await KivunTransit.placeInfo(home).catch(()=>null);$('msg').innerHTML=`לא מצאנו את „${esc(home)}” בלוח הזמנים של התחבורה הציבורית.${pi?` היישוב שייך ${pi.council?'למועצה האזורית '+esc(pi.council):'לנפת '+esc(pi.nafa)}, ואין לנו נתוני תחבורה ציבורית ליישוב הזה.`:' נסו לבחור מהרשימה שנפתחת כשמקלידים.'}`;$('res').hidden=true;return}
+  try{localStorage.setItem('kivun-home',r.city.asked||r.city.name)}catch(e){}
+  DATA=r.data;CITY=r.city;$('msg').innerHTML=(r.city.proxy?KivunTransit.proxyNote(r.city):'')+`יוצאים מ${esc(r.city.name)}. לחצו על מוסד כדי לראות את כל האפשרויות, הקווים והתחנות.`;
+  const u=new URL(location);u.searchParams.set('home',r.city.asked||r.city.name);if($('inst').value)u.searchParams.set('inst',$('inst').value);else u.searchParams.delete('inst');history.replaceState(null,'',u);
   open=$('inst').value||null;render();
 }
 function render(){

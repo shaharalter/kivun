@@ -16,9 +16,34 @@
     const list = await loadCities(); const n = norm(name);
     if (!n) return null;
     let i = list.findIndex(c => norm(c[0]) === n);
-    if (i < 0) i = list.findIndex(c => norm(c[0]).startsWith(n) && n.length >= 3);
-    if (i < 0) i = list.findIndex(c => n.startsWith(norm(c[0])) && norm(c[0]).length >= 3);
-    return i < 0 ? null : { idx: i, name: list[i][0], lat: list[i][1], lon: list[i][2] };
+    const pl = i < 0 ? await loadPlaces() : null;
+    let m = pl ? pl.missing.find(x => norm(x[0]) === n) : null;
+    if (i < 0 && !m) {
+      i = list.findIndex(c => norm(c[0]).startsWith(n) && n.length >= 3);
+      if (i < 0) i = list.findIndex(c => n.startsWith(norm(c[0])) && norm(c[0]).length >= 4 && n.length - norm(c[0]).length <= 2);
+      if (i < 0 && pl && n.length >= 3) m = pl.missing.find(x => norm(x[0]).startsWith(n));
+    }
+    if (i >= 0) return { idx: i, name: list[i][0], lat: list[i][1], lon: list[i][2] };
+    if (!m || m[3] == null) return null;
+    const j = m[3];
+    return { idx: j, name: list[j][0], lat: list[j][1], lon: list[j][2], asked: m[0], council: m[1], proxy: true };
+  }
+  async function loadPlaces() {
+    if (!K.places) K.places = fetch(BASE + 'places.json').then(r => r.json()).catch(() => null);
+    return K.places;
+  }
+  // מידע על יישוב שאין לו נתונים: לאיזו מועצה ונפה הוא שייך
+  async function placeInfo(name) {
+    const pl = await loadPlaces(); if (!pl) return null; const n = norm(name);
+    const m = pl.missing.find(x => norm(x[0]) === n); if (!m) return null;
+    return { name: m[0], council: m[1], nafa: m[2], hasProxy: m[3] != null };
+  }
+  async function allPlaceNames() {
+    const [list, pl] = await Promise.all([loadCities(), loadPlaces()]);
+    return [...new Set([...list.map(c => c[0]), ...((pl && pl.missing) || []).map(x => x[0])])].sort((a, b) => a.localeCompare(b, 'he'));
+  }
+  function proxyNote(c) {
+    return c && c.proxy ? `<p class="tr-note tr-proxy">ⓘ אין לנו נתוני תחבורה ציבורית ל„${esc(c.asked)}”. היישוב שייך למועצה האזורית ${esc(c.council)}, ולכן מוצגים זמני הנסיעה מ„${esc(c.name)}” – היישוב הקרוב באותה מועצה שיש לו תחנות. הזמנים בפועל עשויים להיות שונים.</p>` : '';
   }
   async function forCity(name) {
     const c = await findCity(name); if (!c) return null;
@@ -76,8 +101,9 @@
     const [r, cp] = await Promise.all([forCity(homeName).catch(() => null), loadCampus().catch(() => null)]);
     const C = cp && cp.campus[instId];
     let h = '<div class="tr-box">';
-    if (!r) h += `<p class="tr-note">לא מצאנו את „${esc(homeName || '')}” בלוח הזמנים של התחבורה הציבורית. זמני הנסיעה: לא ידוע. יש לוודא ולבדוק – אפשר להשתמש בקישורים למטה.</p>`;
+    if (!r) { const pi = homeName ? await placeInfo(homeName) : null; h += `<p class="tr-note">לא מצאנו את „${esc(homeName || '')}” בלוח הזמנים של התחבורה הציבורית.${pi ? ` היישוב שייך ${pi.council ? 'למועצה האזורית ' + esc(pi.council) : 'לנפת ' + esc(pi.nafa)}.` : ''} זמני הנסיעה: לא ידוע. יש לוודא ולבדוק – אפשר להשתמש בקישורים למטה.</p>`; }
     else {
+      h += proxyNote(r.city);
       const e = r.data[instId];
       h += `<h3>🚌 איך מגיעים מ${esc(r.city.name)}</h3><p class="tr-note">מחושב מלוח הזמנים הרשמי של משרד התחבורה (GTFS, עודכן ${cp ? cp.feed : ''}), ליום חול רגיל – יציאה מאמצע ${esc(r.city.name)} מ-7:00 בבוקר. זמנים בפועל משתנים לפי פקקים ושינויי קווים.</p>`;
       if (!e || !e.o.length) h += `<p class="tr-note">לא נמצאה נסיעה בתחבורה ציבורית שמגיעה עד 11:00 בבוקר (עד 3 החלפות).</p>`;
@@ -212,5 +238,5 @@
     const box = el.querySelector('.tr-mapbox'); initMap(box);
     el.addEventListener('click', e => { const b = e.target.closest('.tr-showline'); if (b && box && box._showLine) box._showLine(b.dataset.line); });
   }
-  window.KivunTransit = { mount, initMap, loadCities, loadCampus, findCity, forCity, best, shortText, fullHtml, optionHtml, carEstimate, hm, norm };
+  window.KivunTransit = { mount, initMap, loadCities, loadCampus, loadPlaces, placeInfo, allPlaceNames, proxyNote, findCity, forCity, best, shortText, fullHtml, optionHtml, carEstimate, hm, norm };
 })();
