@@ -108,11 +108,11 @@ button,input,select{font:inherit;color:inherit}
   const BA_FIELDS = ['פסיכולוגיה', 'כלכלה', 'מנהל עסקים', 'ניהול', 'חשבונאות', 'משפטים', 'מדעי המחשב', 'הנדסה', 'מתמטיקה', 'סטטיסטיקה', 'פיזיקה', 'כימיה', 'ביולוגיה', 'מדעי המדינה', 'סוציולוגיה', 'אנתרופולוגיה', 'קרימינולוגיה', 'עבודה סוציאלית', 'חינוך', 'חינוך מיוחד', 'תקשורת', 'היסטוריה', 'ספרות', 'פילוסופיה', 'בלשנות', 'אנגלית', 'ערבית', 'גאוגרפיה', 'מדעי הסביבה', 'סיעוד', 'ריפוי בעיסוק', 'פיזיותרפיה', 'הפרעות בתקשורת', 'מערכות מידע', 'מדעי ההתנהגות', 'אמנות', 'מוזיקה', 'אדריכלות', 'מדעי הנתונים'];
   $('baList').innerHTML = BA_FIELDS.map(f => `<option value="${f}">`).join('');
   const st = { fac: new Set() };
-  function generic(req) { return !req || /תחומים רלוונטיים|בכל תחום|מכל תחום|ממוסד מוכר להשכלה גבוהה בארץ ובעולם$|^תואר ראשון ממוסד מוכר/.test(req); }
+  function generic(req) { if (req && /^\s*,?\s*(?:ב|מה)[א-ת]/.test(req.split(/המל"ג|המועצה להשכלה גבוהה|בארץ ובעולם/).slice(1).join(' '))) return false; return !req || /תחומים רלוונטיים|בכל תחום|מכל תחום|מכל התחומים|בכל תחומי/.test(req) || /^(?:בעלי\/?ו?ת?|בוגרי|בעל)?\s*(?:\/ות\s*)?תואר\s*(?:"?בוגר"?\/?ת?|ראשון)?\s*(?:\((?:תואר )?ראשון\))?\s*(?:ממוסד|במוסד|מאוניברסיטה)/.test(req.trim()); }
   function baFit(p, ba) {
     if (!ba) return null;
     const req = p.reqBA || '';
-    const words = ba.split(/[ ,/ו]+/).filter(w => w.length >= 3);
+    const words = ba.split(/[\s,/]+/).map(w => w.replace(/^ו(?=[א-ת]{3})/, '')).filter(w => w.length >= 3 && !/^(תואר|ראשון|במדעי|מדעי|לימודי)$/.test(w));
     if (words.some(w => req.includes(w) || p.name.includes(w))) return 'yes';
     if (generic(req)) return 'open';
     return 'maybe';
@@ -135,10 +135,11 @@ button,input,select{font:inherit;color:inherit}
     if (p.completion) tags.push('<span class="tag warn">אפשר עם לימודי השלמה</span>');
     if (p.reg) tags.push(`<span class="tag">${p.reg === 'פתוחה' ? 'ההרשמה פתוחה' : 'ההרשמה סגורה כרגע'}</span>`);
     const tr = (p.tracks || []).filter(t => t.avg).map(t => `${esc(t.t)}: ${t.avg}`).join(' · ');
-    return `<article class="prog ${cls || ''}"><h3>${esc(p.name)} <small>${esc(p.deg)} · ${esc(I.name || p.inst)}${p.fac ? ' · ' + esc(p.fac) : ''}</small></h3>
+    return `<article class="prog ${cls || ''}"><h3>${esc(p.name)} <small>${esc(p.deg)} · ${esc(I.name || p.inst)}${p.fac0 ? ' · ' + esc(p.fac0) : ''}</small></h3>
       ${extra ? `<p><b>${extra}</b></p>` : ''}
       <p>ממוצע מינימלי: <b>${p.minAvg ? p.minAvg : UNK}</b>${tr ? ` <span class="muted">(${tr})</span>` : ''}</p>
       ${p.reqBA ? `<p class="muted">דרישה: ${esc(p.reqBA)}</p>` : ''}
+      ${p.note ? `<p class="muted">ⓘ ${esc(p.note)}</p>` : ''}${p.updated ? `<p class="muted">המידע באתר המוסד עודכן ב-${esc(p.updated)}</p>` : ''}
       <div class="tags">${tags.join('')}</div>
       <p><a href="${esc(p.url)}" target="_blank" rel="noopener">לדף התוכנית ותנאי הקבלה ↗</a></p></article>`;
   }
@@ -174,14 +175,16 @@ button,input,select{font:inherit;color:inherit}
   }
   function renderList() {
     const q = $('q').value.trim(), inst = $('cInst').value, fac = $('cFac').value, deg = $('cDeg').value, th = $('cTh').value;
-    const L = G.programs.filter(p => (!q || (p.name + ' ' + p.fac + ' ' + p.reqBA).includes(q)) && (!inst || p.inst === inst) && (!fac || p.fac === fac) && (!deg || p.deg === deg)
+    const L = G.programs.filter(p => (!q || (p.name + ' ' + p.fac + ' ' + p.fac0 + ' ' + p.reqBA).includes(q)) && (!inst || p.inst === inst) && (!fac || p.fac === fac) && (!deg || p.deg === deg)
       && (!th || (th === 'thesis' ? p.thesis : th === 'pro' ? p.nothesis : p.reg === 'פתוחה'))).sort((a, b) => a.name.localeCompare(b.name, 'he'));
     $('count').textContent = `${L.length} תוכניות`;
     $('list').innerHTML = L.slice(0, shown).map(p => progHtml(p)).join('') || '<p>לא נמצאו תוכניות. נסו מילת חיפוש אחרת או הסירו סינון.</p>';
     $('more').classList.toggle('hidden', L.length <= shown);
   }
+  const DOMS = [['רפואה ובריאות', /רפואה|בריאות|סיעוד|אחיות|פיזיותרפיה|ריפוי בעיסוק|הפרעות בתקשורת|תזונה|רוקחות|אפידמיולוגיה|שיניים/], ['רווחה וטיפול', /עבודה סוציאלית|רווחה|טיפול|ביבליותרפיה|תרפיה|גרונטולוגיה/], ['חינוך', /חינוך|הוראה|ייעוץ חינוכי|למידה|לקויות/], ['משפטים', /משפט/], ['ניהול ועסקים', /ניהול|מנהל עסקים|MBA|ארגון|יזמות|חשבונאות|מימון|אקטואריה/], ['הנדסה', /הנדס/], ['מחשבים ומדעים מדויקים', /מדעי המחשב|מתמטיקה|סטטיסטיקה|פיזיקה|כימיה|נתונים|מידע|מדעים מדויקים|חקר ביצועים|אופטימיזציה|כדור הארץ/], ['מדעי החיים והסביבה', /מדעי החיים|ביולוגיה|גנטיקה|ביוכימיה|מיקרו|זואולוגיה|אקולוגיה|סביבה|צמח|חקלאות|ים|אוקיינוגרפיה|מוח|נוירו/], ['אמנויות ועיצוב', /אמנות|אמנויות|קולנוע|תיאטרון|מוזיקה|מוסיקה|עיצוב|אדריכלות|מדיה/], ['מדעי החברה', /מדעי החברה|פסיכולוגיה|סוציולוגיה|אנתרופולוגיה|כלכלה|מדיניות|מדע המדינה|יחסים בינלאומיים|יחסים בין-לאומיים|תקשורת|קרימינולוגיה|גאוגרפיה|ביטחון|דיפלומטיה|סכסוכים|עבודה/], ['מדעי הרוח', /.*/]];
+  const domOf = p => { const t = p.name + ' ' + (p.fac || ''); for (const [d, re] of DOMS) if (re.test(t)) return d; return 'מדעי הרוח'; };
   fetch('grad/grad.json').then(r => r.json()).then(j => {
-    G = j;
+    G = j; G.programs.forEach(p => { p.fac0 = p.fac; p.fac = domOf(p); });
     const insts = Object.keys(G.insts);
     const opt = insts.map(k => `<option value="${k}">${esc(G.insts[k].name)}</option>`).join('');
     $('fInst').insertAdjacentHTML('beforeend', opt); $('cInst').insertAdjacentHTML('beforeend', opt);
