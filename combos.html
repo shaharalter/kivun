@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>שילובי תארים – כיוון</title>
+<meta name="description" content="אילו חוגים אפשר לשלב יחד בתואר דו-חוגי, תוכניות משולבות ותואר כפול, ומסלולים ישירים לתואר שני – לפי המוסד.">
+<meta property="og:title" content="כיוון – שילובי תארים">
+<meta property="og:description" content="צירופי חוגים מותרים, תארים כפולים ומסלולים ישירים לתואר שני.">
+<meta property="og:type" content="website"><meta property="og:locale" content="he_IL">
+<meta name="theme-color" content="#1f4d3d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f4d3d'/%3E%3Cpath d='M32 10 L44 34 L32 28 L20 34 Z' fill='%23f4c542'/%3E%3Ccircle cx='32' cy='44' r='8' fill='none' stroke='%23fff' stroke-width='4'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Suez+One&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F3F6F1;--surface:#FFFFFF;--ink:#1E2B25;--muted:#5C6B63;--pine:#1F4D3F;--pine-soft:#DCE8E1;--sun:#F0B429;--sun-soft:#FCEFC7;--line:#D3DCD5;--good:#2E7D4F;--mid:#8A5600;--hard:#B3412F;--on-pine:#F3F6F1;color-scheme:light;box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#121A16;--surface:#1A241F;--ink:#E7EEE9;--muted:#A3B2AA;--pine:#8FD1B2;--pine-soft:#22352C;--sun:#F5C452;--sun-soft:#3A3115;--line:#2D3B34;--good:#7ED3A0;--mid:#F0B86B;--hard:#F08C78;--on-pine:#121A16;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#121A16;--surface:#1A241F;--ink:#E7EEE9;--muted:#A3B2AA;--pine:#8FD1B2;--pine-soft:#22352C;--sun:#F5C452;--sun-soft:#3A3115;--line:#2D3B34;--good:#7ED3A0;--mid:#F0B86B;--hard:#F08C78;--on-pine:#121A16;color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans Hebrew","Arial Hebrew",Arial,sans-serif;font-size:17px;line-height:1.6}
+h1,h2,h3{font-family:"Suez One","IBM Plex Sans Hebrew",Georgia,serif;font-weight:400;line-height:1.25;margin:0}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--pine);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+.top{position:sticky;top:0;z-index:9;background:var(--paper);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:56px}
+.brand{font-family:"Suez One",serif;font-size:1.4rem;color:var(--pine);text-decoration:none}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tabs a{text-decoration:none;color:var(--muted);padding:6px 12px;border-radius:999px;font-size:.92rem;white-space:nowrap}
+.tabs a[aria-current="page"]{background:var(--pine-soft);color:var(--pine);font-weight:600}
+h1{font-size:clamp(1.6rem,4vw,2.2rem);color:var(--pine);margin:22px 0 6px}
+.lead{color:var(--muted);margin:0 0 16px;max-width:72ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:14px}
+.card h2{font-size:1.15rem;color:var(--pine);margin-bottom:8px}
+.pick{display:grid;grid-template-columns:220px 1fr;gap:10px;align-items:end}
+@media (max-width:700px){.pick{grid-template-columns:1fr}}
+.pick label{font-size:.88rem;font-weight:600;display:block;margin-bottom:4px}
+.pick input,.pick select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.layout{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:820px){.layout{grid-template-columns:minmax(0,1fr)}}
+.list{max-height:70vh;overflow:auto}
+.prog{display:block;width:100%;text-align:start;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:7px 10px;margin:4px 0;cursor:pointer;font-size:.92rem;color:inherit}
+.prog[aria-pressed="true"]{background:var(--pine-soft);border-color:var(--pine);font-weight:600}
+.prog small{color:var(--muted);display:block;font-weight:400}
+.tag{display:inline-block;font-size:.75rem;border-radius:99px;padding:0 8px;margin-inline-start:4px;background:var(--sun-soft);color:var(--ink);white-space:nowrap}
+.tag.d{background:var(--pine-soft)}
+.partners{columns:2 240px;column-gap:18px;padding:0;margin:8px 0;list-style:none}
+.partners li{break-inside:avoid;padding:3px 0;border-bottom:1px dashed var(--line);font-size:.92rem}
+.fac{font-weight:700;color:var(--pine);margin-top:10px;font-size:.95rem}
+.note{font-size:.84rem;color:var(--muted)}
+.sp{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}
+.sp b{color:var(--pine)}
+.sp .meta{font-size:.86rem;color:var(--muted)}
+.empty{color:var(--muted)}
+.foot{font-size:.8rem;color:var(--muted);margin:16px 0 40px}
+.foot a,.note a{color:inherit}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap"><a class="brand" href="index.html">כיוון</a>
+<nav class="tabs" aria-label="ניווט"><a href="index.html">התאמה אישית</a><a href="curricula.html">תוכניות לימודים</a><a href="combos.html" aria-current="page">שילובי תארים</a><a href="finance.html">סימולטור פיננסי</a><a href="transit.html">זמני נסיעה</a><a href="data.html">מאגר הנתונים</a></nav></div></header>
+<main class="wrap">
+<h1>שילובי תארים</h1>
+<p class="lead">אילו חוגים אפשר ללמוד יחד בתואר דו-חוגי, אילו תארים כפולים קיימים, ואילו מסלולים מאפשרים להתחיל תואר שני כבר בזמן התואר הראשון. הנתונים לקוחים מהמקורות הרשמיים של המוסדות – בכל מוסד מצוין המקור והתאריך שבו נבדק.</p>
+<section class="card">
+  <div class="pick">
+    <div><label for="inst">מוסד</label><select id="inst"></select></div>
+    <div><label for="q">חיפוש חוג</label><input id="q" type="search" placeholder="למשל: היסטוריה, משפטים, כלכלה"></div>
+  </div>
+  <p class="note" id="src"></p>
+</section>
+<div class="layout" id="main">
+  <section class="card"><h2>חוגים ומסלולים</h2><div class="list" id="list"></div></section>
+  <section class="card" id="detail"><h2>בחרו חוג</h2><p class="empty">לחצו על חוג ברשימה כדי לראות עם מה אפשר לשלב אותו.</p></section>
+</div>
+<section class="card" id="specialCard"><h2>🎓 תארים כפולים ומסלולים ישירים לתואר שני</h2><div id="special"></div></section>
+<p class="foot">המידע להכוונה בלבד. צירופים ותוכניות משתנים משנה לשנה, ולחלק מהצירופים יש תנאי קבלה נוספים – יש לוודא באתר המוסד לפני ההרשמה. מוסדות נוספים יתווספו בהמשך.</p>
+</main>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SCOPE={D:'דו-חוגי',S:'חד-חוגי',A:'חוג נוסף לתואר',SA:'חד-חוגי עם חוג נוסף',SD:'תואר כפול',H:'תוכנית מצטיינים',X:'תואר כפול עם מוסד אחר','':''};
+const INSTNAMES={huji:'האוניברסיטה העברית',biu:'אוניברסיטת בר-אילן',tau:'אוניברסיטת תל אביב',haifa:'אוניברסיטת חיפה',bgu:'אוניברסיטת בן-גוריון'};
+let D=null,cur=null,sel=null;
+const base=n=>n.split(',')[0].trim();
+fetch('combos/combos.json').then(r=>r.json()).then(j=>{D=j;
+  const insts=[...new Set([...Object.keys(D).filter(k=>!k.startsWith('_')),...D._special.map(s=>s.inst)])];
+  $('inst').innerHTML=insts.map(k=>`<option value="${k}">${esc((D[k]&&D[k].name)||INSTNAMES[k]||k)}</option>`).join('');
+  const sp=new URLSearchParams(location.search);if(sp.get('inst')&&insts.includes(sp.get('inst')))$('inst').value=sp.get('inst');if(sp.get('q'))$('q').value=sp.get('q');
+  onInst();
+});
+function onInst(){cur=$('inst').value;sel=null;const I=D[cur];
+  $('src').innerHTML=I?`מקור: <a href="${esc(I.source)}" target="_blank" rel="noopener">${esc(I.sourceName)}</a> · נבדק ${esc(I.checked)} · ${I.tracks.length} מסלולים, ${I.links.reduce((a,b)=>a+b.length,0)/2|0} צירופים`:'למוסד הזה עדיין לא מופו צירופי החוגים המלאים – מוצגות רק התוכניות המשולבות. צירופי החוגים: לא ידוע. יש לוודא ולבדוק באתר המוסד.';
+  $('main').style.display=I?'':'none';renderList();renderSpecial();
+  if(I&&$('q').value){const q=$('q').value.trim();let f=I.tracks.findIndex(t=>base(t[1])===q&&t[2]==='D');if(f<0)f=I.tracks.findIndex(t=>base(t[1])===q);if(f<0)f=I.tracks.findIndex(t=>t[1].startsWith(q));if(f<0)f=I.tracks.findIndex(t=>t[1].includes(q));if(f>=0)pick(f)}}
+function renderList(){const I=D[cur];if(!I){$('list').innerHTML='';return}const q=$('q').value.trim();
+  const items=I.tracks.map((t,i)=>({t,i})).filter(x=>!q||x.t[1].includes(q)).sort((a,b)=>a.t[1].localeCompare(b.t[1],'he'));
+  $('list').innerHTML=items.map(({t,i})=>`<button type="button" class="prog" data-i="${i}" aria-pressed="${sel===i}">${esc(t[1])}<small>${esc(t[3]||'')}${I.links[i].length?` · ${I.links[i].length} צירופים`:''}</small></button>`).join('')||'<p class="empty">לא נמצא חוג בשם הזה.</p>';
+  updateUrl()}
+function pick(i){sel=i;const I=D[cur],t=I.tracks[i],L=I.links[i];
+  [...document.querySelectorAll('.prog')].forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.i===i)));
+  const byFac={};L.forEach(j=>{const p=I.tracks[j];const f=(p[3]||'אחר').split(',')[0];(byFac[f]=byFac[f]||[]).push(p)});
+  let h=`<h2>${esc(t[1])}</h2><p class="note">${esc(SCOPE[t[2]]||t[2])}${t[5]?' · '+esc(t[5]):''}${t[4]?' · קמפוס '+esc(t[4]):''}${t[6]?` · <a href="${esc(t[6])}" target="_blank" rel="noopener">לדף החוג ↗</a>`:''}</p>`;
+  if(!L.length)h+=t[2]==='S'?'<p>זה מסלול <b>חד-חוגי</b> – לומדים אותו לבד, בלי חוג נוסף.</p>':'<p class="empty">במאגר הרשמי לא מופיעים צירופים למסלול הזה. יש לוודא מול המוסד.</p>';
+  else{h+=`<p><b>${L.length}</b> מסלולים שאפשר לשלב איתו:</p>`;Object.keys(byFac).sort((a,b)=>byFac[b].length-byFac[a].length).forEach(f=>{h+=`<div class="fac">${esc(f)} (${byFac[f].length})</div><ul class="partners">${byFac[f].sort((a,b)=>a[1].localeCompare(b[1],'he')).map(p=>`<li>${esc(p[1].replace(/, דו-חוגי/,''))}${p[2]&&p[2]!=='D'?` <span class="tag">${esc(SCOPE[p[2]])}</span>`:''}</li>`).join('')}</ul>`})}
+  const sib=I.tracks.map((x,j)=>({x,j})).filter(o=>o.j!==i&&base(o.x[1])===base(t[1]));
+  if(sib.length)h+=`<div class="fac">מסלולים נוספים של ${esc(base(t[1]))}</div><ul class="partners">${sib.map(o=>`<li><button type="button" class="prog" style="margin:0;padding:3px 8px" data-i="${o.j}">${esc(o.x[1])}</button></li>`).join('')}</ul>`;
+  $('detail').innerHTML=h;updateUrl()}
+function renderSpecial(){const I=D[cur];const sp=D._special.filter(s=>s.inst===cur);
+  const fromData=I?I.tracks.filter(t=>['SA','SD','X','A'].includes(t[2])):[];
+  let h='';
+  if(sp.length)h+=sp.map(s=>`<div class="sp"><b>${esc(s.title)}</b> <span class="tag d">${esc(s.kind)}</span><div class="meta">משך: ${esc(s.years)} שנים · תנאים: ${esc(s.cond)}</div><div class="meta">מקור: <a href="${esc(s.src)}" target="_blank" rel="noopener">${esc(s.srcName)}</a> – יש לוודא שהתוכנית עדיין פתוחה השנה</div></div>`).join('');
+  if(fromData.length)h+=`<p class="note">מתוך המאגר הרשמי – מסלולים של תואר כפול או חוג נוסף לתואר:</p>`+fromData.map(t=>`<div class="sp"><b>${esc(t[1])}</b> <span class="tag d">${esc(SCOPE[t[2]])}</span>${t[6]?`<div class="meta"><a href="${esc(t[6])}" target="_blank" rel="noopener">לדף התוכנית ↗</a></div>`:''}</div>`).join('');
+  $('special').innerHTML=h||'<p class="empty">לא ידוע. יש לוודא ולבדוק – עדיין לא מופו תוכניות משולבות למוסד הזה.</p>'}
+function updateUrl(){const u=new URL(location);u.searchParams.set('inst',cur);const q=$('q').value.trim();if(q)u.searchParams.set('q',q);else u.searchParams.delete('q');history.replaceState(null,'',u)}
+$('inst').onchange=()=>{$('q').value='';onInst()};$('q').oninput=renderList;
+document.addEventListener('click',e=>{const b=e.target.closest('.prog');if(b)pick(+b.dataset.i)});
+})();
+</script>
+</body>
+</html>

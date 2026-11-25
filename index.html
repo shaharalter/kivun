@@ -275,6 +275,7 @@ body.cmp-on{padding-bottom:120px}
     <a href="curricula.html" target="_blank" rel="noopener">תוכניות לימודים</a>
     <a href="finance.html" target="_blank" rel="noopener">סימולטור פיננסי</a>
     <a href="transit.html" target="_blank" rel="noopener">זמני נסיעה</a>
+    <a href="combos.html" target="_blank" rel="noopener">שילובי תארים</a>
   </nav>
 </div></header>
 
@@ -2201,6 +2202,7 @@ body.cmp-on{padding-bottom:120px}
     return { pos, neg };
   }
 
+  const COMBO_INST = ['huji', 'biu']; // מוסדות שיש להם מיפוי שילובים בעמוד שילובי התארים
   function buildResults() {
     ensureTransit();
     const sc = calcHollandScores();
@@ -2369,6 +2371,7 @@ body.cmp-on{padding-bottom:120px}
                 ${d['מקור (קישור)'] ? `<a href="${d['מקור (קישור)']}" target="_blank" rel="noopener" class="btn ghost small">לאתר התואר ↗</a>` : ''}
                 ${(CUR_AVAIL[d['מזהה מוסד']]||[]).includes(d['תחום לימוד']) ? `<a href="curricula.html?inst=${encodeURIComponent(d['מזהה מוסד'])}&deg=${encodeURIComponent(d['תחום לימוד'])}" target="_blank" rel="noopener" class="btn ghost small">📚 תוכנית לימודים</a>` : ''}
                 <a href="finance.html?inst=${encodeURIComponent(d['מזהה מוסד'])}&deg=${encodeURIComponent(d['תחום לימוד'])}" target="_blank" rel="noopener" class="btn ghost small">💰 סימולציה פיננסית</a>
+                ${COMBO_INST.includes(d['מזהה מוסד']) ? `<a href="combos.html?inst=${encodeURIComponent(d['מזהה מוסד'])}&q=${encodeURIComponent(d['תחום לימוד'])}" target="_blank" rel="noopener" class="btn ghost small">🔀 שילובים אפשריים</a>` : ''}
               </div>
             </div>
           `}).join('')}
