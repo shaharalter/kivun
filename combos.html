@@ -80,7 +80,7 @@ h1{font-size:clamp(1.6rem,4vw,2.2rem);color:var(--pine);margin:22px 0 6px}
 (function(){
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const SCOPE={B:'חד-חוגי או דו-חוגי',D:'דו-חוגי',S:'חד-חוגי',A:'חוג נוסף לתואר',SA:'חד-חוגי עם חוג נוסף',SD:'תואר כפול',H:'תוכנית מצטיינים',X:'תואר כפול עם מוסד אחר','':''};
+const SCOPE={B:'חד-חוגי או דו-חוגי',D:'דו-חוגי',S:'חד-חוגי',A:'חוג נוסף לתואר',SA:'חד-חוגי עם חוג נוסף',SD:'תואר כפול',H:'תוכנית מצטיינים',M:'דו-חוגי מובנה',P:'שילוב מוגדר של שני חוגים',X:'תואר כפול עם מוסד אחר','':''};
 const INSTNAMES={huji:'האוניברסיטה העברית',biu:'אוניברסיטת בר-אילן',tau:'אוניברסיטת תל אביב',haifa:'אוניברסיטת חיפה',bgu:'אוניברסיטת בן-גוריון'};
 let D=null,cur=null,sel=null;
 const base=n=>n.split(',')[0].trim();
@@ -91,34 +91,45 @@ fetch('combos/combos.json').then(r=>r.json()).then(j=>{D=j;
   onInst();
 });
 function onInst(){cur=$('inst').value;sel=null;const I=D[cur];
-  $('src').innerHTML=I?`מקור: <a href="${esc(I.source)}" target="_blank" rel="noopener">${esc(I.sourceName)}</a> · נבדק ${esc(I.checked)} · ${I.tracks.length} מסלולים, ${I.links.reduce((a,b)=>a+b.length,0)/2|0} צירופים`:'למוסד הזה עדיין לא מופו צירופי החוגים המלאים – מוצגות רק התוכניות המשולבות. צירופי החוגים: לא ידוע. יש לוודא ולבדוק באתר המוסד.';
+  $('src').innerHTML=I?`מקור: <a href="${esc(I.source)}" target="_blank" rel="noopener">${esc(I.sourceName)}</a> · נבדק ${esc(I.checked)} · ${I.tracks.length} מסלולים, ${I.links.reduce((a,b)=>a+b.length,0)/2|0} צירופים`:'למוסד הזה עדיין לא מופו צירופי החוגים – מוצגות רק התוכניות המשולבות. צירופי החוגים: לא ידוע. יש לוודא ולבדוק באתר המוסד.';
   $('main').style.display=I?'':'none';renderList();renderSpecial();
-  if(I&&$('q').value){const q=$('q').value.trim();let f=I.tracks.findIndex(t=>base(t[1])===q&&t[2]==='D');if(f<0)f=I.tracks.findIndex(t=>base(t[1])===q);if(f<0)f=I.tracks.findIndex(t=>t[1].startsWith(q));if(f<0)f=I.tracks.findIndex(t=>t[1].includes(q));if(f>=0)pick(f)}}
+  if(I&&$('q').value){const q=$('q').value.trim();let f=I.tracks.findIndex(t=>base(t[1])===q&&t[2]==='D');if(f<0)f=I.tracks.findIndex(t=>t[1]===q+' - דו חוגי');if(f<0)f=I.tracks.findIndex(t=>base(t[1])===q);if(f<0)f=I.tracks.findIndex(t=>base(t[1])===q);if(f<0)f=I.tracks.findIndex(t=>t[1].startsWith(q));if(f<0)f=I.tracks.findIndex(t=>t[1].includes(q));if(f>=0)pick(f)}}
 function renderList(){const I=D[cur];if(!I){$('list').innerHTML='';return}const q=$('q').value.trim();
   const items=I.tracks.map((t,i)=>({t,i})).filter(x=>!q||x.t[1].includes(q)).sort((a,b)=>a.t[1].localeCompare(b.t[1],'he'));
   $('list').innerHTML=items.map(({t,i})=>`<button type="button" class="prog" data-i="${i}" aria-pressed="${sel===i}">${esc(t[1])}<small>${esc(t[3]||'')}${I.links[i].length?` · ${I.links[i].length} צירופים`:''}</small></button>`).join('')||'<p class="empty">לא נמצא חוג בשם הזה.</p>';
   updateUrl()}
-function admHtml(I,i){const a=I.adm&&I.adm[i];if(!a)return '';const [acc,rej,db,dp,dm,eng,req,close]=a;const li=[];
-  if(acc)li.push(`ציון סכם (בסולם של העברית): מעל <b>${esc(acc)}</b> – קבלה${rej&&rej!==acc?`, מתחת ל-<b>${esc(rej)}</b> – דחייה (ביניהם: המתנה)`:''}`);
+function biuHtml(I,i,a){const [acc,rej,db,dp,dm,eng,req]=a;const li=[];
+  if(acc)li.push(`שקלול בגרות+פסיכומטרי (בסולם של בר-אילן): <b>${esc(acc)}</b> ומעלה – קבלה${rej&&rej!==acc?`, מתחת ל-<b>${esc(rej)}</b> – דחייה (ביניהם: ללא החלטה)`:''}`);
+  if(db)li.push(`קבלה על סמך בגרות בלבד, בלי פסיכומטרי: ממוצע <b>${esc(db)}</b> ומעלה`);if(dp)li.push(`קבלה על סמך פסיכומטרי בלבד (עם זכאות לבגרות): <b>${esc(dp)}</b> ומעלה`);
+  if(eng)li.push(`אנגלית: ${esc(eng)}`);(req||[]).forEach(r=>li.push(esc(r)));
+  const g=(I.gen||[]).includes(i);
+  return `<div class="sp"><b>📋 תנאי קבלה</b> <small class="note">(לפי מחשבון תשפ"ז – לשנה הבאה הספים עשויים להשתנות, יש לוודא)</small><ul style="margin:4px 0;padding-inline-start:18px">${li.map(x=>`<li>${x}</li>`).join('')}</ul>${g&&acc?`<div class="biucalc" data-acc="${esc(acc)}" data-rej="${esc(rej||acc)}" style="margin:6px 0;padding:6px 8px;border:1px dashed var(--line,#ccc);border-radius:8px">🧮 <b>הערכה מהירה:</b> ממוצע בגרות <input type="number" class="bc-b" min="60" max="130" step="0.1" style="width:70px"> פסיכומטרי <input type="number" class="bc-p" min="200" max="800" step="1" style="width:70px"> <span class="bc-out note"></span><div class="note" style="font-size:.85em">נוסחה משוערת שחושבה מתוצאות המחשבון הרשמי (0.816×בגרות + 0.0849×פסיכומטרי − 62.77). לא מחייבת – הבדיקה הקובעת במחשבון האוניברסיטה.</div></div>`:''}<div class="meta">מקור: ${esc(I.admSource||'')} · <a href="${esc(I.admCalc)}" target="_blank" rel="noopener">מחשבון סיכויי הקבלה של בר-אילן ↗</a></div></div>`}
+document.addEventListener('input',e=>{const c=e.target.closest('.biucalc');if(!c)return;const b=parseFloat(c.querySelector('.bc-b').value),p=parseFloat(c.querySelector('.bc-p').value),o=c.querySelector('.bc-out');
+  if(!(b>=60&&b<=130&&p>=200&&p<=800)){o.textContent=(c.querySelector('.bc-b').value&&c.querySelector('.bc-p').value)?'יש להזין בגרות 60–130 ופסיכומטרי 200–800':'';return}
+  const F=(D.biu&&D.biu.formula)||[0.816,0.08493,-62.77];const w=F[0]*b+F[1]*p+F[2];const acc=+c.dataset.acc,rej=+c.dataset.rej;
+  o.innerHTML=`השקלול שלך בערך <b>${w.toFixed(1)}</b> – ${w>=acc?'✅ מעל סף הקבלה':w<rej?'❌ מתחת לסף הדחייה':'⏳ באזור ללא החלטה'}`});
+function admHtml(I,i){const a=I.adm&&I.adm[i];if(!a)return '';if(I.admScale==='biu')return biuHtml(I,i,a);const [acc,rej,db,dp,dm,eng,req,close]=a;const li=[];
+  if(acc)li.push(`${esc(I.admLabel||'ציון סכם')}: ${I.admScale==='plain'?'':'מעל '}<b>${esc(acc)}</b>${I.admScale==='plain'?' ומעלה':''} – קבלה${rej&&rej!==acc?`, מתחת ל-<b>${esc(rej)}</b> – דחייה (ביניהם: המתנה)`:''}`);
   if(db)li.push(`קבלה ישירה על סמך בגרות בלבד: ממוצע <b>${esc(db)}</b>`);if(dp)li.push(`קבלה ישירה על סמך פסיכומטרי בלבד: <b>${esc(dp)}</b>`);if(dm)li.push(`קבלה ישירה על סמך מכינה: ממוצע <b>${esc(dm)}</b>`);
   if(eng)li.push(`אנגלית: ${esc(eng)}`);(req||[]).forEach(r=>li.push(esc(r)));if(close){const [dd,mm,yy]=close.split('/').map(Number);const past=new Date(yy,mm-1,dd)<new Date();li.push(`סגירת ההרשמה: ${esc(close.replace(/\//g,'.'))}${past?' (המועד עבר – מועד ההרשמה הבא: לא ידוע. יש לוודא ולבדוק)':''}`)}
-  return `<div class="sp"><b>📋 תנאי קבלה</b><ul style="margin:4px 0;padding-inline-start:18px">${li.map(x=>`<li>${x}</li>`).join('')}</ul><div class="meta">מקור: ${esc(I.admSource||'')} · <a href="https://go.huji.ac.il/programAdmission_${esc(I.tracks[i][0])}" target="_blank" rel="noopener">מחשבון הקבלה של המסלול ↗</a></div></div>`}
+  return `<div class="sp"><b>📋 תנאי קבלה</b><ul style="margin:4px 0;padding-inline-start:18px">${li.map(x=>`<li>${x}</li>`).join('')}</ul><div class="meta">מקור: ${esc(I.admSource||'')} · ${I.admCalc?`<a href="${esc(I.admCalc.replace('{id}',I.tracks[i][0]).replace('{url}',I.tracks[i][6]||''))}" target="_blank" rel="noopener">${esc(I.admCalcName||'מחשבון הקבלה של המסלול')} ↗</a>`:''}</div></div>`}
 function pick(i){sel=i;const I=D[cur],t=I.tracks[i],L=I.links[i];
   [...document.querySelectorAll('.prog')].forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.i===i)));
   const byFac={};L.forEach(j=>{const p=I.tracks[j];const f=(p[3]||'תוכניות במתכונת דו-חוגית').split(',')[0];(byFac[f]=byFac[f]||[]).push(p)});
   let h=`<h2>${esc(t[1])}</h2>${I.rule?`<p class="note">ⓘ ${esc(I.rule)}</p>`:''}${I.pop&&I.pop[i]&&I.pop[i].length?`<p><b>שילובים פופולריים</b> (לפי האוניברסיטה): ${I.pop[i].map(j=>esc(I.tracks[j][1].replace(/^תואר ראשון /,''))).join(' · ')}</p>`:''}<p class="note">${esc(SCOPE[t[2]]||t[2])}${t[5]?' · '+esc(t[5]):''}${t[4]?' · קמפוס '+esc(t[4]):''}${t[6]?` · <a href="${esc(t[6])}" target="_blank" rel="noopener">לדף החוג ↗</a>`:''}</p>`;
   h+=admHtml(I,i);
-  if(L.length&&I.adm)h+=`<p class="note">בצירוף דו-חוגי צריך בדרך כלל לעמוד בתנאי הקבלה של <b>שני</b> החוגים – ליד כל חוג מופיע ציון הסכם הנדרש בו. יש לוודא מול המוסד.</p>`;
-  if(!L.length)h+=t[2]==='S'?'<p>זה מסלול <b>חד-חוגי</b> – לומדים אותו לבד, בלי חוג נוסף.</p>':'<p class="empty">במאגר הרשמי לא מופיעים צירופים למסלול הזה. יש לוודא מול המוסד.</p>';
-  else{h+=`<p><b>${L.length}</b> מסלולים שאפשר לשלב איתו:</p>`;Object.keys(byFac).sort((a,b)=>byFac[b].length-byFac[a].length).forEach(f=>{h+=`<div class="fac">${esc(f)} (${byFac[f].length})</div><ul class="partners">${byFac[f].sort((a,b)=>a[1].localeCompare(b[1],'he')).map(p=>`<li>${esc(p[1].replace(/, דו-חוגי/,''))}${(()=>{const k=I.tracks.indexOf(p);const a=I.adm&&I.adm[k];return a&&a[0]?` <small class="note">(סכם ${esc(a[0])})</small>`:''})()}${p[2]&&p[2]!=='D'?` <span class="tag">${esc(SCOPE[p[2]])}</span>`:''}</li>`).join('')}</ul>`})}
+  if(L.length&&I.adm)h+=`<p class="note">בצירוף דו-חוגי צריך בדרך כלל לעמוד בתנאי הקבלה של <b>שני</b> החוגים – ליד כל חוג מופיע הסף הנדרש בו. יש לוודא מול המוסד.</p>`;
+  if(!L.length)h+=t[2]==='S'?'<p>זה מסלול <b>חד-חוגי</b> – לומדים אותו לבד, בלי חוג נוסף.</p>':(t[2]==='M'&&I.unknownMsg)?`<p class="empty">${esc(I.unknownMsg)}</p>`:'<p class="empty">במאגר הרשמי לא מופיעים צירופים למסלול הזה. יש לוודא מול המוסד.</p>';
+  else{h+=`<p><b>${L.length}</b> מסלולים שאפשר לשלב איתו:</p>`;Object.keys(byFac).sort((a,b)=>byFac[b].length-byFac[a].length).forEach(f=>{h+=`<div class="fac">${esc(f)} (${byFac[f].length})</div><ul class="partners">${byFac[f].sort((a,b)=>a[1].localeCompare(b[1],'he')).map(p=>`<li>${esc(p[1].replace(/, דו-חוגי/,''))}${(()=>{const k=I.tracks.indexOf(p);const a=I.adm&&I.adm[k];return a&&a[0]?` <small class="note">(${I.admScale==='biu'?'שקלול':'סכם'} ${esc(a[0])}${a[2]?` / בגרות ${esc(a[2])}`:''})</small>`:''})()}${p[2]&&p[2]!=='D'?` <span class="tag">${esc(SCOPE[p[2]])}</span>`:''}</li>`).join('')}</ul>`})}
+  if(t[2]==='M'&&I.structSrc&&L.length)h+=`<p class="note">רשימת השותפים למסלול המובנה נאספה מדפי המחלקות: ${esc(Object.values(I.structSrc).join(' · '))}. יש לוודא מול המחלקה.</p>`;
   const sib=I.tracks.map((x,j)=>({x,j})).filter(o=>o.j!==i&&base(o.x[1])===base(t[1]));
   if(sib.length)h+=`<div class="fac">מסלולים נוספים של ${esc(base(t[1]))}</div><ul class="partners">${sib.map(o=>`<li><button type="button" class="prog" style="margin:0;padding:3px 8px" data-i="${o.j}">${esc(o.x[1])}</button></li>`).join('')}</ul>`;
   $('detail').innerHTML=h;updateUrl()}
 function renderSpecial(){const I=D[cur];const sp=D._special.filter(s=>s.inst===cur);
-  const fromData=I?I.tracks.filter(t=>['SA','SD','X','A'].includes(t[2])):[];
+  const fromData=I?I.tracks.filter(t=>['SA','SD','X','A','P'].includes(t[2])):[];
   let h='';
   if(sp.length)h+=sp.map(s=>`<div class="sp"><b>${esc(s.title)}</b> <span class="tag d">${esc(s.kind)}</span><div class="meta">משך: ${esc(s.years)} שנים · תנאים: ${esc(s.cond)}</div><div class="meta">מקור: <a href="${esc(s.src)}" target="_blank" rel="noopener">${esc(s.srcName)}</a> – יש לוודא שהתוכנית עדיין פתוחה השנה</div></div>`).join('');
-  if(fromData.length)h+=`<p class="note">מתוך המאגר הרשמי – מסלולים של תואר כפול או חוג נוסף לתואר:</p>`+fromData.map(t=>`<div class="sp"><b>${esc(t[1])}</b> <span class="tag d">${esc(SCOPE[t[2]])}</span>${t[6]?`<div class="meta"><a href="${esc(t[6])}" target="_blank" rel="noopener">לדף התוכנית ↗</a></div>`:''}</div>`).join('');
+  if(fromData.length)h+=`<p class="note">מתוך המאגר הרשמי – מסלולים של תואר כפול, חוג נוסף לתואר או שילוב מוגדר של שני חוגים:</p>`+fromData.map(t=>`<div class="sp"><b>${esc(t[1])}</b> <span class="tag d">${esc(SCOPE[t[2]])}</span>${t[6]?`<div class="meta"><a href="${esc(t[6])}" target="_blank" rel="noopener">לדף התוכנית ↗</a></div>`:''}</div>`).join('');
   $('special').innerHTML=h||'<p class="empty">לא ידוע. יש לוודא ולבדוק – עדיין לא מופו תוכניות משולבות למוסד הזה.</p>'}
 function updateUrl(){const u=new URL(location);u.searchParams.set('inst',cur);const q=$('q').value.trim();if(q)u.searchParams.set('q',q);else u.searchParams.delete('q');history.replaceState(null,'',u)}
 $('inst').onchange=()=>{$('q').value='';onInst()};$('q').oninput=renderList;
