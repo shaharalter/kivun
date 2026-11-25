@@ -80,7 +80,7 @@ h1{font-size:clamp(1.6rem,4vw,2.2rem);color:var(--pine);margin:22px 0 6px}
 (function(){
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const SCOPE={D:'דו-חוגי',S:'חד-חוגי',A:'חוג נוסף לתואר',SA:'חד-חוגי עם חוג נוסף',SD:'תואר כפול',H:'תוכנית מצטיינים',X:'תואר כפול עם מוסד אחר','':''};
+const SCOPE={B:'חד-חוגי או דו-חוגי',D:'דו-חוגי',S:'חד-חוגי',A:'חוג נוסף לתואר',SA:'חד-חוגי עם חוג נוסף',SD:'תואר כפול',H:'תוכנית מצטיינים',X:'תואר כפול עם מוסד אחר','':''};
 const INSTNAMES={huji:'האוניברסיטה העברית',biu:'אוניברסיטת בר-אילן',tau:'אוניברסיטת תל אביב',haifa:'אוניברסיטת חיפה',bgu:'אוניברסיטת בן-גוריון'};
 let D=null,cur=null,sel=null;
 const base=n=>n.split(',')[0].trim();
@@ -100,8 +100,8 @@ function renderList(){const I=D[cur];if(!I){$('list').innerHTML='';return}const 
   updateUrl()}
 function pick(i){sel=i;const I=D[cur],t=I.tracks[i],L=I.links[i];
   [...document.querySelectorAll('.prog')].forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.i===i)));
-  const byFac={};L.forEach(j=>{const p=I.tracks[j];const f=(p[3]||'אחר').split(',')[0];(byFac[f]=byFac[f]||[]).push(p)});
-  let h=`<h2>${esc(t[1])}</h2><p class="note">${esc(SCOPE[t[2]]||t[2])}${t[5]?' · '+esc(t[5]):''}${t[4]?' · קמפוס '+esc(t[4]):''}${t[6]?` · <a href="${esc(t[6])}" target="_blank" rel="noopener">לדף החוג ↗</a>`:''}</p>`;
+  const byFac={};L.forEach(j=>{const p=I.tracks[j];const f=(p[3]||'תוכניות במתכונת דו-חוגית').split(',')[0];(byFac[f]=byFac[f]||[]).push(p)});
+  let h=`<h2>${esc(t[1])}</h2>${I.rule?`<p class="note">ⓘ ${esc(I.rule)}</p>`:''}${I.pop&&I.pop[i]&&I.pop[i].length?`<p><b>שילובים פופולריים</b> (לפי האוניברסיטה): ${I.pop[i].map(j=>esc(I.tracks[j][1].replace(/^תואר ראשון /,''))).join(' · ')}</p>`:''}<p class="note">${esc(SCOPE[t[2]]||t[2])}${t[5]?' · '+esc(t[5]):''}${t[4]?' · קמפוס '+esc(t[4]):''}${t[6]?` · <a href="${esc(t[6])}" target="_blank" rel="noopener">לדף החוג ↗</a>`:''}</p>`;
   if(!L.length)h+=t[2]==='S'?'<p>זה מסלול <b>חד-חוגי</b> – לומדים אותו לבד, בלי חוג נוסף.</p>':'<p class="empty">במאגר הרשמי לא מופיעים צירופים למסלול הזה. יש לוודא מול המוסד.</p>';
   else{h+=`<p><b>${L.length}</b> מסלולים שאפשר לשלב איתו:</p>`;Object.keys(byFac).sort((a,b)=>byFac[b].length-byFac[a].length).forEach(f=>{h+=`<div class="fac">${esc(f)} (${byFac[f].length})</div><ul class="partners">${byFac[f].sort((a,b)=>a[1].localeCompare(b[1],'he')).map(p=>`<li>${esc(p[1].replace(/, דו-חוגי/,''))}${p[2]&&p[2]!=='D'?` <span class="tag">${esc(SCOPE[p[2]])}</span>`:''}</li>`).join('')}</ul>`})}
   const sib=I.tracks.map((x,j)=>({x,j})).filter(o=>o.j!==i&&base(o.x[1])===base(t[1]));
