@@ -112,7 +112,9 @@ button,input,select{font:inherit;color:inherit}
   function baFit(p, ba) {
     if (!ba) return null;
     const req = p.reqBA || '';
+    const ex = (req.match(/(?:מלבד|למעט|שאינם בוגרי|שאינם בעלי)\s*([^)]+)/) || [])[1] || '';
     const words = ba.split(/[\s,/]+/).map(w => w.replace(/^ו(?=[א-ת]{3})/, '')).filter(w => w.length >= 3 && !/^(תואר|ראשון|במדעי|מדעי|לימודי)$/.test(w));
+    if (ex && words.some(w => ex.includes(w))) return 'excl';
     if (words.some(w => req.includes(w) || p.name.includes(w))) return 'yes';
     if (generic(req)) return 'open';
     return 'maybe';
@@ -120,7 +122,7 @@ button,input,select{font:inherit;color:inherit}
   function needAvg(p, goal) {
     const tr = p.tracks || [];
     if (goal && tr.length) {
-      const f = tr.filter(t => goal === 'thesis' ? /עם תזה|א’|א'/.test(t.t) : /ללא תזה|ב’|ב'/.test(t.t)).map(t => t.avg).filter(Boolean);
+      const f = tr.filter(t => goal === 'thesis' ? (/עם תזה|א’|א'|עבודת גמר|מחקרי/.test(t.t) && !/ללא/.test(t.t)) : /ללא תזה|ללא עבודת גמר|ב’|ב'|עיוני/.test(t.t)).map(t => t.avg).filter(Boolean);
       if (f.length) return Math.min(...f);
     }
     return p.minAvg;
@@ -137,7 +139,7 @@ button,input,select{font:inherit;color:inherit}
     const tr = (p.tracks || []).filter(t => t.avg).map(t => `${esc(t.t)}: ${t.avg}`).join(' · ');
     return `<article class="prog ${cls || ''}"><h3>${esc(p.name)} <small>${esc(p.deg)} · ${esc(I.name || p.inst)}${p.fac0 ? ' · ' + esc(p.fac0) : ''}</small></h3>
       ${extra ? `<p><b>${extra}</b></p>` : ''}
-      <p>ממוצע מינימלי: <b>${p.minAvg ? p.minAvg : UNK}</b>${tr ? ` <span class="muted">(${tr})</span>` : ''}</p>
+      <p>ממוצע מינימלי: <b>${p.minAvg ? p.minAvg : UNK}</b>${tr ? ` <span class="muted">(${tr})</span>` : ''}${!p.minAvg && p.floor ? ` <span class="muted">(הסף הכללי של המוסד: ${p.floor}; היחידה רשאית לדרוש יותר)</span>` : ''}</p>
       ${p.reqBA ? `<p class="muted">דרישה: ${esc(p.reqBA)}</p>` : ''}
       ${p.note ? `<p class="muted">ⓘ ${esc(p.note)}</p>` : ''}${p.updated ? `<p class="muted">המידע באתר המוסד עודכן ב-${esc(p.updated)}</p>` : ''}
       <div class="tags">${tags.join('')}</div>
@@ -155,12 +157,14 @@ button,input,select{font:inherit;color:inherit}
       const need = needAvg(p, goal); const fit = baFit(p, ba);
       let grp = 'unk';
       if (avg != null && need) grp = avg >= need ? 'ok' : (avg >= need - 5 ? 'near' : 'no');
-      else if (avg != null) grp = 'unk';
-      let score = { ok: 3, near: 2, unk: 1, no: 0 }[grp] * 10 + (fit === 'yes' ? 5 : fit === 'open' ? 3 : fit === 'maybe' ? 0 : 1);
+      else if (avg != null && p.floor && avg < p.floor) grp = 'no';
+      let score = { ok: 3, near: 2, unk: 1, no: 0 }[grp] * 10 + (fit === 'yes' ? 5 : fit === 'open' ? 3 : fit === 'maybe' ? 0 : fit === 'excl' ? -8 : 1);
       const notes = [];
       if (avg != null && need) notes.push(avg >= need ? `הממוצע שלך (${avg}) עומד בסף (${need})` : `חסרות ${Math.round((need - avg) * 10) / 10} נקודות לסף (${need})`);
+      if (avg != null && !need && p.floor) notes.push(avg >= p.floor ? `עובר את הסף הכללי של המוסד (${p.floor}); סף היחידה לא פורסם` : `מתחת לסף הכללי של המוסד (${p.floor})`);
       if (fit === 'yes') notes.push('התחום שלך מופיע בדרישות');
       else if (fit === 'open') notes.push('התוכנית פתוחה לבוגרי תחומים שונים');
+      else if (fit === 'excl') notes.push('התוכנית מיועדת לבוגרי תחומים אחרים – לא לבוגרי התחום שלך');
       else if (fit === 'maybe') notes.push('ייתכן שיידרש תואר ראשון בתחום אחר או לימודי השלמה');
       return { p, grp, score, notes };
     }).sort((a, b) => b.score - a.score || (a.p.minAvg || 99) - (b.p.minAvg || 99));
