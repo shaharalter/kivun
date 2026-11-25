@@ -221,6 +221,17 @@ input[aria-invalid="true"]{border-color:var(--hard)!important;box-shadow:0 0 0 2
 .tr-lines{display:flex;flex-wrap:wrap;gap:5px}.tr-lines span{border:1px solid var(--line);border-radius:8px;padding:2px 8px;font-weight:600;font-size:.88rem;background:var(--surface)}.tr-lines small{font-weight:400;color:var(--muted)}
 .tr-st{margin:0;padding-inline-start:18px;font-size:.9rem}
 .tr-links{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:.9rem}.tr-links a{color:var(--pine)}
+.tr-showline{border:0;background:none;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline dotted}
+.tr-mapbox{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:10px;margin:8px 0}
+@media (max-width:760px){.tr-mapbox{grid-template-columns:minmax(0,1fr)}}
+.tr-map{height:380px;border-radius:12px;border:1px solid var(--line);z-index:0}
+.tr-map-side{max-height:380px;overflow:auto}
+.tr-map-tools{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:6px;font-size:.88rem}
+.tr-map-tools button{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:3px 8px;cursor:pointer;font:inherit}
+.tr-lbtn{display:block;width:100%;text-align:start;border:2px solid var(--line);background:var(--surface);border-radius:10px;padding:5px 8px;margin:4px 0;cursor:pointer;font:inherit;font-size:.88rem;color:inherit}
+.tr-lbtn[aria-pressed="true"]{background:var(--pine-soft)}
+.tr-lbtn small{color:var(--muted)}
+.leaflet-container{font-family:inherit}
 .tr-badge{background:var(--sun-soft);border-radius:99px;padding:0 8px;font-size:.8rem}
 .stretch-head{margin:14px 0 4px;font-weight:600;color:var(--mid)}
 .inst.stretch{border:2px dashed var(--sun);background:color-mix(in srgb,var(--sun-soft) 45%,var(--surface))}
@@ -2024,7 +2035,7 @@ body.cmp-on{padding-bottom:120px}
     $('results').classList.add('hidden');
     $('detailView').innerHTML = html;
     $('detailView').classList.remove('hidden');
-    if (window.KivunTransit) KivunTransit.fullHtml(home, inst['מזהה'], instName).then(h => { const el = $('trDetail'); if (el) el.innerHTML = h + `<p class="tr-note"><a href="transit.html?home=${encodeURIComponent(home)}&inst=${encodeURIComponent(inst['מזהה'] || '')}" target="_blank" rel="noopener">זמני הנסיעה מ${home || 'הבית'} לכל המוסדות ↗</a></p>`; }).catch(() => { const el = $('trDetail'); if (el) el.innerHTML = '<p class="tr-note">זמני הנסיעה: לא ידוע. יש לוודא ולבדוק.</p>'; });
+    if (window.KivunTransit && $('trDetail')) KivunTransit.mount($('trDetail'), home, inst['מזהה'], instName, `<p class="tr-note"><a href="transit.html?home=${encodeURIComponent(home)}&inst=${encodeURIComponent(inst['מזהה'] || '')}" target="_blank" rel="noopener">זמני הנסיעה מ${home || 'הבית'} לכל המוסדות ↗</a></p>`).catch(() => { const el = $('trDetail'); if (el) el.innerHTML = '<p class="tr-note">זמני הנסיעה: לא ידוע. יש לוודא ולבדוק.</p>'; });
     $('backToResultsBtn').addEventListener('click', () => {
       $('detailView').classList.add('hidden');
       $('results').classList.remove('hidden');

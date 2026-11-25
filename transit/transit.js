@@ -58,7 +58,7 @@
     legs.forEach((l, j) => {
       const [m, num, ag, hs, from, to, dep, ar] = l;
       if (j > 0) { const wait = dep - legs[j - 1][7]; h += `<li class="walk">🔁 החלפה${wait > 0 ? ` (המתנה/הליכה ${wait} דק׳)` : ''}</li>`; }
-      h += `<li><span class="tr-ico">${ICON[m] || '🚌'}</span><b>${esc(lineName(m, num, ag))}</b>${hs ? ` <small>לכיוון ${esc(hs)}</small>` : ''}<br><small>עולים ב<b>${esc(from)}</b> ${hm(dep)} ← יורדים ב<b>${esc(to)}</b> ${hm(ar)} (${ar - dep} דק׳)</small></li>`;
+      h += `<li><span class="tr-ico">${ICON[m] || '🚌'}</span><button type="button" class="tr-showline" data-line="${esc(m + '|' + num + '|' + ag)}" title="הצגת הקו במפה"><b>${esc(lineName(m, num, ag))}</b> 🗺️</button>${hs ? ` <small>לכיוון ${esc(hs)}</small>` : ''}<br><small>עולים ב<b>${esc(from)}</b> ${hm(dep)} ← יורדים ב<b>${esc(to)}</b> ${hm(ar)} (${ar - dep} דק׳)</small></li>`;
     });
     if (w1 > 0) h += `<li class="walk">🚶 הליכה ${w1} דק׳ לקמפוס</li>`;
     return h + '</ol></div>';
@@ -88,7 +88,7 @@
       }
       if (e && e.d && e.d.length) {
         h += `<h4>קווים ישירים מ${esc(r.city.name)} (יציאות בין 6:00 ל-9:30)</h4><table class="tr-tab"><thead><tr><th>קו</th><th>יציאות</th><th>ראשונה–אחרונה</th><th>זמן נסיעה</th></tr></thead><tbody>` +
-          e.d.map(d => `<tr><td>${ICON[d[0]] || ''} ${esc(lineName(d[0], d[1], d[2]))}</td><td>${d[5]}</td><td>${hm(d[3])}–${hm(d[4])}</td><td>${d[6]} דק׳</td></tr>`).join('') + '</tbody></table>';
+          e.d.map(d => `<tr><td>${ICON[d[0]] || ''} <button type="button" class="tr-showline" data-line="${esc(d[0] + '|' + d[1] + '|' + d[2])}" title="הצגת הקו במפה">${esc(lineName(d[0], d[1], d[2]))} 🗺️</button></td><td>${d[5]}</td><td>${hm(d[3])}–${hm(d[4])}</td><td>${d[6]} דק׳</td></tr>`).join('') + '</tbody></table>';
       }
       const car = C && carEstimate(r.city, C.ll);
       if (car) h += `<p class="tr-note">🚗 ברכב: כ-${car.km} ק״מ, בערך ${car.min} דק׳ בלי פקקים (הערכה לפי מרחק, לא מסלול אמיתי).</p>`;
@@ -105,9 +105,80 @@
         L.map(l => `<span title="${esc(l[3])} · ${l[4]} נסיעות בבוקר">${esc(l[1])} <small>${esc(l[2])}</small></span>`).join('') + `</div><p class="tr-note">מספר הנסיעות בבוקר (6:00–12:00) מופיע כשמצביעים על הקו.</p>`;
       if (C.approx) h += `<p class="tr-note">ⓘ מיקום הקמפוס של ${esc(instName || '')} במפה משוער – יש לוודא את הכתובת המדויקת.</p>`;
     }
+    h += `<h4>🗺️ מפה: קווים, תחנות וחניות</h4><p class="tr-note">לחצו על קו כדי לראות את כל המסלול והתחנות שלו. לחיצה על תחנה או חניה מציגה פרטים.</p><div class="tr-mapbox" data-inst="${esc(instId)}"><div class="tr-map"></div><div class="tr-map-side"><div class="tr-map-tools"><label><input type="checkbox" class="tr-pk" checked> 🅿️ חניות</label><button type="button" class="tr-clear">ניקוי המפה</button></div><div class="tr-map-lines">טוען…</div></div></div>`;
     const dest = encodeURIComponent((instName || '') + (homeName ? '' : ''));
     h += `<div class="tr-links"><a href="https://www.google.com/maps/dir/?api=1${homeName ? '&origin=' + encodeURIComponent(homeName) : ''}&destination=${C ? C.ll.join(',') : dest}&travelmode=transit" target="_blank" rel="noopener">מסלול בזמן אמת בגוגל מפות ↗</a><a href="https://moovitapp.com/tripplan/israel-1/poi/he?tll=${C ? C.ll.join('_') : ''}" target="_blank" rel="noopener">מוביט ↗</a></div>`;
     return h + '</div>';
   }
-  window.KivunTransit = { loadCities, loadCampus, findCity, forCity, best, shortText, fullHtml, optionHtml, carEstimate, hm, norm };
+  // ===== מפה אינטראקטיבית (Leaflet + OpenStreetMap) =====
+  let LP = null;
+  function loadLeaflet() {
+    if (window.L) return Promise.resolve(window.L);
+    if (LP) return LP;
+    LP = new Promise((res, rej) => {
+      const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css'; document.head.appendChild(css);
+      const sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js'; sc.onload = () => res(window.L); sc.onerror = rej; document.head.appendChild(sc);
+    });
+    return LP;
+  }
+  function decodePoly(str) {
+    let i = 0, lat = 0, lng = 0; const out = [];
+    while (i < str.length) {
+      for (const k of [0, 1]) {
+        let b, shift = 0, result = 0;
+        do { b = str.charCodeAt(i++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+        const d = (result & 1) ? ~(result >> 1) : (result >> 1);
+        if (k === 0) lat += d; else lng += d;
+      }
+      out.push([lat / 1e5, lng / 1e5]);
+    }
+    return out;
+  }
+  const COLORS = ['#1F4D3F', '#C2603F', '#5B6FB5', '#B8860B', '#8E44AD', '#16A085', '#D35400', '#2C3E50', '#C0392B', '#27AE60'];
+  async function initMap(box) {
+    if (!box || box.dataset.ready) return; box.dataset.ready = '1';
+    const inst = box.dataset.inst;
+    let M, L;
+    try { [M, L] = await Promise.all([fetch(BASE + 'map/' + inst + '.json').then(r => r.json()), loadLeaflet()]); }
+    catch (e) { box.querySelector('.tr-map-lines').textContent = 'לא ניתן היה לטעון את המפה כרגע.'; return; }
+    const map = L.map(box.querySelector('.tr-map'), { scrollWheelZoom: false }).setView(M.ll, 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
+    L.marker(M.ll, { title: 'הקמפוס' }).addTo(map).bindPopup('<b>🎓 הקמפוס</b>');
+    const pk = L.layerGroup().addTo(map);
+    (M.parking || []).forEach(p => L.circleMarker([p[1], p[2]], { radius: 8, color: '#fff', weight: 2, fillColor: '#2D6CDF', fillOpacity: .95 })
+      .bindPopup(`<b>🅿️ ${esc(p[0])}</b><br>כ-${p[3]} מ׳ מהקמפוס<br><a href="https://www.google.com/maps/dir/?api=1&destination=${p[1]},${p[2]}" target="_blank" rel="noopener">ניווט ↗</a>`).addTo(pk));
+    box.querySelector('.tr-pk').onchange = e => { if (e.target.checked) pk.addTo(map); else map.removeLayer(pk); };
+    const active = new Map(); let ci = 0;
+    function toggle(idx) {
+      const ln = M.lines[idx]; if (!ln) return;
+      const btn = box.querySelector(`.tr-lbtn[data-i="${idx}"]`);
+      if (active.has(idx)) { map.removeLayer(active.get(idx)); active.delete(idx); if (btn) { btn.setAttribute('aria-pressed', 'false'); btn.style.borderColor = ''; } return; }
+      const col = COLORS[ci++ % COLORS.length];
+      const g = L.layerGroup();
+      const line = L.polyline(decodePoly(ln.p), { color: col, weight: 5, opacity: .85 }).addTo(g);
+      ln.s.forEach((st, j) => L.circleMarker([st[1], st[2]], { radius: j === 0 || j === ln.s.length - 1 ? 6 : 4, color: col, weight: 2, fillColor: '#fff', fillOpacity: 1 })
+        .bindPopup(`<b>${esc(st[0])}</b><br>${esc(lineName(ln.m, ln.n, ln.a))} לכיוון ${esc(ln.h)}<br>בנסיעה לדוגמה: ${hm(st[3])}`).addTo(g));
+      g.addTo(map); active.set(idx, g);
+      map.fitBounds(line.getBounds(), { padding: [20, 20] });
+      if (btn) { btn.setAttribute('aria-pressed', 'true'); btn.style.borderColor = col; }
+    }
+    const lb = box.querySelector('.tr-map-lines');
+    lb.innerHTML = M.lines.length ? M.lines.map((ln, i) => `<button type="button" class="tr-lbtn" data-i="${i}" aria-pressed="false"><b>${ICON[ln.m] || '🚌'} ${esc(ln.n || MODEN[ln.m])}</b> <small>${esc(ln.a)} · לכיוון ${esc(ln.h)} · ${ln.c} נסיעות בבוקר</small></button>`).join('') : '<p class="tr-note">לא נמצאו קווים ליד הקמפוס.</p>';
+    if (!(M.parking || []).length) lb.insertAdjacentHTML('afterbegin', '<p class="tr-note">🅿️ מידע על חניות ליד הקמפוס: לא ידוע. יש לוודא ולבדוק.</p>');
+    lb.addEventListener('click', e => { const b = e.target.closest('.tr-lbtn'); if (b) toggle(+b.dataset.i); });
+    box.querySelector('.tr-clear').onclick = () => { [...active.keys()].forEach(toggle); map.setView(M.ll, 15); };
+    box._showLine = key => {
+      const [m, n, a] = key.split('|'); const idx = M.lines.findIndex(l => l.m === m && String(l.n) === n && l.a === a);
+      if (idx < 0) { alertNote(box, 'הקו הזה לא עובר ליד הקמפוס, ולכן אין לנו את המסלול שלו במפה. אפשר לראות אותו במוביט.'); return; }
+      if (!active.has(idx)) toggle(idx); else map.fitBounds(active.get(idx).getLayers()[0].getBounds(), { padding: [20, 20] });
+      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+  }
+  function alertNote(box, t) { let n = box.querySelector('.tr-map-msg'); if (!n) { n = document.createElement('p'); n.className = 'tr-note tr-map-msg'; box.querySelector('.tr-map-side').prepend(n); } n.textContent = t; }
+  async function mount(el, homeName, instId, instName, extraHtml) {
+    el.innerHTML = await fullHtml(homeName, instId, instName) + (extraHtml || '');
+    const box = el.querySelector('.tr-mapbox'); initMap(box);
+    el.addEventListener('click', e => { const b = e.target.closest('.tr-showline'); if (b && box && box._showLine) box._showLine(b.dataset.line); });
+  }
+  window.KivunTransit = { mount, initMap, loadCities, loadCampus, findCity, forCity, best, shortText, fullHtml, optionHtml, carEstimate, hm, norm };
 })();
