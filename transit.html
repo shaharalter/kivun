@@ -11,20 +11,19 @@
 <meta name="theme-color" content="#1f4d3d">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f4d3d'/%3E%3Cpath d='M32 10 L44 34 L32 28 L20 34 Z' fill='%23f4c542'/%3E%3Ccircle cx='32' cy='44' r='8' fill='none' stroke='%23fff' stroke-width='4'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Suez+One&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--paper:#F3F6F1;--surface:#FFFFFF;--ink:#1E2B25;--muted:#5C6B63;--pine:#1F4D3F;--pine-soft:#DCE8E1;--sun:#F0B429;--sun-soft:#FCEFC7;--line:#D3DCD5;--good:#2E7D4F;--mid:#8A5600;--hard:#B3412F;--on-pine:#F3F6F1;color-scheme:light;box-sizing:border-box}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#121A16;--surface:#1A241F;--ink:#E7EEE9;--muted:#A3B2AA;--pine:#8FD1B2;--pine-soft:#22352C;--sun:#F5C452;--sun-soft:#3A3115;--line:#2D3B34;--good:#7ED3A0;--mid:#F0B86B;--hard:#F08C78;--on-pine:#121A16;color-scheme:dark}}
 :root[data-theme="dark"]{--paper:#121A16;--surface:#1A241F;--ink:#E7EEE9;--muted:#A3B2AA;--pine:#8FD1B2;--pine-soft:#22352C;--sun:#F5C452;--sun-soft:#3A3115;--line:#2D3B34;--good:#7ED3A0;--mid:#F0B86B;--hard:#F08C78;--on-pine:#121A16;color-scheme:dark}
 *,*::before,*::after{box-sizing:inherit}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans Hebrew","Arial Hebrew",Arial,sans-serif;font-size:17px;line-height:1.6}
-h1,h2,h3,h4{font-family:"Suez One","IBM Plex Sans Hebrew",Georgia,serif;font-weight:400;line-height:1.25;margin:0}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--kv-body);font-size:17px;line-height:1.6}
+h1,h2,h3,h4{font-family:var(--kv-display);font-weight:400;line-height:1.25;margin:0}
 button,input,select{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--pine);outline-offset:2px;border-radius:6px}
 .wrap{max-width:1080px;margin:0 auto;padding:0 16px}
 .top{position:sticky;top:0;z-index:9;background:var(--paper);border-bottom:1px solid var(--line)}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:56px}
-.brand{font-family:"Suez One",serif;font-size:1.4rem;color:var(--pine);text-decoration:none}
+.brand{font-family:var(--kv-display);font-size:1.4rem;color:var(--pine);text-decoration:none}
 .tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
 .tabs a{text-decoration:none;color:var(--muted);padding:6px 12px;border-radius:999px;font-size:.92rem;white-space:nowrap}
 .tabs a[aria-current="page"]{background:var(--pine-soft);color:var(--pine);font-weight:600}
@@ -124,7 +123,7 @@ async function go(){
   const home=$('home').value.trim();if(!home){$('msg').textContent='הקלידו מאיפה יוצאים.';return}
   $('msg').textContent='מחשב…';
   const r=await KivunTransit.forCity(home).catch(()=>null);
-  if(!r){const pi=await KivunTransit.placeInfo(home).catch(()=>null);$('msg').innerHTML=`לא מצאנו את „${esc(home)}” בלוח הזמנים של התחבורה הציבורית.${pi?` היישוב שייך ${pi.council?'למועצה האזורית '+esc(pi.council):'לנפת '+esc(pi.nafa)}, ואין לנו נתוני תחבורה ציבורית ליישוב הזה.`:' נסו לבחור מהרשימה שנפתחת כשמקלידים.'}`;$('res').hidden=true;return}
+  if(!r){$('res').hidden=true;DATA=null;const pi=await KivunTransit.placeInfo(home).catch(()=>null);$('msg').innerHTML=`לא מצאנו את „${esc(home)}” בלוח הזמנים של התחבורה הציבורית.${pi?` היישוב שייך ${pi.council?'למועצה האזורית '+esc(pi.council):'לנפת '+esc(pi.nafa)}, ואין לנו נתוני תחבורה ציבורית ליישוב הזה.`:' נסו לבחור מהרשימה שנפתחת כשמקלידים.'}`;$('res').hidden=true;return}
   try{localStorage.setItem('kivun-home',r.city.asked||r.city.name)}catch(e){}
   DATA=r.data;CITY=r.city;$('msg').innerHTML=(r.city.proxy?KivunTransit.proxyNote(r.city):'')+`יוצאים מ${esc(r.city.name)}. לחצו על מוסד כדי לראות את כל האפשרויות, הקווים והתחנות.`;
   const u=new URL(location);u.searchParams.set('home',r.city.asked||r.city.name);if($('inst').value)u.searchParams.set('inst',$('inst').value);else u.searchParams.delete('inst');history.replaceState(null,'',u);
@@ -138,7 +137,7 @@ function render(){
   const max=Math.max(60,...rows.filter(r=>r.b).map(r=>r.b.dur));
   $('tb').innerHTML=rows.map(({i,e,b})=>{
     const id=i['מזהה'];const how=b?(b.walkOnly?'ברגל':(e.o.find(o=>o[0]===b.arr)||e.o[0])[3].map(l=>l[0]==='rail'?'🚆 רכבת':(l[0]==='lrt'?'🚈 ':l[0]==='cable'?'🚡 ':'🚌 ')+l[1]).join(' ← ')):'';
-    const direct=e&&e.d&&e.d.length?`<span class="chip">${b&&b.transfers>0?`יש גם ${e.d.length} קווים ישירים בבוקר`:`${e.d.length} קווים ישירים`}</span>`:'';
+    const direct=e&&e.d&&e.d.length?`<span class="chip">${b&&b.transfers>0?(e.d.length===1?'יש גם קו ישיר אחד בבוקר':`יש גם ${e.d.length} קווים ישירים בבוקר`):(e.d.length===1?'קו ישיר אחד':`${e.d.length} קווים ישירים`)}</span>`:'';
     return `<tr data-id="${esc(id)}" aria-expanded="${open===id}"><td><b>${esc(i['שם המוסד'])}</b><br><small style="color:var(--muted)">${esc(i['עיר']||'')}</small></td><td class="t">${b?b.dur+' דק׳':'—'}${b?`<div class="bar" style="width:${Math.max(6,b.dur/max*100)}%"></div>`:''}</td><td>${b?`${how}<br><small style="color:var(--muted)">${b.walkOnly?'':b.transfers===1?'החלפה אחת':b.transfers?b.transfers+' החלפות':'ישיר'} · יציאה ${KivunTransit.hm(b.leave)} · הגעה ${KivunTransit.hm(b.arr)}</small>`:'<small>לא נמצאה נסיעה עד 11:00 – זמן הנסיעה לא ידוע. יש לוודא ולבדוק</small>'} ${direct}</td></tr>`+
       (open===id?`<tr class="det"><td colspan="3"><div class="detail" id="det-${esc(id)}">טוען…</div></td></tr>`:'');
   }).join('')||'<tr><td colspan="3">אין מוסדות שמתאימים לסינון.</td></tr>';

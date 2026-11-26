@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>כיוון – מאגר הנתונים</title>
-<meta name="description" content="מאגר הנתונים של כיוון: תנאי קבלה לכ-500 תארים ב-62 מוסדות, אנשי קשר, עלויות מחיה, מלגות ומעונות – תשפ״ז.">
+<meta name="description" content="מאגר הנתונים של כיוון: תנאי קבלה לכ-500 תארים ב-58 מוסדות, אנשי קשר, עלויות מחיה, מלגות ומעונות – תשפ״ז.">
 <meta property="og:title" content="כיוון – מאגר הנתונים">
-<meta property="og:description" content="מאגר הנתונים של כיוון: תנאי קבלה לכ-500 תארים ב-62 מוסדות, אנשי קשר, עלויות מחיה, מלגות ומעונות – תשפ״ז.">
+<meta property="og:description" content="מאגר הנתונים של כיוון: תנאי קבלה לכ-500 תארים ב-58 מוסדות, אנשי קשר, עלויות מחיה, מלגות ומעונות – תשפ״ז.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="he_IL">
 <meta name="theme-color" content="#1f4d3d">
@@ -14,7 +14,6 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --ink:#14213D; --paper:#F6F8FA; --card:#FFFFFF; --teal:#0F766E; --teal-soft:#E3F2F0;
@@ -42,18 +41,21 @@ a{color:var(--teal)}
 .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
 header.top{padding:40px 0 18px}
 .brand{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap}
-.brand h1{font-family:"Frank Ruhl Libre",Georgia,serif;font-weight:900;font-size:clamp(44px,7vw,76px);line-height:1;margin:0;letter-spacing:-.01em}
+.brand h1{font-family:var(--kv-display);font-weight:900;font-size:clamp(44px,7vw,76px);line-height:1;margin:0;letter-spacing:-.01em}
 .brand p{margin:0;font-size:18px;color:var(--slate);max-width:46ch}
 .facts{display:flex;flex-wrap:wrap;gap:10px 28px;margin:22px 0 0;padding:0;list-style:none;font-size:15px;color:var(--slate)}
 .facts b{color:var(--ink);font-size:20px;font-weight:700;margin-left:4px}
 nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
 nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav.tabs .wrap.more-l{-webkit-mask-image:linear-gradient(to right,transparent,#000 48px);mask-image:linear-gradient(to right,transparent,#000 48px)}
+nav.tabs .wrap.more-r{-webkit-mask-image:linear-gradient(to left,transparent,#000 48px);mask-image:linear-gradient(to left,transparent,#000 48px)}
+nav.tabs .wrap.more-l.more-r{-webkit-mask-image:linear-gradient(to right,transparent,#000 48px,#000 calc(100% - 48px),transparent);mask-image:linear-gradient(to right,transparent,#000 48px,#000 calc(100% - 48px),transparent)}
 nav.tabs a{flex:none;padding:14px 14px 12px;text-decoration:none;color:var(--slate);font-weight:600;border-bottom:3px solid transparent;white-space:nowrap}
 nav.tabs a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--teal)}
 main{padding:26px 0 70px}
 section.view{display:none} section.view.on{display:block}
-h2{font-family:"Frank Ruhl Libre",Georgia,serif;font-size:30px;margin:0 0 6px;font-weight:700}
+h2{font-family:var(--kv-display);font-size:30px;margin:0 0 6px;font-weight:700}
 .lead{color:var(--slate);margin:0 0 20px;max-width:70ch}
 .controls{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:10px;margin-bottom:12px}
 .controls input,.controls select,.inline-input{width:100%;font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
@@ -92,13 +94,13 @@ tr:last-child td{border-bottom:0}
 .linkbtn{font:inherit;background:none;border:0;color:var(--teal);cursor:pointer;padding:8px 0;text-decoration:underline}
 .progress{height:6px;background:var(--gray);border-radius:99px;overflow:hidden;margin:6px 0 10px;max-width:640px}
 .progress span{display:block;height:100%;background:var(--teal);width:0;transition:width .25s}
-.qtext{font-family:"Frank Ruhl Libre",Georgia,serif;font-size:clamp(24px,3.4vw,34px);line-height:1.25;margin:4px 0 18px;max-width:28ch}
+.qtext{font-family:var(--kv-display);font-size:clamp(24px,3.4vw,34px);line-height:1.25;margin:4px 0 18px;max-width:28ch}
 .answers{display:grid;gap:10px;max-width:640px}
 .answers button{font:inherit;font-size:17px;text-align:right;padding:15px 18px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
 .answers button:hover{border-color:var(--teal)}
 .cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
 .cat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
-.cat .pct{font-family:"Frank Ruhl Libre",Georgia,serif;font-size:44px;font-weight:900;line-height:1;color:var(--teal)}
+.cat .pct{font-family:var(--kv-display);font-size:44px;font-weight:900;line-height:1;color:var(--teal)}
 .cat h3{margin:6px 0 4px;font-size:22px}
 .cat p{margin:0 0 10px;color:var(--slate);font-size:15px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
@@ -116,7 +118,7 @@ tr:last-child td{border-bottom:0}
 #cmp tr.total td{font-size:17px;font-weight:700;background:var(--teal-soft)}
 body.quizmode nav.tabs,body.quizmode .facts,body.quizmode footer{display:none}
 body.quizmode header.top{padding-bottom:6px}
-.qhead{font-family:"Frank Ruhl Libre",Georgia,serif;font-size:26px;margin:30px 0 4px}
+.qhead{font-family:var(--kv-display);font-size:26px;margin:30px 0 4px}
 .qsub{color:var(--slate);margin:0 0 10px}
 .qq{max-width:720px;padding:14px 0;border-bottom:1px solid var(--line)}
 .qq p{margin:0 0 10px;font-size:18px;font-weight:600}
@@ -133,7 +135,7 @@ button[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);colo
 .qerr:empty{display:none}
 .qnav{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
 .code .letters{display:flex;gap:10px;flex-wrap:wrap}
-.code .letters span{font-family:"Frank Ruhl Libre",Georgia,serif;font-weight:900;font-size:clamp(30px,5vw,46px);color:var(--teal);line-height:1.1}
+.code .letters span{font-family:var(--kv-display);font-weight:900;font-size:clamp(30px,5vw,46px);color:var(--teal);line-height:1.1}
 .code .letters span+span::before{content:"+";color:var(--slate);margin-inline-end:10px;font-weight:500}
 .types{display:grid;gap:6px;margin-top:16px;max-width:520px}
 .tbar{display:grid;grid-template-columns:80px 1fr;align-items:center;gap:10px;font-size:14px}
@@ -165,6 +167,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--slate);f
   <div class="brand"><h1>כיוון – מאגר הנתונים</h1><p><a href="index.html">חזרה לאפליקציה ולשאלון</a> · <a href="curricula.html">תוכניות לימודים</a> · <a href="finance.html">סימולטור פיננסי</a> · <a href="transit.html">זמני נסיעה</a> · <a href="combos.html">שילובי תארים</a></p><p>מאגר תנאי קבלה, עלויות, הגעה ואנשי קשר לתואר ראשון בישראל – תשפ״ז</p></div>
   <ul class="facts" id="facts"></ul>
 </div></header>
+<div class="wrap"><h1 class="kv-dh1" style="margin:22px 0 6px;font-size:clamp(30px,5vw,44px);line-height:1.1">מאגר הנתונים</h1></div>
 <nav class="tabs" aria-label="מדורים"><div class="wrap" id="tabs">
   <a href="#degrees">תארים ותנאי קבלה</a><a href="#institutions">מוסדות</a><a href="#contacts">אנשי קשר</a>
   <a href="#living">עלויות מחיה</a><a href="#scholarships">מלגות וזכאויות</a><a href="#dorms">מעונות</a>
@@ -233,7 +236,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--slate);f
 </section>
 <section class="view" id="v-institutions">
   <h2>מוסדות</h2>
-  <p class="lead">62 מוסדות: הגעה, חניה, טלפון, תשלומים נלווים ושכר דירה ממוצע בעיר.</p>
+  <p class="lead">58 מוסדות פעילים (ועוד 4 מכללות שאוחדו עם מוסדות אחרים ומופיעות לצורך תיעוד): הגעה, חניה, טלפון, תשלומים נלווים ושכר דירה ממוצע בעיר.</p>
   <div class="controls" style="grid-template-columns:2fr 1fr 1fr">
     <input id="iq" type="search" placeholder="חיפוש מוסד או עיר" aria-label="חיפוש מוסד">
     <select id="ireg" aria-label="אזור"><option value="">כל האזורים</option></select>
@@ -330,7 +333,8 @@ function renderInst(){
 function renderCon(){
   const q=$('#cq').value.trim(), l=$('#clevel').value;
   const rows=D['אנשי קשר'].filter(r=>(!l||r['רמה']===l)&&(r['טלפון']||r['מייל']||r['רמה']==='מוסד')&&(!q||[r['מוסד'],r['פקולטה / יחידה'],r['תפקיד'],r['שם איש קשר']].join(' ').includes(q)));
-  $('#ccount').textContent=`${rows.length} רשומות`;
+  const totC=D['אנשי קשר'].length;
+  $('#ccount').textContent=`${rows.length} רשומות מתוך ${totC}. מוצגות רק רשומות שיש בהן טלפון או מייל (וכל הרשומות ברמת מוסד), כי ברשומות האחרות אין דרך ליצור קשר.`;
   $('#ctable').innerHTML=`<thead><tr><th>מוסד</th><th>רמה</th><th>יחידה / תפקיד</th><th>שם</th><th>טלפון</th><th>מייל</th><th>מקור</th></tr></thead><tbody>`+
   rows.map(r=>`<tr><td>${esc(r['מוסד'])}</td><td>${esc(r['רמה'])}</td><td>${esc(r['תפקיד']||'')}${r['פקולטה / יחידה']&&r['פקולטה / יחידה']!=='—'?' – '+esc(r['פקולטה / יחידה']):''}</td><td>${r['שם איש קשר']?esc(r['שם איש קשר']):'<span class="muted">—</span>'}</td><td class="n">${esc(r['טלפון']||'')}</td><td>${mail(r['מייל'])}</td><td class="muted">${link(cleanSrc(r['מקור']))}</td></tr>`).join('')+'</tbody>';
 }
@@ -662,5 +666,8 @@ function route(){const h=location.hash.slice(1); const v=views.includes(h)?h:'de
   document.querySelectorAll('#tabs a').forEach(a=>a.toggleAttribute('aria-current',a.getAttribute('href')==='#'+v)&&a.setAttribute('aria-current','page'));}
 window.addEventListener('hashchange',route);
 renderDeg(true);renderInst();renderCon();renderLiv();route();
+
+(function(){const w=document.getElementById('tabs');if(!w)return;const upd=()=>{const max=w.scrollWidth-w.clientWidth,x=Math.abs(w.scrollLeft);w.classList.toggle('more-l',max-x>2);w.classList.toggle('more-r',x>2)};w.addEventListener('scroll',upd,{passive:true});addEventListener('resize',upd);upd();
+const cur=()=>{const a=w.querySelector('a[aria-current="page"]');if(a)a.scrollIntoView({block:'nearest',inline:'nearest'})};addEventListener('hashchange',()=>setTimeout(cur,0));setTimeout(cur,0)})();
 </script>
 </body></html>

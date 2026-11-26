@@ -23,6 +23,16 @@
     </nav></div>`;
   const old = document.querySelector('header.top');
   if (old) old.before(h); else document.body.prepend(h);
+  if (!document.querySelector('a.skip')) {
+    const m = document.querySelector('main');
+    if (m) {
+      if (!m.id) m.id = 'main';
+      if (!m.hasAttribute('tabindex')) m.setAttribute('tabindex', '-1');
+      const sk = document.createElement('a');
+      sk.className = 'skip'; sk.href = '#' + m.id; sk.textContent = 'דילוג לתוכן';
+      document.body.prepend(sk);
+    }
+  }
   const burger = h.querySelector('.kv-burger');
   burger.addEventListener('click', () => { const o = h.classList.toggle('open'); burger.setAttribute('aria-expanded', o); });
   const dd = h.querySelector('.kv-dd'), ddb = dd.querySelector('button');

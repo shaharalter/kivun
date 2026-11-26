@@ -13,22 +13,21 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f4d3d'/%3E%3Cpath d='M32 10 L44 34 L32 28 L20 34 Z' fill='%23f4c542'/%3E%3Ccircle cx='32' cy='44' r='8' fill='none' stroke='%23fff' stroke-width='4'/%3E%3C/svg%3E">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Suez+One&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--paper:#F3F6F1;--surface:#FFFFFF;--ink:#1E2B25;--muted:#5C6B63;--pine:#1F4D3F;--pine-soft:#DCE8E1;--sun:#F0B429;--sun-soft:#FCEFC7;--line:#D3DCD5;--good:#2E7D4F;--mid:#8A5600;--hard:#B3412F;--on-pine:#F3F6F1;--c1:#1F4D3F;--c2:#F0B429;--c3:#6F9C86;--c4:#B9CFC2;--c5:#8A5600}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#121A16;--surface:#1A241F;--ink:#E7EEE9;--muted:#A3B2AA;--pine:#8FC7AE;--pine-soft:#22352C;--sun:#F0B429;--sun-soft:#3A3115;--line:#2E3D35;--good:#7FCB9C;--mid:#E5B45C;--hard:#F08A78;--on-pine:#10241C;--c1:#8FC7AE;--c2:#F0B429;--c3:#5E8F78;--c4:#3E5A4C;--c5:#E5B45C}}
 :root[data-theme="dark"]{--paper:#121A16;--surface:#1A241F;--ink:#E7EEE9;--muted:#A3B2AA;--pine:#8FC7AE;--pine-soft:#22352C;--sun:#F0B429;--sun-soft:#3A3115;--line:#2E3D35;--good:#7FCB9C;--mid:#E5B45C;--hard:#F08A78;--on-pine:#10241C;--c1:#8FC7AE;--c2:#F0B429;--c3:#5E8F78;--c4:#3E5A4C;--c5:#E5B45C}
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans Hebrew","Arial Hebrew",Arial,sans-serif;font-size:17px;line-height:1.6}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--kv-body);font-size:17px;line-height:1.6}
 a{color:var(--pine)}
 :focus-visible{outline:3px solid var(--pine);outline-offset:2px;border-radius:6px}
 .top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 .top .in{max-width:1080px;margin:0 auto;padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{font-family:"Suez One",serif;font-size:1.35rem;color:var(--pine);text-decoration:none}
+.brand{font-family:var(--kv-display);font-size:1.35rem;color:var(--pine);text-decoration:none}
 .top nav a{color:var(--muted);text-decoration:none;font-size:.95rem;padding:6px 10px;border-radius:999px}
 .top nav a:hover{background:var(--pine-soft);color:var(--pine)}
 .wrap{max-width:1080px;margin:0 auto;padding:0 16px 60px}
-h1{font-family:"Suez One",serif;font-weight:400;font-size:clamp(2rem,5vw,3rem);line-height:1.1;margin:32px 0 6px;color:var(--pine)}
+h1{font-family:var(--kv-display);font-weight:400;font-size:clamp(2rem,5vw,3rem);line-height:1.1;margin:32px 0 6px;color:var(--pine)}
 .lead{color:var(--muted);margin:0 0 22px;max-width:62ch}
 .picker{display:grid;grid-template-columns:minmax(240px,310px) 1fr;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px}
 @media (max-width:700px){.picker{grid-template-columns:1fr}}
@@ -39,7 +38,7 @@ select,input[type=search]{width:100%;font:inherit;font-size:1rem;padding:10px 12
 .chip[aria-pressed="true"]{background:var(--pine);border-color:var(--pine);color:var(--on-pine)}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:22px;margin-top:18px}
 .head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:flex-start}
-.head h2{font-family:"Suez One",serif;font-weight:400;font-size:clamp(1.6rem,4vw,2.2rem);margin:0;color:var(--ink);line-height:1.15}
+.head h2{font-family:var(--kv-display);font-weight:400;font-size:clamp(1.6rem,4vw,2.2rem);margin:0;color:var(--ink);line-height:1.15}
 .inst{color:var(--muted);margin-top:4px}
 .btn{display:inline-flex;align-items:center;gap:8px;background:var(--pine);color:var(--on-pine);text-decoration:none;border-radius:999px;padding:10px 18px;font-weight:600;font-size:.95rem;white-space:nowrap}
 .btn.line{background:transparent;color:var(--pine);border:1.5px solid var(--pine)}
@@ -182,7 +181,7 @@ function render(){const I=DATA.institutions[cur.inst];chips();if(cur.deg&&!I.pro
   for(const [k,arr] of Object.entries(g)){h+=`<div class="grp"><h4>${esc(k)}</h4><div class="grid">${arr.map(e=>`<div class="ec" data-n="${esc(e[1])}"><span>${esc(e[1])}<br><span class="num">${esc(e[0])}</span></span><b>${esc(cr(e[2]))}</b></div>`).join('')}</div></div>`}
   h+=`</div><p class="inst" style="font-size:.85rem;margin-top:10px">מוצגת רשימה חלקית. הרשימה המלאה והכללים לבחירה (כמה נקודות מכל קבוצה) מופיעים בקטלוג.</p></div></details>`}
  h+='</article>';$('out').innerHTML=h;
- const eq=$('eq');if(eq)eq.oninput=()=>{const v=eq.value.trim();document.querySelectorAll('.ec').forEach(x=>x.style.display=!v||x.dataset.n.includes(v)?'':'none')};
+ const eq=$('eq');if(eq)eq.oninput=()=>{const v=eq.value.trim();let k=0;document.querySelectorAll('.ec').forEach(x=>{const on=!v||x.dataset.n.includes(v);x.style.display=on?'':'none';if(on)k++});let nf=$('enone');if(!nf){nf=document.createElement('p');nf.id='enone';nf.className='inst';nf.setAttribute('role','status');$('egr').after(nf)}nf.textContent=k?'':`לא נמצא קורס בחירה שמכיל „${v}”.`};
  setUrl();
 }
 

@@ -67,3 +67,7 @@ header.top{display:none !important}
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important;scroll-behavior:auto !important}}
 @media print{.kv-head,.res-actions,.cmpbar,footer{display:none!important}}
 .hidden{display:none !important}
+
+.skip{position:absolute;inset-inline-start:12px;top:-60px;z-index:60;background:var(--pine,#1f4d3a);color:#fff;padding:10px 16px;border-radius:10px;font-weight:600;text-decoration:none}
+.skip:focus{top:calc(env(safe-area-inset-top,0px) + 8px)}
+main:focus{outline:none}

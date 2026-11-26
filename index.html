@@ -14,7 +14,6 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Suez+One&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --paper:#F3F6F1; --surface:#FFFFFF; --ink:#1E2B25; --muted:#5C6B63;
@@ -37,9 +36,9 @@
 }
 *,*::before,*::after{box-sizing:inherit}
 html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px)}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans Hebrew","Arial Hebrew",Arial,sans-serif;font-size:18px;line-height:1.65;overflow-x:clip}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--kv-body);font-size:18px;line-height:1.65;overflow-x:clip}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
-h1,h2,h3,h4{font-family:"Suez One","IBM Plex Sans Hebrew",Georgia,serif;font-weight:400;line-height:1.25;margin:0}
+h1,h2,h3,h4{font-family:var(--kv-display);font-weight:400;line-height:1.25;margin:0}
 button,input,select{font:inherit;color:inherit}
 .skip{position:absolute;inset-inline-start:12px;top:-60px;z-index:50;background:var(--pine);color:var(--on-pine);padding:10px 16px;border-radius:10px;font-weight:600}
 .skip:focus{top:calc(env(safe-area-inset-top,0px) + 8px)}
@@ -50,7 +49,7 @@ button,input,select{font:inherit;color:inherit}
 
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--paper);border-bottom:1px solid var(--line)}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:56px;max-width:1080px}
-.brand{font-family:"Suez One",serif;font-size:1.4rem;color:var(--pine);text-decoration:none}
+.brand{font-family:var(--kv-display);font-size:1.4rem;color:var(--pine);text-decoration:none}
 .tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
 .tabs a{text-decoration:none;color:var(--muted);padding:6px 12px;border-radius:999px;font-size:.95rem;white-space:nowrap;min-height:40px;display:inline-flex;align-items:center}
 .tabs a[aria-current="page"]{background:var(--pine-soft);color:var(--pine);font-weight:600}
@@ -74,18 +73,18 @@ button,input,select{font:inherit;color:inherit}
 .compass{width:min(100%,300px);height:auto;justify-self:center}
 .hero-band .compass .ring{fill:transparent;stroke:var(--on-pine);stroke-width:3;opacity:.9}
 .hero-band .compass .tick{stroke:var(--on-pine);opacity:.45}
-.hero-band .compass .letter{fill:var(--on-pine);opacity:.8;font:600 14px "IBM Plex Sans Hebrew",sans-serif;text-anchor:middle}
+.hero-band .compass .letter{fill:var(--on-pine);opacity:.8;font:600 14px var(--kv-body);text-anchor:middle}
 #needle{transform-origin:100px 100px;transition:transform 1.4s cubic-bezier(.3,1.6,.5,1)}
 
 .statstrip{list-style:none;padding:0;margin:-34px 0 0;display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border:1.5px solid var(--line);border-radius:22px;position:relative}
 .statstrip li{padding:20px 22px;border-inline-start:1.5px solid var(--line)}
 .statstrip li:first-child{border-inline-start:0}
-.statstrip b{display:block;font-family:"Suez One",serif;font-weight:400;font-size:clamp(1.6rem,3.4vw,2.3rem);color:var(--pine);line-height:1.15}
+.statstrip b{display:block;font-family:var(--kv-display);font-weight:400;font-size:clamp(1.6rem,3.4vw,2.3rem);color:var(--pine);line-height:1.15}
 .statstrip span{color:var(--muted);font-size:.95rem}
 .home-h{font-size:clamp(1.6rem,3.5vw,2.2rem);color:var(--pine);margin:64px 0 18px}
 .how{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .how li{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}
-.how-n{font-family:"Suez One",serif;font-size:2.6rem;line-height:1;color:var(--sun);-webkit-text-stroke:1px var(--pine)}
+.how-n{font-family:var(--kv-display);font-size:2.6rem;line-height:1;color:var(--sun);-webkit-text-stroke:1px var(--pine)}
 .how h3{font-size:1.25rem;margin:4px 0 6px}
 .how p{margin:0;color:var(--muted)}
 .final-cta{text-align:center;padding:48px 0 70px}
@@ -169,7 +168,7 @@ input.wide,select.wide{width:100%}
 .traits{margin:6px 0 10px;color:var(--muted)}
 .prof{border-top:2px solid var(--ink);padding:22px 0 6px;margin-top:20px}
 .prof-head{display:flex;gap:12px;align-items:baseline}
-.rank{font-family:"Suez One",serif;font-size:2rem;color:var(--sun);line-height:1}
+.rank{font-family:var(--kv-display);font-size:2rem;color:var(--sun);line-height:1}
 .prof h3{font-size:1.4rem}
 .why{color:var(--muted);margin:6px 0 12px}
 .inst{background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:12px}
@@ -193,7 +192,7 @@ input.wide,select.wide{width:100%}
 @media (max-width:820px){.pkg-grid{grid-template-columns:1fr}}
 .pkg-card{background:var(--paper);border:1.5px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;justify-content:space-between}
 .pkg-card.featured{border-color:var(--pine);background:var(--pine-soft)}
-.pkg-price{font-family:"Suez One",serif;font-size:1.65rem;color:var(--pine);margin:8px 0}
+.pkg-price{font-family:var(--kv-display);font-size:1.65rem;color:var(--pine);margin:8px 0}
 .hood-card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px}
 .hood-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .htag{font-size:.78rem;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
@@ -257,7 +256,7 @@ body.cmp-on{padding-bottom:120px}
 .cmp-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
 .cmp-table{border-collapse:collapse;width:100%;font-size:.95rem}
 .cmp-table th,.cmp-table td{border-bottom:1px solid var(--line);padding:10px 12px;text-align:start;vertical-align:top}
-.cmp-table thead th{background:var(--pine-soft);color:var(--pine);font-family:"Suez One",serif;font-weight:400;font-size:1.05rem;position:sticky;top:0}
+.cmp-table thead th{background:var(--pine-soft);color:var(--pine);font-family:var(--kv-display);font-weight:400;font-size:1.05rem;position:sticky;top:0}
 .cmp-table tbody th{background:var(--paper);color:var(--muted);font-weight:600;white-space:nowrap;width:1%}
 .cmp-table .best{background:var(--sun-soft);font-weight:700}
 .cmp-table small{color:var(--muted)}
@@ -352,10 +351,10 @@ body.cmp-on{padding-bottom:120px}
   </div>
   <div class="wide-wrap">
     <ul class="kv-stats" aria-label="מה יש במאגר">
-      <li><b id="stInst">62</b> מוסדות אקדמיים</li>
+      <li><b id="stInst">58</b> מוסדות אקדמיים</li>
       <li><b id="stDeg">502</b> תארים עם תנאי קבלה</li>
       <li><b id="stProg">72</b> תחומי לימוד</li>
-      <li><b>1,177</b> יישובים עם זמני נסיעה לקמפוסים</li>
+      <li><b id="stTown">1,177</b> יישובים עם זמני נסיעה לקמפוסים</li>
     </ul>
     <h2 class="kv-h2"><span class="blaze" aria-hidden="true"><i></i><i></i><i></i></span>כלים שאפשר לפתוח בלי השאלון</h2>
     <div class="kv-tools">
@@ -373,7 +372,7 @@ body.cmp-on{padding-bottom:120px}
     <h1 id="qiTitle">לפני שמתחילים</h1>
     <p class="qi-lead">השאלון ארוך, וזה בכוונה: ככל שתענו על יותר שאלות, ההתאמה תהיה מדויקת יותר. מילוי מלא יכול לקחת רבע שעה ויותר.</p>
     <ul class="qi-list">
-      <li><b>לא חובה לענות על הכול.</b> אפשר לדלג על כל שאלה ועל חלקים שלמים.</li>
+      <li><b>לא חובה לענות על הכול.</b> אפשר לדלג על רוב השאלות ועל חלקים שלמים. שני דברים נדרשים כדי לחשב סיכויי קבלה: ממוצע בגרות (שלב 4) וציון פסיכומטרי או סימון „עוד לא נבחנתי” (שלב 5).</li>
       <li><b>אפשר לעצור בכל שלב.</b> הכפתור "סיים והצג תוצאות עכשיו" זמין לאורך כל הדרך, וההתאמה מתעדכנת לפי מה שכבר עניתם.</li>
       <li><b>אפשר להמשיך אחר כך.</b> התשובות נשמרות בדפדפן הזה, ובפעם הבאה תוכלו להמשיך מאותה נקודה.</li>
       <li><b>מה שואלים:</b> מה מעניין אתכם, ציוני בגרות ופסיכומטרי, אנגלית, מה חשוב לכם במוסד (מרחק, צביון, תקציב), שירות צבאי ומלגות.</li>
@@ -397,7 +396,7 @@ body.cmp-on{padding-bottom:120px}
   <!-- שלב 0: מי אני -->
   <div class="step" data-step="0">
     <h2>1. מי אני</h2>
-    <p class="hint">אפשר לדלג על שאלות או לעבור הלאה בכל שלב, אך ככל שתענו על יותר שאלות – ההמלצה תדייק יותר.</p>
+    <p class="hint">אפשר לדלג על שאלות (חוץ מממוצע הבגרות והפסיכומטרי), אך ככל שתענו על יותר שאלות – ההמלצה תדייק יותר.</p>
     <div id="quizA"></div>
     <div class="summary" id="quizCount0">ענית על 0 מתוך 5 שאלות בשלב זה (אפשר להמשיך בחופשיות).</div>
   </div>
@@ -701,6 +700,9 @@ body.cmp-on{padding-bottom:120px}
   const $ = id => document.getElementById(id);
   const qs = (sel, el=document) => el.querySelector(sel);
   const qsa = (sel, el=document) => [...el.querySelectorAll(sel)];
+  const esc = v => v == null ? '' : String(v).replace(/[&<>"'`]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#96;' }[c]));
+  // ערך שמגיע מהמשתמש או מקישור שיתוף – מנקים תגיות ומגבילים אורך
+  const cleanStr = (v, max = 120) => String(v == null ? '' : v).replace(/[<>`]/g, '').slice(0, max);
 
   // --- תנועת מצפן ---
   const ticks = $('ticks');
@@ -767,7 +769,7 @@ body.cmp-on{padding-bottom:120px}
 
     if (exact) {
       box.className = 'summary';
-      box.innerHTML = `✓ זוהה יישוב: <strong>${exact}</strong>`;
+      box.innerHTML = `✓ זוהה יישוב: <strong>${esc(exact)}</strong>`;
       if (window.KivunTransit) KivunTransit.findCity(exact).then(c => {
         if ($('homeCity').value.trim() !== raw) return;
         if (c && c.proxy) box.innerHTML += ` – שייך למועצה האזורית <strong>${c.council}</strong>. אין לנו נתוני תחבורה ציבורית ליישוב עצמו, ולכן זמני הנסיעה יחושבו מ„${c.name}” – היישוב הקרוב באותה מועצה.`;
@@ -785,14 +787,14 @@ body.cmp-on{padding-bottom:120px}
 
     if (best && bestDist <= 2 && raw.length >= 3) {
       box.className = 'summary warn';
-      box.innerHTML = `🤔 לא מצאנו „${raw}” – האם התכוונת ל: <button type="button" class="link" id="fixCityBtn"><strong>${best}</strong></button>? (לחצו לתיקון או השאירו אם זה יישוב קטן/מושב)`;
+      box.innerHTML = `🤔 לא מצאנו „${esc(raw)}” – האם התכוונת ל: <button type="button" class="link" id="fixCityBtn"><strong>${esc(best)}</strong></button>? (לחצו לתיקון או השאירו אם זה יישוב קטן/מושב)`;
       $('fixCityBtn').addEventListener('click', () => {
         inp.value = best;
         validateHomeCity();
       });
     } else if (/^[א-ת\s\-״"']{2,30}$/.test(raw)) {
-      box.className = 'summary';
-      box.innerHTML = `📍 נרשם יישוב / מועצה אזורית: <strong>${raw}</strong> (נשתמש בו לחישוב מרחק ומסלול הגעה).`;
+      box.className = 'summary warn';
+      box.innerHTML = `📍 „${esc(raw)}” לא נמצא ברשימת היישובים שלנו, ולכן לא נוכל לחשב לו זמן נסיעה. כדאי לבחור מהרשימה את היישוב או את העיר הקרובה אליכם.`;
     } else {
       box.className = 'summary warn';
       box.innerHTML = `⚠️ השם שהוזן לא נראה כמו שם יישוב תקין בעברית. אנא בדקו שאין שגיאת הקלדה.`;
@@ -901,7 +903,8 @@ body.cmp-on{padding-bottom:120px}
         DB.living = raw['עלויות מחיה'] || [];
         DB.scholarships = raw['מלגות'] || [];
         DB.dorms = raw['מעונות'] || [];
-        if ($('stInst')) $('stInst').textContent = DB.institutions.length || 62;
+        if ($('stInst')) $('stInst').textContent = DB.institutions.filter(i => i['סטטוס'] !== 'אוחד').length || 58;
+        if ($('stTown')) fetch('transit/cities.json').then(r => r.json()).then(c => { if (Array.isArray(c) && c.length) $('stTown').textContent = c.length.toLocaleString('he-IL'); }).catch(() => {});
         if ($('stDeg')) $('stDeg').textContent = DB.degrees.length || 502;
         const progs = [...new Set(DB.degrees.map(d => d['תחום לימוד']))].sort();
         if ($('stProg')) $('stProg').textContent = progs.length || 72;
@@ -914,8 +917,7 @@ body.cmp-on{padding-bottom:120px}
     if (window.KivunTransit && KivunTransit.allPlaceNames) KivunTransit.allPlaceNames().then(n => { allCities = [...new Set([...allCities, ...n])].sort((a, b) => a.localeCompare(b, 'he')); ALL_PLACES = allCities; $('cityList').innerHTML = allCities.map(c => `<option value="${c}">`).join(''); }).catch(() => {});
   }
   const DB_READY = loadDB();
-  DB_READY.then(() => setTimeout(() => { try { const st0 = window.KivunState && KivunState.get(); if (st0 && st0.home && $('homeCity') && !$('homeCity').value) $('homeCity').value = st0.home; if ($('homeCity')) $('homeCity').addEventListener('change', () => { if (window.KivunState && $('homeCity').value.trim()) KivunState.set({ home: $('homeCity').value.trim() }); }); if (!restoreFromHash() && location.hash === '#quiz') showIntro(); } catch (e) { console.warn(e); } }, 0));
-  window.addEventListener('hashchange', () => { if (location.hash === '#quiz') showIntro(); });
+  DB_READY.then(() => setTimeout(() => { try { const st0 = window.KivunState && KivunState.get(); if (st0 && st0.home && $('homeCity') && !$('homeCity').value) $('homeCity').value = st0.home; if ($('homeCity')) $('homeCity').addEventListener('change', () => { if (window.KivunState && $('homeCity').value.trim()) KivunState.set({ home: $('homeCity').value.trim() }); }); if (!restoreFromHash() && /^#(quiz|step-\d|results|detail)$/.test(location.hash)) routeTo(location.hash); } catch (e) { console.warn(e); } }, 0));
 
   $('homeCity').addEventListener('input', validateHomeCity);
 
@@ -1145,7 +1147,7 @@ body.cmp-on{padding-bottom:120px}
   });
   function renderChosenProgs() {
     $('chosenProgs').innerHTML = [...STATE.chosenProgs].map(p =>
-      `<button type="button" class="chip" aria-pressed="true" data-p="${p}">${p} &times;</button>`
+      `<button type="button" class="chip" aria-pressed="true" data-p="${esc(p)}">${esc(p)} &times;</button>`
     ).join('');
     qsa('#chosenProgs .chip').forEach(b => b.addEventListener('click', () => {
       STATE.chosenProgs.delete(b.dataset.p);
@@ -1231,14 +1233,14 @@ body.cmp-on{padding-bottom:120px}
   function renderMajors() {
     $('majors').innerHTML = STATE.majors.map((m, i) => `
       <div class="subj" data-idx="${i}">
-        <input type="text" list="majorList" value="${m.name}" placeholder="בחר מרשימה (א׳–ב׳) או הקלד..." class="m-name">
+        <input type="text" list="majorList" value="${esc(m.name)}" placeholder="בחר מרשימה (א׳–ב׳) או הקלד..." class="m-name">
         <select class="m-units" aria-label="יחידות לימוד במגמה">
           <option value="5" ${m.units == 5 ? 'selected' : ''}>5 יח״ל</option>
           <option value="4" ${m.units == 4 ? 'selected' : ''}>4 יח״ל</option>
           <option value="3" ${m.units == 3 ? 'selected' : ''}>3 יח״ל</option>
           <option value="2" ${m.units == 2 ? 'selected' : ''}>2 יח״ל</option>
         </select>
-        <input type="number" min="0" max="100" step="1" inputmode="numeric" value="${m.grade}" placeholder="ציון" class="m-grade">
+        <input type="number" min="0" max="100" step="1" inputmode="numeric" value="${esc(m.grade)}" placeholder="ציון" class="m-grade">
         <button type="button" class="x" title="הסרה">&times;</button>
       </div>
     `).join('');
@@ -1368,7 +1370,7 @@ body.cmp-on{padding-bottom:120px}
     let v = Number(el.value);
     if (!isFinite(v)) { el.value = ''; fieldMsg(el, 'אפשר להזין רק מספרים'); return false; }
     if (intOnly && !Number.isInteger(v)) { v = Math.round(v); el.value = v; }
-    if (v > max) { el.value = max; fieldMsg(el, `${gradeName(el)} לא יכול להיות יותר מ-${max}`); return false; }
+    if (v > max) { if (!/^(avg|psy[GQV]|sec[EVQ])$/.test(el.id)) el.value = max; fieldMsg(el, `${gradeName(el)} לא יכול להיות יותר מ-${max}. תקנו את המספר כדי להמשיך.`); return false; }
     if (v < 0) { el.value = ''; fieldMsg(el, 'אפשר להזין רק מספר חיובי'); return false; }
     if (final && v < min) { fieldMsg(el, `${gradeName(el)} מתחיל ב-${min}. בדקו את המספר.`); return false; }
     fieldMsg(el, ''); return true;
@@ -1424,6 +1426,11 @@ body.cmp-on{padding-bottom:120px}
   function updateBagrutSummary() {
     const b = getComputedBagrut();
     const box = $('bagSummary');
+    if (STATE.bagMode === 'known' && b.finalAvg && (b.finalAvg < 40 || b.finalAvg > 127)) {
+      box.className = 'summary';
+      box.textContent = `הממוצע שהזנת (${b.finalAvg}) מחוץ לטווח האפשרי (40–127). תקנו אותו כדי להמשיך.`;
+      return;
+    }
     if (!b.finalAvg) {
       box.className = 'summary';
       box.textContent = STATE.bagMode === 'known'
@@ -1613,6 +1620,7 @@ body.cmp-on{padding-bottom:120px}
     $('backBtn').style.visibility = STATE.step === 0 ? 'hidden' : 'visible';
     $('nextBtn').textContent = STATE.step === TOTAL_STEPS - 1 ? 'הצג את התוכנית שלי' : 'המשך לשלב הבא';
     $('err').textContent = '';
+    if (!$('wizard').classList.contains('hidden')) navPush('#step-' + (STATE.step + 1));
     window.scrollTo({ top: Math.max(0, $('wizard').getBoundingClientRect().top + window.scrollY - 70), behavior: 'smooth' });
   }
 
@@ -1627,7 +1635,7 @@ body.cmp-on{padding-bottom:120px}
     $('qiReset').classList.toggle('hidden', !d);
     $('qiStart').textContent = d ? 'להתחיל שאלון חדש' : 'להתחיל את השאלון';
     $('qiDraftNote').textContent = d ? `נמצא שאלון שהתחלתם (נשמר ב-${new Date(d.t).toLocaleDateString('he-IL')} ${new Date(d.t).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}).` : '';
-    if (location.hash !== '#quiz') history.replaceState(null, '', '#quiz');
+    navPush('#quiz');
     window.scrollTo({ top: 0 });
   }
   $('startBtn').addEventListener('click', showIntro);
@@ -1644,8 +1652,45 @@ body.cmp-on{padding-bottom:120px}
     $('results').classList.add('hidden');
     $('detailView').classList.add('hidden');
     $('wizard').classList.remove('hidden');
+    wizTouched = true;
     showStep(typeof step === 'number' ? step : 0);
   }
+  // ===== ניווט עם כפתור "חזור" של הדפדפן (B04) ושחזור מסך אחרי רענון (B08) =====
+  let navSilent = false, wizTouched = false;
+  function navPush(h) {
+    if (navSilent) return;
+    const cur = location.hash;
+    if (cur === h || (!h && (cur === '' || cur === '#'))) return;
+    try { history.pushState(null, '', h || (location.pathname + location.search)); } catch (e) {}
+  }
+  function showHome() {
+    ['quizIntro', 'wizard', 'results', 'detailView'].forEach(id => $(id).classList.add('hidden'));
+    $('home').classList.remove('hidden');
+  }
+  function routeTo(hash) {
+    navSilent = true;
+    try {
+      const m = hash.match(/^#step-(\d)$/);
+      if (!hash || hash === '#') showHome();
+      else if (hash === '#quiz') showIntro();
+      else if (m) {
+        if (!wizTouched) { const d = readDraft(); if (d) applySnap(d.snap); wizTouched = true; }
+        startWizard(Math.max(0, Math.min(TOTAL_STEPS - 1, Number(m[1]) - 1)));
+      }
+      else if (hash === '#results' || hash === '#detail') {
+        if ($('results').innerHTML.trim() && wizTouched) {
+          ['home', 'quizIntro', 'wizard', 'detailView'].forEach(id => $(id).classList.add('hidden'));
+          $('results').classList.remove('hidden');
+          window.scrollTo({ top: 0 });
+        } else {
+          const d = readDraft();
+          if (d) { applySnap(d.snap); wizTouched = true; buildResults(); } else showIntro();
+        }
+      }
+      else if (/^#r=/.test(hash)) restoreFromHash();
+    } finally { navSilent = false; }
+  }
+  window.addEventListener('popstate', () => routeTo(location.hash));
 
   $('homeLink').addEventListener('click', e => {
     e.preventDefault();
@@ -1654,6 +1699,7 @@ body.cmp-on{padding-bottom:120px}
     $('results').classList.add('hidden');
     $('detailView').classList.add('hidden');
     $('home').classList.remove('hidden');
+    navPush('');
   });
 
   $('backBtn').addEventListener('click', () => showStep(STATE.step - 1));
@@ -1963,9 +2009,11 @@ body.cmp-on{padding-bottom:120px}
 
     if (sekhemThresh && userSekhem) {
       if (userSekhem >= sekhemThresh) {
+        // סף של שנה קודמת: מרווח קטן מעל הסף הוא עדיין גבולי
+        const tight = (userSekhem - sekhemThresh) < (sekhemThresh <= 150 ? 2 : 20);
         return {
-          status: needsMechina ? 'mid' : 'good',
-          label: needsMechina ? `עומד/ת בסכם (${userSekhem}) + מכינה` : `סיכוי גבוה (סכם ${userSekhem} מול סף ${sekhemThresh})`,
+          status: needsMechina || tight ? 'mid' : 'good',
+          label: needsMechina ? `עומד/ת בסכם (${userSekhem}) + מכינה` : tight ? `בסף – גבולי (סכם ${userSekhem} מול סף ${sekhemThresh} בשנה שעברה)` : `מעל הסף של השנה שעברה (סכם ${userSekhem} מול ${sekhemThresh})`,
           notes, needsMechina
         };
       }
@@ -1982,6 +2030,10 @@ body.cmp-on{padding-bottom:120px}
       return { status: 'hard', label: `חסרות ${(bagOnly - bag.finalAvg).toFixed(1)} נק׳ בממוצע`, notes, needsMechina };
     }
 
+    if (!psy && (sekhemThresh || psyOnly)) {
+      notes.push('אפשר לבדוק אם יש מסלול קבלה ללא פסיכומטרי (מכינה, בגרות בלבד או מסלול הוכחת יכולת)');
+      return { status: 'none', label: sekhemThresh ? `נדרש ציון פסיכומטרי (סף הסכם בשנה שעברה: ${sekhemThresh})` : `נדרש ציון פסיכומטרי (${psyOnly} ומעלה)`, notes, needsMechina };
+    }
     return { status: 'none', label: 'לא ידוע. יש לוודא ולבדוק', notes, needsMechina };
   }
 
@@ -2054,6 +2106,7 @@ body.cmp-on{padding-bottom:120px}
       ${DTABS.map(([k], i) => `<section class="dp-pane" role="tabpanel" id="dpp-${k}" aria-labelledby="dpt-${k}" ${i ? 'hidden' : ''}></section>`).join('')}`;
     $('results').classList.add('hidden');
     $('detailView').classList.remove('hidden');
+    navPush('#detail');
     const tabs = qsa('.dp-tabs button', $('detailView'));
     tabs.forEach(b => b.addEventListener('click', () => showDTab(b.dataset.k)));
     $('detailView').querySelector('.dp-tabs').addEventListener('keydown', e => {
@@ -2061,7 +2114,7 @@ body.cmp-on{padding-bottom:120px}
       const i = tabs.findIndex(t => t.getAttribute('aria-selected') === 'true');
       const n = tabs[(i + (e.key === 'ArrowLeft' ? 1 : -1) + tabs.length) % tabs.length]; n.focus(); showDTab(n.dataset.k);
     });
-    $('backToResultsBtn').addEventListener('click', () => { $('detailView').classList.add('hidden'); $('results').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    $('backToResultsBtn').addEventListener('click', () => { if (location.hash === '#detail') { history.back(); return; } $('detailView').classList.add('hidden'); $('results').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
     showDTab(tab || 'over');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -2202,10 +2255,25 @@ body.cmp-on{padding-bottom:120px}
     buildResults();
     return true;
   }
+  function sanitizeSnapVal(v, depth = 0) {
+    if (depth > 4) return undefined;
+    if (typeof v === 'string') return cleanStr(v, 200);
+    if (typeof v === 'number' || typeof v === 'boolean' || v === null) return v;
+    if (Array.isArray(v)) return v.slice(0, 200).map(x => sanitizeSnapVal(x, depth + 1));
+    if (typeof v === 'object') { const o = {}; Object.keys(v).slice(0, 200).forEach(k => { o[cleanStr(k, 60)] = sanitizeSnapVal(v[k], depth + 1); }); return o; }
+    return undefined;
+  }
   function applySnap(snap) {
+    snap = sanitizeSnapVal(snap) || {};
+    if (!snap.st || typeof snap.st !== 'object') return;
     Object.entries(snap.st).forEach(([k, v]) => {
       if (!(k in STATE)) return;
-      STATE[k] = (v && v.__set) ? new Set(v.__set) : v;
+      const cur = STATE[k];
+      const val = (v && v.__set) ? new Set(Array.isArray(v.__set) ? v.__set : []) : v;
+      if (cur instanceof Set && !(val instanceof Set)) return;
+      if (Array.isArray(cur) && !Array.isArray(val)) return;
+      if (cur !== null && typeof cur === 'object' && !(cur instanceof Set) && !Array.isArray(cur) && (typeof val !== 'object' || val === null || val instanceof Set || Array.isArray(val))) return;
+      STATE[k] = val;
     });
     qsa('#wizard input[id], #wizard select[id], #wizard textarea[id]').forEach(el => {
       const v = (snap.inputs || {})[el.id];
@@ -2274,8 +2342,8 @@ body.cmp-on{padding-bottom:120px}
     const codes = (FIELD_HOLLAND[f] || []).filter(c => ctx.topCodes.includes(c));
     if (codes.length) pos.push(`התחום מתאים לפרופיל שלך בשאלון האישיות (${codes.map(c => HOLLAND_NAMES[c].replace(/\s*\(.\)/, '')).join(', ')})`);
     // קבלה
-    const m = (adm.label || '').match(/סכם (\d+(?:\.\d+)?) מול סף (\d+(?:\.\d+)?)/);
-    if (m) { const diff = Math.round((+m[1] - +m[2]) * 10) / 10; diff >= 0 ? pos.push(`הציון המשוקלל שלך (${m[1]}) גבוה מהסף (${m[2]}) ב-${diff} נקודות`) : neg.push(`הציון המשוקלל שלך (${m[1]}) נמוך מהסף (${m[2]}) ב-${Math.abs(diff)} נקודות`); }
+    const m = (adm.label || '').match(/סכם (\d+(?:\.\d+)?) מול (?:סף )?(\d+(?:\.\d+)?)/);
+    if (m) { const diff = Math.round((+m[1] - +m[2]) * 10) / 10; if (diff >= 0 && adm.status === 'good') pos.push(`הציון המשוקלל שלך (${m[1]}) גבוה ב-${diff} נקודות מהסף של השנה שעברה (${m[2]}). הסף משתנה משנה לשנה`); else if (diff >= 0) neg.push(`הציון המשוקלל שלך (${m[1]}) גבוה רק ב-${diff} נקודות מהסף של השנה שעברה (${m[2]}) – גבולי, הסף משתנה משנה לשנה`); else neg.push(`הציון המשוקלל שלך (${m[1]}) נמוך מהסף (${m[2]}) ב-${Math.abs(diff)} נקודות`); }
     else if (adm.status === 'good') pos.push(`בגלל הציונים: ${adm.label}`);
     else if (adm.status === 'hard') neg.push(`בגלל הציונים: ${adm.label}`);
     else if (adm.status === 'mid') neg.push(`הקבלה גבולית: ${adm.label}`);
@@ -2284,18 +2352,18 @@ body.cmp-on{padding-bottom:120px}
     const tb = transitBest(inst);
     if (tb) {
       const how = tb.walkOnly ? 'ברגל' : (tb.transfers === 0 ? 'בקו ישיר' : tb.transfers === 1 ? 'עם החלפה אחת' : `עם ${tb.transfers} החלפות`);
-      const txt = `כ-${tb.dur} דק׳ בתחבורה ציבורית מ${home} ${how} (יציאה ${KivunTransit.hm(tb.leave)}, הגעה ${KivunTransit.hm(tb.arr)})`;
+      const txt = `כ-${tb.dur} דק׳ בתחבורה ציבורית מ${esc(home)} ${how} (יציאה ${KivunTransit.hm(tb.leave)}, הגעה ${KivunTransit.hm(tb.arr)})`;
       if (tb.dur <= 50) pos.push(`${txt} – אפשר לנסוע מהבית כל יום`);
       else if (tb.dur <= 90) (STATE.housing === 'parents' ? neg : pos).push(`${txt} – נסיעה ארוכה${STATE.housing === 'parents' ? ', ואמרת שאת/ה מעדיפ/ה לנסוע מהבית' : ' או מגורים ליד הקמפוס'}`);
       else (STATE.housing === 'parents' ? neg : pos).push(`${txt} – ${STATE.housing === 'parents' ? 'רחוק לנסיעה יומית, כנראה יצריך מעבר דירה' : 'מתאים למי שמוכנ/ה לעבור לגור ליד הלימודים'}`);
     } else if (TRANSIT.data && home && inst) {
-      neg.push(`לא נמצאה נסיעה בתחבורה ציבורית מ${home} שמגיעה עד 11:00 – זמן הנסיעה לא ידוע. יש לוודא ולבדוק`);
+      neg.push(`לא נמצאה נסיעה בתחבורה ציבורית מ${esc(home)} שמגיעה עד 11:00 – זמן הנסיעה לא ידוע. יש לוודא ולבדוק`);
     } else if (km != null) {
       if (km <= 5) pos.push(`המוסד ממש קרוב לבית – ב${inst['עיר'] || 'עיר שלך'}`);
-      else if (km <= 35) pos.push(`כ-${km} ק״מ מ${home} בקו אווירי – אפשר לנסוע מהבית כל יום`);
-      else if (km <= 70) (STATE.housing === 'parents' ? neg : pos).push(`כ-${km} ק״מ מ${home} בקו אווירי – נסיעה ארוכה${STATE.housing === 'parents' ? ', ואמרת שאת/ה מעדיפ/ה לנסוע מהבית' : ' או מגורים ליד הקמפוס'}`);
-      else (STATE.housing === 'parents' ? neg : pos).push(`כ-${km} ק״מ מ${home} בקו אווירי – ${STATE.housing === 'parents' ? 'רחוק לנסיעה יומית, כנראה יצריך מעבר דירה' : 'מתאים למי שמוכנ/ה לעבור לגור ליד הלימודים'}`);
-    } else if (home && STATE.locWeight > 0) neg.push(`המרחק מ${home}: לא ידוע. יש לוודא ולבדוק`);
+      else if (km <= 35) pos.push(`כ-${km} ק״מ מ${esc(home)} בקו אווירי – אפשר לנסוע מהבית כל יום`);
+      else if (km <= 70) (STATE.housing === 'parents' ? neg : pos).push(`כ-${km} ק״מ מ${esc(home)} בקו אווירי – נסיעה ארוכה${STATE.housing === 'parents' ? ', ואמרת שאת/ה מעדיפ/ה לנסוע מהבית' : ' או מגורים ליד הקמפוס'}`);
+      else (STATE.housing === 'parents' ? neg : pos).push(`כ-${km} ק״מ מ${esc(home)} בקו אווירי – ${STATE.housing === 'parents' ? 'רחוק לנסיעה יומית, כנראה יצריך מעבר דירה' : 'מתאים למי שמוכנ/ה לעבור לגור ליד הלימודים'}`);
+    } else if (home && STATE.locWeight > 0) neg.push(`המרחק מ${esc(home)}: לא ידוע. יש לוודא ולבדוק`);
     // צביון
     if (STATE.relWeight > 0) {
       const ok = (STATE.relLevel === 'religious' && /religious/.test(vibe.rel)) || (STATE.relLevel === 'haredi' && /haredi|religious_strict/.test(vibe.rel)) || (STATE.relLevel === 'secular' && vibe.rel === 'secular') || STATE.relLevel === 'traditional';
@@ -2321,7 +2389,8 @@ body.cmp-on{padding-bottom:120px}
   function buildResults() {
     ensureTransit();
     const sc = calcHollandScores();
-    const topCodes = Object.entries(sc).sort((a, b) => b[1] - a[1]).slice(0, 3).map(x => x[0]);
+    const noProfile = !Object.values(sc).some(v => v > 1); // לא נענתה אף שאלת התאמה
+    const topCodes = noProfile ? [] : Object.entries(sc).filter(x => x[1] > 1).sort((a, b) => b[1] - a[1]).slice(0, 3).map(x => x[0]);
     const axProf = axisProfile();
     const bag = getComputedBagrut();
     const psy = $('noPsy').checked ? 0 : (Number($('psyG').value) || Number($('psyQ').value) || Number($('psyV').value) || 0);
@@ -2375,7 +2444,7 @@ body.cmp-on{padding-bottom:120px}
         </div>
       </div>
       <p class="share-msg hidden" id="shareMsg" role="status"></p>
-      <p class="traits">פרופיל הולנד הבולט שלך: <strong>${topCodes.map(c => HOLLAND_NAMES[c]).join(' • ')}</strong></p>
+      ${noProfile ? `<div class="summary warn" role="status"><strong>עוד לא ענית על שאלות ההתאמה (שלבים 1–3).</strong> לכן התחומים כאן לא מדורגים לפי מה שמתאים לך, ואין פרופיל אישי. כדי לקבל המלצה אמיתית ענו לפחות על כמה שאלות: <button type="button" class="link" id="noProfileEdit">חזרה לשאלון</button></div>` : `<p class="traits">פרופיל הולנד הבולט שלך: <strong>${topCodes.map(c => HOLLAND_NAMES[c]).join(' • ')}</strong></p>`}
       ${Object.keys(axProf.top).length ? `<p class="traits">${Object.entries(axProf.top).map(([ax, p]) => `${AXES[ax].n}: <strong>${AXES[ax].poles[p]}</strong>`).join(' · ')}</p>` : ''}
       <div class="stats">
         <div class="stat"><span>ממוצע בגרות משוקלל</span><b>${bag.finalAvg || 'טרם הוזן'}</b></div>
@@ -2488,10 +2557,12 @@ body.cmp-on{padding-bottom:120px}
       </div>
     `;
 
-    $('wizard').classList.add('hidden');
-    $('detailView').classList.add('hidden');
+    ['wizard', 'detailView', 'home', 'quizIntro'].forEach(id => $(id).classList.add('hidden'));
     $('results').innerHTML = html;
     $('results').classList.remove('hidden');
+    wizTouched = true;
+    if (!/^#r=/.test(location.hash)) navPush('#results');
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ snap: snapshotState(), step: STATE.step || 0, t: Date.now() })); } catch (e) {}
 
     qsa('.cmp-box', $('results')).forEach(box => {
       box.addEventListener('change', () => {
@@ -2521,6 +2592,11 @@ body.cmp-on{padding-bottom:120px}
       $('results').classList.add('hidden');
       $('wizard').classList.remove('hidden');
       showStep(STATE.step);
+    });
+    if ($('noProfileEdit')) $('noProfileEdit').addEventListener('click', () => {
+      $('results').classList.add('hidden');
+      $('wizard').classList.remove('hidden');
+      showStep(0);
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
