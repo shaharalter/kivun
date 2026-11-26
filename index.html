@@ -54,7 +54,7 @@ button,input,select{font:inherit;color:inherit}
 .tabs a{text-decoration:none;color:var(--muted);padding:6px 12px;border-radius:999px;font-size:.95rem;white-space:nowrap;min-height:40px;display:inline-flex;align-items:center}
 .tabs a[aria-current="page"]{background:var(--pine-soft);color:var(--pine);font-weight:600}
 
-#home{margin-inline:calc(50% - 50vw);width:100vw}
+#wizard,#quizIntro,#detailView{max-width:900px;margin-inline:auto}#results{max-width:1120px;margin-inline:auto}
 .hero-band{background:var(--pine);color:var(--on-pine);padding:clamp(40px,8vw,88px) 0 clamp(48px,8vw,96px);border-radius:0 0 36px 36px}
 .hero-in,.wide-wrap{max-width:1080px;margin:0 auto;padding:0 22px}
 .hero-in{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center}
@@ -315,7 +315,7 @@ body.cmp-on{padding-bottom:120px}
 .inst-sum{margin:6px 0;color:var(--ink)}
 .why-mini{list-style:none;padding:0;margin:6px 0;font-size:.95rem}.why-mini li.neg{color:var(--hard)}
 </style>
-<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/kivun.css">
 <script src="assets/nav.js" defer></script>
 </head>
@@ -335,36 +335,92 @@ body.cmp-on{padding-bottom:120px}
 
 <main class="wrap" id="main" tabindex="-1">
 <section id="home" aria-labelledby="homeTitle">
-  <div class="kv-hero">
-    <div class="kv-hero-in">
-      <div class="kv-hero-copy">
-        <h1 id="homeTitle">לאן הולכים מכאן?</h1>
-        <p class="kv-lead">כיוון עוזר להחליט מה ללמוד ואיפה: התאמה לפי מה שמעניין אתכם והציונים שלכם, תנאי קבלה מהמוסדות עצמם, שילובי חוגים, עלויות, נסיעה ומגורים. בלי הרשמה ובלי פרטים אישיים.</p>
+  <div class="v2-brandband">
+    <div>
+      <div class="eb">מערכת הכוונה ללימודים</div>
+      <div class="v2-wordmark" aria-hidden="true">כיוון</div>
+      <p class="tag">הצעד הבא שלך</p>
+      <p class="tag2">מכוונים את הדרך – מה ללמוד, איפה, וכמה זה יעלה</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:26px">
+      <div class="v2-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="v2-logo" aria-hidden="true"><span id="v2LogoSvg"></span><span>כיוון · שביל נכון</span></div>
+    </div>
+  </div>
+
+  <div class="kv-phead" style="margin-bottom:14px">
+    <div class="kv-ptitle"><h2 style="margin:0;font-size:1.25rem">התאמה אישית</h2><p class="kv-psub" style="font-size:.88rem">שאלון, תוצאות ותוכנית</p></div>
+    <div class="kv-pmark"><span class="kv-pnum" aria-hidden="true">01</span></div>
+  </div>
+
+  <div class="v2-hero">
+    <div class="v2-hero-copy">
+      <p class="eb">בוחרים מסלול שמתאים בדיוק לכם</p>
+      <h1 id="homeTitle">לאן הולכים מכאן?</h1>
+      <p>מתחילים במה שמעניין אתכם. אנחנו נחבר בין תחומי עניין, תנאי קבלה, תקציב והדרך לקמפוס.</p>
+    </div>
+    <div class="v2-hero-box">
+      <div class="alt" aria-label="דרכים נוספות להתחיל">
+        <a href="grad.html">יש לי תואר ראשון – תואר שני</a>
+        <a href="data.html">רק רוצה להסתכל במאגר</a>
       </div>
-      <nav class="signpost" aria-label="בחרו מאיפה להתחיל">
-        <span class="sp-pole" aria-hidden="true"></span>
-        <button type="button" class="sp-board sp-1" id="startBtn"><b>סיימתי תיכון או צבא</b><span>מה ללמוד ואיפה – שאלון התאמה ותוכנית אישית</span></button>
-        <a class="sp-board sp-2" href="grad.html"><b>יש לי תואר ראשון</b><span>תואר שני: תוכניות, תנאי קבלה ומסלולים</span></a>
-        <a class="sp-board sp-3" href="data.html"><b>רק רוצה להסתכל</b><span>כל התארים, המוסדות ותנאי הקבלה</span></a>
-      </nav>
+      <button type="button" class="kv-btn-o" id="startBtn">← מתחילים שאלון</button>
     </div>
   </div>
-  <div class="wide-wrap">
-    <ul class="kv-stats" aria-label="מה יש במאגר">
-      <li><b id="stInst">58</b> מוסדות אקדמיים</li>
-      <li><b id="stDeg">502</b> תארים עם תנאי קבלה</li>
-      <li><b id="stProg">72</b> תחומי לימוד</li>
-      <li><b id="stTown">1,177</b> יישובים עם זמני נסיעה לקמפוסים</li>
-    </ul>
-    <h2 class="kv-h2"><span class="blaze" aria-hidden="true"><i></i><i></i><i></i></span>כלים שאפשר לפתוח בלי השאלון</h2>
-    <div class="kv-tools">
-      <a href="curricula.html"><b>תוכניות לימודים</b><span>אילו קורסים לומדים בכל שנה, והשוואה בין מוסדות</span></a>
-      <a href="combos.html"><b>שילובי תארים</b><span>אילו חוגים אפשר ללמוד יחד, תארים כפולים ותנאי הקבלה</span></a>
-      <a href="finance.html"><b>סימולטור פיננסי</b><span>כמה יעלה התואר, ומה מכסים מלגות, פיקדון ומענקים</span></a>
-      <a href="transit.html"><b>זמני נסיעה</b><span>כמה זמן לוקח להגיע לכל קמפוס, באיזה קו, ואיפה חונים</span></a>
+
+  <div class="v2-match">
+    <div>
+      <div class="v2-sec-h"><div><h2>מומלצים עבורך</h2><p>לפי תחומי עניין ונתוני קבלה</p></div><span class="kv-pill">דוגמה לתוצאה</span></div>
+      <div class="v2-recs">
+        <article class="v2-rec">
+          <span class="kv-pill y">סיכוי קבלה בינוני</span><div class="v2-rec-body"><div><h3>מדעי הנתונים</h3><p class="v2-inst">אוניברסיטת בן־גוריון</p><p class="lbl">התאמה לתחומי עניין</p></div><div class="v2-ring" style="--p:61;--c:var(--mustard)"><b>61%</b></div></div>
+          <div class="kv-track"><i style="width:61%;background:var(--mustard)"></i></div>
+          <div class="v2-rec-foot"><a href="curricula.html">תנאים, תוכנית לימודים ופרטים</a></div>
+        </article>
+        <article class="v2-rec">
+          <span class="kv-pill o">דרושים ספי השלמה</span><div class="v2-rec-body"><div><h3>ביולוגיה</h3><p class="v2-inst">אוניברסיטת תל אביב</p><p class="lbl">התאמה לתחומי עניין</p></div><div class="v2-ring" style="--p:72;--c:var(--orange)"><b>72%</b></div></div>
+          <div class="kv-track"><i style="width:72%;background:var(--orange)"></i></div>
+          <div class="v2-rec-foot"><a href="curricula.html">תנאים ופרטים</a></div>
+        </article>
+        <article class="v2-rec">
+          <span class="kv-pill g">סיכוי קבלה גבוה</span><div class="v2-rec-body"><div><h3>מדעי המחשב</h3><p class="v2-inst">אוניברסיטת חיפה</p><p class="lbl">התאמה לתחומי עניין</p></div><div class="v2-ring" style="--p:88;--c:var(--green)"><b>88%</b></div></div>
+          <div class="kv-track"><i style="width:88%;background:var(--green)"></i></div>
+          <div class="v2-rec-foot"><a href="curricula.html">תנאים ופרטים</a></div>
+        </article>
+      </div>
+      <p class="v2-note">ספי הקבלה לפי פרסומי המוסדות. אחרי השאלון יופיעו כאן ההמלצות האישיות שלכם.</p>
     </div>
-    <div class="final-cta"><button class="btn big sun" type="button" id="startBtn2">לשאלון ההתאמה</button></div>
+    <aside class="v2-prof" aria-label="דוגמה לפרופיל תחומי עניין">
+      <h2>פרופיל תחומי עניין · הולנד</h2>
+      <p class="sub">האותיות המובילות שלך</p>
+      <ul class="v2-bars">
+        <li><span>חוקרני</span><span class="kv-track"><i style="width:88%"></i></span><em>88%</em></li>
+        <li><span>חברתי</span><span class="kv-track"><i style="width:71%"></i></span><em>71%</em></li>
+        <li><span>אמנותי</span><span class="kv-track"><i style="width:55%"></i></span><em>55%</em></li>
+        <li><span>יזמי</span><span class="kv-track"><i style="width:43%"></i></span><em>43%</em></li>
+        <li><span>ביצועי</span><span class="kv-track"><i style="width:35%"></i></span><em>35%</em></li>
+        <li><span>מנהלי</span><span class="kv-track"><i style="width:26%"></i></span><em>26%</em></li>
+      </ul>
+      <p class="you">הפרופיל שלך: I · S · A</p>
+      <p>סקרנות, חיבור לאנשים וחשיבה יצירתית</p>
+    </aside>
   </div>
+
+  <ul class="v2-stats" aria-label="מה יש במאגר">
+    <li><b id="stInst">58</b>מוסדות אקדמיים</li>
+    <li><b id="stDeg">502</b>תארים עם תנאי קבלה</li>
+    <li><b id="stProg">72</b>תחומי לימוד</li>
+    <li><b id="stTown">1,177</b>יישובים עם זמני נסיעה</li>
+  </ul>
+
+  <div class="v2-sec-h" style="margin-top:30px"><div><h2>כלים שאפשר לפתוח בלי השאלון</h2><p>כל כלי עובד לבד, ואפשר לחזור לשאלון בכל רגע</p></div></div>
+  <div class="v2-tools" id="v2Tools">
+    <a href="finance.html" data-ic="finance"><span class="ic"><span>02</span></span><b>סימולטור פיננסי</b><small>כמה יעלה התואר, ומה מכסים מלגות, פיקדון ומענקים</small></a>
+    <a href="transit.html" data-ic="transit"><span class="ic"><span>03</span></span><b>זמני נסיעה ומפה</b><small>כמה זמן לוקח להגיע לכל קמפוס, באיזה קו, ואיפה חונים</small></a>
+    <a href="curricula.html" data-ic="curricula"><span class="ic"><span>04</span></span><b>תוכניות לימודים</b><small>אילו קורסים לומדים בכל שנה, והשוואה בין מוסדות</small></a>
+    <a href="combos.html" data-ic="combos"><span class="ic"><span>05</span></span><b>שילובי תארים</b><small>אילו חוגים אפשר ללמוד יחד, תארים כפולים ותנאי הקבלה</small></a>
+  </div>
+  <div class="final-cta" style="padding:32px 0 6px"><button class="kv-btn-o" type="button" id="startBtn2">לשאלון ההתאמה</button></div>
 </section>
 
 <section id="quizIntro" class="hidden" aria-labelledby="qiTitle">
@@ -2386,6 +2442,34 @@ body.cmp-on{padding-bottom:120px}
   }
 
   const COMBO_INST = ['huji', 'biu', 'tau', 'haifa', 'bgu', 'open', 'reichman', 'ariel']; // מוסדות שיש להם מיפוי שילובים בעמוד שילובי התארים
+  // ===== סיכום עליון בתוצאות (עיצוב v2): פרופיל הולנד וטבעות התאמה =====
+  const HOLLAND_SHORT = { R: 'ביצועי', I: 'חוקרני', A: 'אמנותי', S: 'חברתי', E: 'יזמי', C: 'מנהלי' };
+  const HOLLAND_TRAIT = { R: 'עבודה מעשית', I: 'סקרנות', A: 'חשיבה יצירתית', S: 'חיבור לאנשים', E: 'יוזמה והובלה', C: 'סדר ודיוק' };
+  function resultsSummaryHtml(sc, noProfile, topCodes, recTop, reg) {
+    const ent = Object.entries(sc).sort((a, b) => b[1] - a[1]);
+    const mx = Math.max(1, ...ent.map(x => x[1] - 1));
+    const pctOf = c => Math.round(100 * Math.max(0, (sc[c] || 1) - 1) / mx);
+    const prof = noProfile ? '' : `<aside class="v2-prof" aria-label="פרופיל תחומי העניין שלך">
+      <h2>פרופיל תחומי עניין · הולנד</h2><p class="sub">ביחס לאות המובילה שלך</p>
+      <ul class="v2-bars">${ent.map(([c]) => `<li><span>${HOLLAND_SHORT[c]}</span><span class="kv-track"><i style="width:${pctOf(c)}%"></i></span><em>${pctOf(c)}%</em></li>`).join('')}</ul>
+      <p class="you">הפרופיל שלך: ${topCodes.join(' · ')}</p><p>${topCodes.map(c => HOLLAND_TRAIT[c]).join(', ').replace(/, ([^,]*)$/, ' ו$1')}</p></aside>`;
+    const COL = { good: 'var(--green)', mid: 'var(--orange)', none: 'var(--mustard)', hard: 'var(--hard)' };
+    const PILL = { good: ['g', 'סיכוי קבלה גבוה'], mid: ['o', 'גבולי'], none: ['y', 'יש לבדוק תנאים'], hard: ['', 'מתחת לסף'] };
+    const cards = recTop.map(r => {
+      const codes = FIELD_HOLLAND[r.field] || ['I', 'S'];
+      const top = Math.max(1, ...recTop.map(x => x.score || 0)), rel = Math.max(0, (r.score || 0) / top);
+      const fit = noProfile ? null : Math.round(codes.reduce((a, c, i) => a + pctOf(c) * (i === 0 ? 2 : 1), 0) / (codes.length + 1) * (0.7 + 0.3 * rel));
+      const st = r.best.adm.status, col = COL[st] || 'var(--navy)', pl = PILL[st] || ['', ''];
+      const ci = reg.indexOf(r.best);
+      return `<article class="v2-rec">
+        <span class="kv-pill ${pl[0]}">${pl[1]}</span><div class="v2-rec-body"><div><h3>${esc(r.field)}</h3><p class="v2-inst">${esc(r.best.d['מוסד'])}</p><p class="lbl">${fit == null ? 'התאמה לתחומי עניין: אין פרופיל' : 'התאמה לתחומי עניין'}</p></div>${fit == null ? '' : `<div class="v2-ring" style="--p:${fit};--c:${col}"><b>${fit}%</b></div>`}</div>
+        ${fit == null ? '' : `<div class="kv-track"><i style="width:${fit}%;background:${col}"></i></div>`}
+        <div class="v2-rec-foot"><button type="button" class="plan-housing-btn" data-cidx="${ci}">תנאים, תוכנית לימודים ופרטים</button></div></article>`;
+    }).join('');
+    if (!cards && !prof) return '';
+    return `<div class="v2-match" style="margin:18px 0 8px${prof ? '' : ';grid-template-columns:1fr'}"><div><div class="v2-sec-h"><div><h2>מומלצים עבורך</h2><p>לפי תחומי עניין ונתוני קבלה</p></div></div><div class="v2-recs">${cards}</div>
+      <p class="v2-note">אחוז ההתאמה מראה עד כמה התחום מתאים לאותיות המובילות שלך בשאלון. סיכויי הקבלה לפי הספים של השנה שעברה במוסד המוביל לכל תחום.</p></div>${prof}</div>`;
+  }
   function buildResults() {
     ensureTransit();
     const sc = calcHollandScores();
@@ -2453,11 +2537,13 @@ body.cmp-on{padding-bottom:120px}
         ${depositTotal ? `<div class="stat"><span>פיקדון צבאי משוער</span><b>${depositTotal.toLocaleString()} ₪</b></div>` : ''}
         ${grantTotal ? `<div class="stat"><span>מענק שחרור משוער</span><b>${grantTotal.toLocaleString()} ₪</b></div>` : ''}
       </div>
+      <!--KVSUM-->
       ${chosenSchNames.length ? `<p class="meta">מלגות שסימנת לבדיקה: <strong>${chosenSchNames.join(' • ')}</strong></p>` : ''}
     `;
 
     const cardRegistry = [];
     const whyCtx = { chosenFields, topCodes };
+    const recTop = [];
 
     scoredFields.forEach((item, idx) => {
       const allForField = DB.degrees.filter(d => d['תחום לימוד'] === item.field);
@@ -2521,6 +2607,7 @@ body.cmp-on{padding-bottom:120px}
         fallbackAdvice = `💡 <strong>איך בכל זאת מתקבלים?</strong> לפי הציונים שהוזנו כרגע הספים מאתגרים. כדאי לשקול: <strong>מכינה קדם-אקדמית ייעודית</strong> (מחליפה את ממוצע הבגרות), <strong>אפיק מעבר דרך האוניברסיטה הפתוחה</strong> (ללא תנאי קבלה), או הרשמה למכללה מסובסדת שבה הסף גמיש יותר.`;
       }
 
+      if (recTop.length < 3) { const best = evaluated.find(x => x.isFallback !== 'stretch') || evaluated[0]; if (best) recTop.push({ field: item.field, best, score: item.score }); }
       html += `
         <div class="prof">
           <div class="prof-head"><span class="rank">#${idx + 1}</span><h3>${item.field}</h3></div>
@@ -2551,6 +2638,7 @@ body.cmp-on{padding-bottom:120px}
       `;
     });
 
+    html = html.replace('<!--KVSUM-->', resultsSummaryHtml(sc, noProfile, topCodes, recTop, cardRegistry));
     html += `
       <div class="legal-box">
         <strong>הבהרה משפטית וזכויות יוצרים:</strong> כל הזכויות שמורות © 2026 כיוון. הנתונים המוצגים בתוכנית זו נועדו להכוונה כללית בלבד. תנאי הקבלה, שכר הלימוד והמלגות כפופים לתקנוני המוסדות והגופים הרשמיים ועשויים להשתנות.
@@ -2602,5 +2690,6 @@ body.cmp-on{padding-bottom:120px}
   }
 })();
 </script>
+<script>document.addEventListener('DOMContentLoaded',()=>{const L=document.getElementById('v2LogoSvg');if(L&&window.KIVUN_COMPASS){L.innerHTML=window.KIVUN_COMPASS;L.style.color='var(--navy)';L.firstChild.setAttribute('width','72');L.firstChild.setAttribute('height','72')}document.querySelectorAll('#v2Tools a[data-ic]').forEach(a=>{const ic=window.KIVUN_ICONS&&window.KIVUN_ICONS[a.dataset.ic];if(ic)a.querySelector('.ic').insertAdjacentHTML('beforeend',ic)})});</script>
 </body>
 </html>
