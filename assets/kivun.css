@@ -65,4 +65,5 @@ header.top{display:none !important}
 .btn{border-radius:10px}
 .btn.sun{background:var(--sun) !important;color:var(--on-pine) !important;border-color:var(--sun) !important}
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important;scroll-behavior:auto !important}}
+@media print{.kv-head,.res-actions,.cmpbar,footer{display:none!important}}
 .hidden{display:none !important}

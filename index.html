@@ -893,11 +893,9 @@ body.cmp-on{padding-bottom:120px}
 
   async function loadDB() {
     try {
-      const res = await fetch('data.html');
-      const txt = await res.text();
-      const m = txt.match(/<script id="data" type="application\/json">([\s\S]*?)<\/script>/);
-      if (m) {
-        const raw = JSON.parse(m[1]);
+      const res = await fetch('data.json');
+      const raw = await res.json();
+      if (raw) {
         DB.degrees = (raw['תארים'] || []).filter(d => d['סטטוס'] !== 'לא קיים במוסד');
         DB.institutions = raw['מוסדות'] || [];
         DB.living = raw['עלויות מחיה'] || [];
@@ -916,7 +914,7 @@ body.cmp-on{padding-bottom:120px}
     if (window.KivunTransit && KivunTransit.allPlaceNames) KivunTransit.allPlaceNames().then(n => { allCities = [...new Set([...allCities, ...n])].sort((a, b) => a.localeCompare(b, 'he')); ALL_PLACES = allCities; $('cityList').innerHTML = allCities.map(c => `<option value="${c}">`).join(''); }).catch(() => {});
   }
   const DB_READY = loadDB();
-  DB_READY.then(() => setTimeout(() => { try { if (!restoreFromHash() && location.hash === '#quiz') showIntro(); } catch (e) { console.warn(e); } }, 0));
+  DB_READY.then(() => setTimeout(() => { try { const st0 = window.KivunState && KivunState.get(); if (st0 && st0.home && $('homeCity') && !$('homeCity').value) $('homeCity').value = st0.home; if ($('homeCity')) $('homeCity').addEventListener('change', () => { if (window.KivunState && $('homeCity').value.trim()) KivunState.set({ home: $('homeCity').value.trim() }); }); if (!restoreFromHash() && location.hash === '#quiz') showIntro(); } catch (e) { console.warn(e); } }, 0));
   window.addEventListener('hashchange', () => { if (location.hash === '#quiz') showIntro(); });
 
   $('homeCity').addEventListener('input', validateHomeCity);
@@ -2046,6 +2044,7 @@ body.cmp-on{padding-bottom:120px}
   function openHousingAndMapPlanner(deg, inst, adm, entry) { openDegreePage(entry || { d: deg, inst, adm, vibe: getVibeForInst(inst) }); }
   function openDegreePage(entry, tab) {
     const { d, inst, adm } = entry;
+    if (window.KivunState) KivunState.set({ inst: d['מזהה מוסד'], deg: d['תחום לימוד'] });
     DCTX = { entry, done: {} };
     const instName = d['מוסד'];
     $('detailView').innerHTML = `
@@ -2371,6 +2370,7 @@ body.cmp-on{padding-bottom:120px}
         <div class="res-actions">
           <button type="button" class="btn small" id="shareBtn">🔗 שמירה ושיתוף</button>
           <button type="button" class="btn ghost small" id="icsBtn">📅 מועדי הרשמה ליומן</button>
+          <button type="button" class="btn ghost small" id="printBtn">🖨️ הדפסה / PDF</button>
           <button type="button" class="btn ghost small" id="editQuizBtn">חזרה לעריכה והמשך מילוי</button>
         </div>
       </div>
@@ -2516,6 +2516,7 @@ body.cmp-on{padding-bottom:120px}
 
     $('shareBtn').addEventListener('click', shareResults);
     $('icsBtn').addEventListener('click', () => downloadRegistrationIcs(cardRegistry));
+    $('printBtn').addEventListener('click', () => window.print());
     $('editQuizBtn').addEventListener('click', () => {
       $('results').classList.add('hidden');
       $('wizard').classList.remove('hidden');

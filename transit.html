@@ -109,9 +109,8 @@ h1{font-size:clamp(1.6rem,4vw,2.2rem);color:var(--pine);margin:22px 0 6px}
 const $=id=>document.getElementById(id);let INST=[],DATA=null,CITY=null,filt='all',open=null;
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 async function init(){
-  const [cities,db]=await Promise.all([KivunTransit.loadCities(),fetch('data.html').then(r=>r.text())]);
+  const [cities,raw]=await Promise.all([KivunTransit.loadCities(),fetch('data.json').then(r=>r.json())]);
   KivunTransit.allPlaceNames().then(n=>{$('cityList').innerHTML=n.map(c=>`<option value="${esc(c)}">`).join('')});
-  const m=db.match(/<script id="data" type="application\/json">([\s\S]*?)<\/script>/);const raw=JSON.parse(m[1]);
   const camp=(await KivunTransit.loadCampus()).campus;
   const withDeg=new Set((raw['תארים']||[]).filter(d=>d['סטטוס']!=='לא קיים במוסד').map(d=>d['מזהה מוסד']));
   INST=(raw['מוסדות']||[]).filter(i=>withDeg.has(i['מזהה'])&&camp[i['מזהה']]).sort((a,b)=>a['שם המוסד'].localeCompare(b['שם המוסד'],'he'));

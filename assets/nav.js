@@ -29,4 +29,22 @@
   ddb.addEventListener('click', e => { e.stopPropagation(); const o = dd.classList.toggle('open'); ddb.setAttribute('aria-expanded', o); });
   document.addEventListener('click', () => { dd.classList.remove('open'); ddb.setAttribute('aria-expanded', 'false'); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') { dd.classList.remove('open'); h.classList.remove('open'); } });
+  const SKEY = 'kivun_profile_v1';
+  window.KivunState = {
+    get() {
+      try {
+        const s = JSON.parse(localStorage.getItem(SKEY) || '{}') || {};
+        if (!s.home) { const h0 = localStorage.getItem('kivun-home'); if (h0) s.home = h0; }
+        return s;
+      } catch (e) { return {}; }
+    },
+    set(patch) {
+      try {
+        const cur = this.get();
+        const next = Object.assign({}, cur, patch);
+        localStorage.setItem(SKEY, JSON.stringify(next));
+        if (patch && patch.home) localStorage.setItem('kivun-home', patch.home);
+      } catch (e) {}
+    }
+  };
 })();

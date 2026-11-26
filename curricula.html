@@ -232,12 +232,12 @@ function showCompare(){$('out').innerHTML='<div class="card empty">טוען את
   $('out').innerHTML=h;$('backone').onclick=()=>render();$('out').scrollIntoView({behavior:'smooth',block:'start'});setUrl();
  }).catch(()=>{$('out').innerHTML='<div class="card empty">לא ניתן היה לטעון את התוכניות להשוואה. נסו לרענן את העמוד.</div>'})}
 
-$('chips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;cur.deg=b.dataset.d;render();$('out').scrollIntoView({behavior:'smooth',block:'start'})};
+$('chips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;cur.deg=b.dataset.d;if(window.KivunState)KivunState.set({inst:cur.inst,deg:cur.deg});render();$('out').scrollIntoView({behavior:'smooth',block:'start'})};
 $('out').addEventListener('click',e=>{const b=e.target.closest('button[data-yr]');if(!b)return;const yr=b.dataset.yr;$('out').querySelectorAll('button[data-yr]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$('out').querySelectorAll('section.year[data-yi]').forEach(s=>{s.style.display=(yr==='all'||s.dataset.yi===yr)?'':'none'})});
 $('q').oninput=chips;
-$('inst').onchange=()=>{cur.inst=$('inst').value;cur.deg=null;render()};
+$('inst').onchange=()=>{cur.inst=$('inst').value;cur.deg=null;if(window.KivunState)KivunState.set({inst:cur.inst,deg:''});render()};
 const _render=render;render=function(){_render();bindAdd();drawBar()};
-initInst();const sp=new URLSearchParams(location.search);(sp.get('cmp')||'').split('|').forEach(t=>{const [i,d]=t.split('::');if(i&&d&&DATA.institutions[i]&&DATA.institutions[i].degs.includes(d)&&CMP.length<3)CMP.push({inst:i,deg:d})});cur.inst=DATA.institutions[sp.get('inst')]?sp.get('inst'):Object.keys(DATA.institutions)[0];$('inst').value=cur.inst;cur.deg=DATA.institutions[cur.inst].degs.includes(sp.get('deg'))?sp.get('deg'):null;render();if(CMP.length>=2&&sp.get('view')!=='one')showCompare();
+initInst();const sp=new URLSearchParams(location.search);const ks=window.KivunState?KivunState.get():{};(sp.get('cmp')||'').split('|').forEach(t=>{const [i,d]=t.split('::');if(i&&d&&DATA.institutions[i]&&DATA.institutions[i].degs.includes(d)&&CMP.length<3)CMP.push({inst:i,deg:d})});const wantInst=sp.get('inst')||ks.inst;cur.inst=DATA.institutions[wantInst]?wantInst:Object.keys(DATA.institutions)[0];$('inst').value=cur.inst;const wantDeg=sp.get('deg')||(sp.get('inst')?null:ks.deg);cur.deg=DATA.institutions[cur.inst].degs.includes(wantDeg)?wantDeg:null;render();if(CMP.length>=2&&sp.get('view')!=='one')showCompare();
 $('foot').textContent='מקור: '+Object.values(DATA.institutions).map(i=>i.name+' – '+i.sourceNote).join(' · ')+'. האימות האוטומטי בודק שסכום נקודות הקורסים בכל סמסטר תואם לסיכום שבקטלוג.';
 </script>
 </body>

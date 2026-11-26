@@ -242,7 +242,7 @@ const SCH=[
 let housing='parents';
 
 async function load(){
-  try{const t=await (await fetch('data.html')).text();const m=t.match(/<script id="data" type="application\/json">([\s\S]*?)<\/script>/);const raw=JSON.parse(m[1]);
+  try{const raw=await (await fetch('data.json')).json();
     DB.degrees=(raw['תארים']||[]).filter(d=>d['סטטוס']!=='לא קיים במוסד');DB.institutions=raw['מוסדות']||[];DB.living=raw['עלויות מחיה']||[];DB.dorms=(raw['מעונות']||[]).filter(d=>d['מוסד']);DB.scholarships=raw['מלגות']||[];DB.deposit=raw['פיקדון']||[];
   }catch(e){console.warn('טעינת המאגר נכשלה',e)}
   SCH.forEach(s=>{const r=DB.scholarships.find(x=>(x['מלגה']||'').includes(s.key));s.min=r?r['סכום מינימלי (₪)']:null;s.max=r?r['סכום מקסימלי (₪)']:null;s.amount=s.min||s.max||0;});
@@ -251,8 +251,11 @@ async function load(){
   const insts=DB.institutions.filter(i=>withDeg.has(i['מזהה'])).sort((a,b)=>a['שם המוסד'].localeCompare(b['שם המוסד'],'he'));
   $('inst').innerHTML=insts.map(i=>`<option value="${esc(i['מזהה'])}">${esc(i['שם המוסד'])}</option>`).join('');
   const sp=new URLSearchParams(location.search);
-  if(sp.get('inst')&&insts.some(i=>i['מזהה']===sp.get('inst')))$('inst').value=sp.get('inst');
-  onInst(sp.get('deg'));
+  const ks=window.KivunState?KivunState.get():{};
+  const wantInst=sp.get('inst')||ks.inst;
+  const wantDeg=sp.get('deg')||(sp.get('inst')?null:ks.deg);
+  if(wantInst&&insts.some(i=>i['מזהה']===wantInst))$('inst').value=wantInst;
+  onInst(wantDeg);
   bind();
   if(!restore())recalc();
 }
@@ -278,6 +281,7 @@ function onInst(wantDeg){
 }
 function onDeg(){
   const d=degObj();const t=d?Number(d['שכר לימוד שנתי (₪)'])||0:0;
+  if(window.KivunState)KivunState.set({inst:$('inst').value,deg:$('deg').value});
   $('tuition').value=t||'';$('tuitionNote').innerHTML=t?'לפי המאגר':`<span class="unk">${UNK} – הזינו לפי אתר המוסד</span>`;
   $('years').value=(d&&d['משך (שנים)'])||3;
   applyHousing(true);
