@@ -1,0 +1,35 @@
+name: Fetch source documents
+
+# מוריד מסמכים רשמיים (ידיעונים, מחירונים) לענף raw-docs, כדי לעבד אותם בלי להעמיס על האתר.
+on:
+  push:
+    branches: [main]
+    paths: ['tools/fetch_list.txt']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download
+        run: |
+          mkdir -p /tmp/raw
+          grep -v '^#' tools/fetch_list.txt | while read -r name url; do
+            [ -z "$name" ] && continue
+            curl -sSL --max-time 120 -A "Mozilla/5.0 (kivun-bot; +https://shaharalter.github.io/kivun/)" -o "/tmp/raw/$name" "$url" || echo "failed $name"
+          done
+          ls -la /tmp/raw
+      - name: Commit to raw-docs branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin raw-docs || true
+          if git rev-parse --verify origin/raw-docs >/dev/null 2>&1; then git checkout -B raw-docs origin/raw-docs; else git checkout --orphan raw-docs && git rm -rf . >/dev/null; fi
+          mkdir -p docs && cp /tmp/raw/* docs/
+          git add docs
+          git diff --cached --quiet || git commit -m "מסמכי מקור ($(date -u +%F))"
+          git push origin raw-docs

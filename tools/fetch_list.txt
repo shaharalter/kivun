@@ -1,0 +1,9 @@
+# כל שורה: שם-קובץ<רווח>כתובת. נוריד את הקבצים לענף raw-docs (לא לאתר עצמו).
+bgu_yedion_tashpaz.pdf https://www.bgu.ac.il/media/0p3ppz0n/%D7%99%D7%93%D7%99%D7%A2%D7%95%D7%9F-%D7%AA%D7%95%D7%90%D7%A8-%D7%A8%D7%90%D7%A9%D7%95%D7%9F.pdf
+runi_cs_tashpaz.pdf https://www.runi.ac.il/media/2gnbopwr/%D7%91%D7%9E%D7%93%D7%A2%D7%99-%D7%94%D7%9E%D7%97%D7%A9%D7%91-%D7%AA%D7%A9%D7%A4%D7%96-bsc-%D7%99%D7%93%D7%99%D7%A2%D7%95%D7%9F-%D7%AA%D7%95%D7%90%D7%A8-%D7%A8%D7%90%D7%A9%D7%95%D7%9F.pdf
+runi_sustain_gov_2027.pdf https://www.runi.ac.il/media/1grjj2pd/%D7%99%D7%93%D7%99%D7%A2%D7%95%D7%9F-%D7%AA%D7%95%D7%90%D7%A8-%D7%A8%D7%90%D7%A9%D7%95%D7%9F-%D7%A7%D7%99%D7%99%D7%9E%D7%95%D7%AA-%D7%9E%D7%9E%D7%A9%D7%9C-2027.pdf
+runi_entrep_tashpaz.pdf https://www.runi.ac.il/media/mzebpx3n/%D7%99%D7%96%D7%9E%D7%95%D7%AA-%D7%9E%D7%A0%D7%A2%D7%A1-%D7%9E%D7%93%D7%9E%D7%97-%D7%99%D7%A9%D7%A8%D7%90%D7%9C%D7%99-%D7%AA%D7%A9%D7%A4%D7%96.pdf
+runi_law_2027.pdf https://www.runi.ac.il/media/jdcfwl2x/%D7%99%D7%93%D7%99%D7%A2%D7%95%D7%9F-%D7%AA%D7%95%D7%90%D7%A8-%D7%A8%D7%90%D7%A9%D7%95%D7%9F-%D7%9E%D7%A9%D7%A4%D7%98%D7%99%D7%9D-2027.pdf
+biu_yedion.pdf https://www.biu.ac.il/sites/default/files/inline-files/yedion.pdf
+biu_general_admission.html https://www.biu.ac.il/registration-and-admission/information/general-admission-req
+ariel_admission.html https://www.ariel.ac.il/wp/registration-and-acceptance/%D7%AA%D7%A0%D7%90%D7%99-%D7%A7%D7%91%D7%9C%D7%94/
