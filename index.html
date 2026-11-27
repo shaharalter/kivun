@@ -759,7 +759,7 @@ body.cmp-on{padding-bottom:120px}
   const qsa = (sel, el=document) => [...el.querySelectorAll(sel)];
   const esc = v => v == null ? '' : String(v).replace(/[&<>"'`]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#96;' }[c]));
   // ערך שמגיע מהמשתמש או מקישור שיתוף – מנקים תגיות ומגבילים אורך
-  const sekhemScale = v => v > 0 && v <= 100 ? ', בסולם 0–100' : v > 100 && v <= 150 ? ', בסולם של המוסד' : '';
+  const sekhemScale = v => v > 0 && v < 200 ? ', בסולם של המוסד' : '';
   const cleanStr = (v, max = 120) => String(v == null ? '' : v).replace(/[<>`]/g, '').slice(0, max);
 
   // --- תנועת מצפן ---
@@ -2197,7 +2197,7 @@ body.cmp-on{padding-bottom:120px}
         <div><dt>מועדי הרשמה</dt><dd>${esc2(inst['הרשמה – מועדים'] || UNK)}${inst['הרשמה – מקור'] ? ` <a href="${inst['הרשמה – מקור']}" target="_blank" rel="noopener">(מקור)</a>` : ''}</dd></div>
         <div><dt>ייעוץ ורישום</dt><dd>${esc2(d['קשר: יחידה / איש קשר'] || '')}${d['קשר: טלפון'] ? ' – ' + esc2(d['קשר: טלפון']) : (d['קשר: יחידה / איש קשר'] ? '' : UNK)}</dd></div>
       </dl>
-      <div class="dp-actions">${inst['הרשמה – קישור'] ? `<a href="${inst['הרשמה – קישור']}" target="_blank" rel="noopener" class="btn small sun">להרשמה ↗</a>` : ''}${d['מקור (קישור)'] ? `<a href="${d['מקור (קישור)']}" target="_blank" rel="noopener" class="btn ghost small">לאתר התואר ↗</a>` : ''}</div>`;
+      <div class="dp-actions"><a href="degree.html?inst=${encodeURIComponent(d['מזהה מוסד'])}&deg=${encodeURIComponent(d['תחום לימוד'])}" class="btn small">דף התואר המלא</a>${inst['הרשמה – קישור'] ? `<a href="${inst['הרשמה – קישור']}" target="_blank" rel="noopener" class="btn small sun">להרשמה ↗</a>` : ''}${d['מקור (קישור)'] ? `<a href="${d['מקור (קישור)']}" target="_blank" rel="noopener" class="btn ghost small">לאתר התואר ↗</a>` : ''}</div>`;
     },
     adm(e) {
       const { d, adm } = e;

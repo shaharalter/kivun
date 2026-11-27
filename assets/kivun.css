@@ -103,6 +103,7 @@ body.kv-p-curricula{--tint:#EDF2F9}
 body.kv-p-combos{--tint:#FFF4E9}
 body.kv-p-grad{--tint:#F0F6F0}
 body.kv-p-data{--tint:#EFF3F8}
+body.kv-p-degree{--tint:#EEF3F8}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) body[class*="kv-p-"]{--tint:#142033}}
 :root[data-theme="dark"] body[class*="kv-p-"]{--tint:#142033}
 

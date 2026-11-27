@@ -44,8 +44,9 @@
     grad: '<svg viewBox="0 0 64 36"><path d="M32 3L3 14l29 11 29-11z" fill="none" stroke="#1F7A4D" stroke-width="2.2" stroke-linejoin="round"/><path d="M14 18.5V28c5 5 31 5 36 0v-9.5" fill="none" stroke="#1F7A4D" stroke-width="2.2"/></svg>',
     data: '<svg viewBox="0 0 46 34"><rect x="1.5" y="1.5" width="43" height="31" rx="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M1.5 11.5h43M1.5 22h43M16 11.5v21M30 11.5v21" stroke="currentColor" stroke-width="1.8"/></svg>'
   };
+  ICONS.degree = ICONS.grad.replace(/#1F7A4D/g, 'currentColor');
   window.KIVUN_ICONS = ICONS;
-  const PAGES = { 'index.html': ['index', '01'], 'finance.html': ['finance', '02'], 'transit.html': ['transit', '03'], 'curricula.html': ['curricula', '04'], 'combos.html': ['combos', '05'], 'grad.html': ['grad', '06'], 'data.html': ['data', '07'] };
+  const PAGES = { 'index.html': ['index', '01'], 'finance.html': ['finance', '02'], 'transit.html': ['transit', '03'], 'curricula.html': ['curricula', '04'], 'combos.html': ['combos', '05'], 'grad.html': ['grad', '06'], 'data.html': ['data', '07'], 'degree.html': ['degree', '08'] };
   const pg = PAGES[here];
   const main = document.querySelector('main');
   if (pg) document.body.classList.add('kv-p-' + pg[0]);

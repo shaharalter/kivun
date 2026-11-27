@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>דף תואר – כיוון</title>
+<meta name="description" content="כל מה שצריך לדעת על תואר אחד במוסד אחד: תנאי קבלה, תוכנית לימודים, שילובים, עלות, הגעה, מגורים והרשמה.">
+<meta property="og:title" content="כיוון – דף תואר">
+<meta property="og:type" content="website"><meta property="og:locale" content="he_IL">
+<meta name="theme-color" content="#1D4E89">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='27' fill='white' stroke='%231D4E89' stroke-width='4'/%3E%3Cpath d='M32 9l6.5 23h-13z' fill='%23E8761A'/%3E%3Cpath d='M32 55l-6.5-23h13z' fill='%231D4E89'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-size:16px;line-height:1.6}
+button,input,select{font:inherit;color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:0 16px}
+.muted{color:var(--muted)}
+.dg-pick{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
+.dg-pick label{display:block;font-size:.86rem;font-weight:600;margin-bottom:4px}
+.dg-pick select{width:100%;padding:10px 12px}
+@media (max-width:720px){.dg-pick{grid-template-columns:1fr}}
+.dg-meta{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.dg-toc{position:sticky;top:76px;z-index:20;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:8px 0;margin:6px 0 18px;background:linear-gradient(var(--tint) 75%,transparent)}
+.dg-toc a{flex:none;text-decoration:none;font-weight:600;font-size:.9rem;color:var(--slate);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 16px}
+.dg-toc a:hover,.dg-toc a.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.dg-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:900px){.dg-grid{grid-template-columns:1fr}}
+.dg-sec{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:18px 20px;scroll-margin-top:140px}
+.dg-sec.wide{grid-column:1/-1}
+.dg-sec>h2{font-size:1.15rem;margin:0 0 4px;display:flex;align-items:center;gap:10px}
+.dg-sec>h2 .n{display:inline-grid;place-items:center;min-width:30px;height:24px;border-radius:7px;background:var(--navy);color:#fff;font-size:.78rem;font-weight:700}
+.dg-sec>.sub{margin:0 0 14px;color:var(--muted);font-size:.88rem}
+.dg-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:0 0 14px}
+.dg-kv div{background:var(--field);border:1px solid var(--line-2);border-radius:12px;padding:10px 14px}
+.dg-kv b{display:block;font-size:1.35rem;font-weight:800;color:var(--navy);line-height:1.2}
+.dg-kv span{font-size:.8rem;color:var(--muted)}
+.dg-dl{margin:0;display:grid;gap:10px}
+.dg-dl div{display:grid;grid-template-columns:150px 1fr;gap:10px;border-top:1px solid var(--line-2);padding-top:10px}
+.dg-dl div:first-child{border-top:0;padding-top:0}
+.dg-dl dt{font-weight:600;color:var(--slate);font-size:.9rem}
+.dg-dl dd{margin:0}
+@media (max-width:560px){.dg-dl div{grid-template-columns:1fr;gap:2px}}
+.dg-bar{display:flex;height:12px;border-radius:999px;overflow:hidden;background:var(--t-gray);direction:ltr;margin:6px 0 8px}
+.dg-bar i{display:block;height:100%}
+.dg-legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.82rem;color:var(--slate);margin:0 0 12px}
+.dg-legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-end:6px;background:var(--c);vertical-align:middle}
+.dg-list{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.dg-list li{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;background:var(--field);border-radius:10px;font-size:.92rem}
+.dg-list li small{color:var(--muted);white-space:nowrap}
+.dg-more{display:inline-flex;margin-top:12px;font-weight:700;color:var(--navy);text-decoration:none}
+.dg-more:hover{text-decoration:underline}
+.dg-cta{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:linear-gradient(135deg,var(--t-blue),color-mix(in srgb,var(--t-blue) 50%,var(--surface)));border-radius:16px;padding:14px 18px;margin-top:14px}
+.dg-cta p{margin:0;font-weight:600;color:var(--navy)}
+.dg-home{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+.dg-home input{flex:1;min-width:200px;padding:10px 12px}
+.dg-empty{color:var(--muted);font-size:.92rem;margin:0}
+.dg-note{font-size:.82rem;color:var(--muted);margin:10px 0 0}
+.leaflet-container{font-family:inherit}
+</style>
+<link rel="stylesheet" href="assets/kivun.css">
+<script src="assets/nav.js" defer></script>
+</head>
+<body>
+<header class="top"><h1>דף תואר</h1></header>
+<main class="wrap" id="main">
+  <h1 id="dgTitle">דף תואר</h1>
+  <p id="dgSub">כל מה שצריך לדעת על תואר אחד: קבלה, תוכנית לימודים, שילובים, עלות, הגעה, מגורים והרשמה.</p>
+
+  <section class="dg-sec wide" id="dgPicker" style="margin-bottom:16px">
+    <div class="dg-pick">
+      <div><label for="pInst">מוסד</label><select id="pInst"><option value="">טוען…</option></select></div>
+      <div><label for="pDeg">תואר</label><select id="pDeg"><option value="">בחרו מוסד קודם</option></select></div>
+      <button type="button" class="kv-btn-n" id="pGo">לדף התואר</button>
+    </div>
+  </section>
+
+  <div id="dgBody" hidden>
+    <div class="dg-meta" id="dgMeta"></div>
+    <nav class="dg-toc" id="dgToc" aria-label="מקטעים בדף"></nav>
+    <div class="dg-grid" id="dgGrid"></div>
+  </div>
+</main>
+<script src="transit/transit.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const $ = id => document.getElementById(id);
+  const esc = v => v == null ? '' : String(v).replace(/[&<>"'`]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#96;' }[c]));
+  const UNK = '<span class="muted">לא ידוע. יש לוודא ולבדוק</span>';
+  const nf = n => Number(n).toLocaleString('he-IL');
+  const safeUrl = u => { const s = typeof u === 'object' && u ? u.url : u; return /^https?:\/\//.test(String(s || '')) ? String(s) : ''; };
+  const ext = (u, t) => { const s = safeUrl(u); return s ? `<a href="${esc(s)}" target="_blank" rel="noopener">${esc(t || s.replace(/^https?:\/\/(www\.)?/, '').split('/')[0])} ↗</a>` : ''; };
+  const sekhemScale = v => v >= 200 ? ' (סולם 200–800)' : v > 0 ? ' (בסולם של המוסד – ראו שיטת החישוב)' : '';
+
+  let D;
+  try { D = await (await fetch('data.json')).json(); }
+  catch (e) { $('dgPicker').innerHTML = '<p class="dg-empty" role="alert">טעינת המאגר נכשלה. נסו לרענן את העמוד.</p>'; return; }
+  const DEG = D['תארים'].filter(d => d['סטטוס'] !== 'לא קיים במוסד');
+  const INST = {}; D['מוסדות'].forEach(i => INST[i['מזהה']] = i);
+  const withDeg = [...new Set(DEG.map(d => d['מזהה מוסד']))].filter(id => INST[id]).sort((a, b) => INST[a]['שם המוסד'].localeCompare(INST[b]['שם המוסד'], 'he'));
+
+  // ===== בחירת מוסד ותואר =====
+  $('pInst').innerHTML = '<option value="">בחרו מוסד…</option>' + withDeg.map(id => `<option value="${esc(id)}">${esc(INST[id]['שם המוסד'])}</option>`).join('');
+  const fillDeg = (inst, want) => {
+    const L = DEG.filter(d => d['מזהה מוסד'] === inst).map(d => d['תחום לימוד']).sort((a, b) => a.localeCompare(b, 'he'));
+    $('pDeg').innerHTML = L.length ? '<option value="">בחרו תואר…</option>' + L.map(n => `<option${n === want ? ' selected' : ''}>${esc(n)}</option>`).join('') : '<option value="">בחרו מוסד קודם</option>';
+  };
+  $('pInst').addEventListener('change', () => fillDeg($('pInst').value));
+  $('pGo').addEventListener('click', () => { const i = $('pInst').value, d = $('pDeg').value; if (i && d) open(i, d, true); });
+  $('pDeg').addEventListener('change', () => { const i = $('pInst').value, d = $('pDeg').value; if (i && d) open(i, d, true); });
+
+  const sp = new URLSearchParams(location.search);
+  let curInst = sp.get('inst'), curDeg = sp.get('deg');
+  if (curInst && INST[curInst]) { $('pInst').value = curInst; fillDeg(curInst, curDeg); }
+  if (curInst && curDeg && DEG.some(d => d['מזהה מוסד'] === curInst && d['תחום לימוד'] === curDeg)) open(curInst, curDeg, false);
+  else if (curInst || curDeg) $('dgSub').textContent = 'לא מצאנו את התואר שבקישור. בחרו מוסד ותואר מהרשימה.';
+  window.addEventListener('popstate', () => { const s = new URLSearchParams(location.search); const i = s.get('inst'), d = s.get('deg'); if (i && d) open(i, d, false); });
+
+  async function open(instId, degName, push) {
+    const d = DEG.find(x => x['מזהה מוסד'] === instId && x['תחום לימוד'] === degName); if (!d) return;
+    const I = INST[instId] || {};
+    if (push) { const u = new URL(location); u.searchParams.set('inst', instId); u.searchParams.set('deg', degName); history.pushState(null, '', u); }
+    if (window.KivunState) KivunState.set({ inst: instId, deg: degName });
+    document.title = `${degName} – ${I['שם המוסד'] || ''} – כיוון`;
+    $('dgTitle').textContent = degName;
+    $('dgSub').textContent = `${I['שם המוסד'] || d['מוסד']}${I['עיר'] ? ' · ' + I['עיר'] : ''}`;
+    $('pInst').value = instId; fillDeg(instId, degName);
+    const years = d['משך (שנים)'];
+    $('dgMeta').innerHTML = [
+      d['קטגוריה'] ? `<span class="kv-pill b">${esc(d['קטגוריה'])}</span>` : '',
+      years ? `<span class="kv-pill">${esc(years)} שנות לימוד</span>` : '',
+      d['סטטוס'] === 'מאומת' ? '<span class="kv-pill g">תנאי הקבלה אומתו מול המוסד</span>' : d['סטטוס'] === 'מאומת חלקית' ? '<span class="kv-pill o">תנאי הקבלה אומתו חלקית</span>' : '',
+      I['סוג'] ? `<span class="kv-pill">${esc(I['סוג'])}</span>` : ''
+    ].join('');
+    const S = [];
+    // 1. קבלה
+    const thr = Number(d['סף משוקלל']) || null;
+    S.push(['adm', 'תנאי קבלה', `
+      <div class="dg-kv">
+        <div><b>${thr ? esc(d['סף משוקלל']) : '—'}</b><span>סף משוקלל${thr ? esc(sekhemScale(thr)) : ''}</span></div>
+        <div><b>${d['קבלה ישירה: בגרות'] != null ? esc(d['קבלה ישירה: בגרות']) : '—'}</b><span>קבלה לפי בגרות בלבד</span></div>
+        <div><b>${d['קבלה ישירה: פסיכומטרי'] != null ? esc(d['קבלה ישירה: פסיכומטרי']) : '—'}</b><span>קבלה לפי פסיכומטרי בלבד</span></div>
+      </div>
+      <dl class="dg-dl">
+        <div><dt>ערוצי קבלה</dt><dd>${d['סטטוס'] === 'מאומת חלקית' ? 'תנאי הקבלה במוסד הזה משתנים ואינם מפורסמים במלואם. ' : ''}${d['ערוצי קבלה'] ? esc(d['ערוצי קבלה']) : UNK}</dd></div>
+        ${d['שיטת חישוב'] ? `<div><dt>שיטת החישוב</dt><dd>${esc(d['שיטת חישוב'])}</dd></div>` : ''}
+        ${d['דרישות בגרות'] ? `<div><dt>דרישות בגרות</dt><dd>${esc(d['דרישות בגרות'])}</dd></div>` : ''}
+        ${d['ראיון / מבחן'] ? `<div><dt>ראיון או מבחן</dt><dd>${esc(d['ראיון / מבחן'])}</dd></div>` : ''}
+        ${d['דרישות נוספות'] ? `<div><dt>דרישות נוספות</dt><dd>${esc(d['דרישות נוספות'])}</dd></div>` : ''}
+        <div><dt>שנת הנתונים</dt><dd>ספי מחזור הקבלה האחרון שהמוסד פרסם (ברוב המוסדות תשפ"ז)${d['תאריך בדיקה'] ? `, נבדקו ב-${esc(d['תאריך בדיקה'])}` : ''}. הספים משתנים משנה לשנה.</dd></div>
+        <div><dt>מקור</dt><dd>${ext(d['מקור (קישור)'], 'עמוד תנאי הקבלה במוסד') || UNK}</dd></div>
+      </dl>
+      <div class="dg-cta"><p>רוצים לדעת מה הסיכוי שלכם להתקבל?</p><a class="kv-btn-o" href="index.html#quiz">לשאלון ההתאמה</a></div>`, true]);
+    // 2. תוכנית לימודים (נטענת אחר כך)
+    S.push(['cur', 'תוכנית לימודים', '<p class="dg-empty" id="curBox">טוען…</p>']);
+    // 3. שילובים
+    S.push(['cmb', 'שילובים ותארים כפולים', '<p class="dg-empty" id="cmbBox">טוען…</p>']);
+    // 4. עלות
+    const tu = Number(d['שכר לימוד שנתי (₪)']) || null, yN = parseFloat(years) || null;
+    const fees = [['דמי רישום', I['דמי רישום (₪)']], ['דמי אבטחה שנתיים (חובה)', I['דמי אבטחה שנתיים – חובה (₪)']], ['רווחה ואגודה (רשות)', I['רווחה + אגודה – רשות (₪)']]].filter(f => f[1] != null);
+    S.push(['cost', 'עלות', `
+      <div class="dg-kv">
+        <div><b>${tu ? nf(tu) + ' ₪' : '—'}</b><span>שכר לימוד לשנה</span></div>
+        <div><b>${tu && yN ? nf(Math.round(tu * yN)) + ' ₪' : '—'}</b><span>שכר לימוד לכל התואר (${yN || '?'} שנים)</span></div>
+      </div>
+      ${fees.length ? `<ul class="dg-list">${fees.map(f => `<li><span>${esc(f[0])}</span><b>${nf(f[1])} ₪</b></li>`).join('')}</ul>` : ''}
+      ${d['שכ"ל – מקור והערות'] ? `<p class="dg-note">${esc(String(d['שכ"ל – מקור והערות']).slice(0, 300))}</p>` : ''}
+      <a class="dg-more" href="finance.html?inst=${encodeURIComponent(instId)}&deg=${encodeURIComponent(degName)}">לחישוב מלא בסימולטור הפיננסי: מחיה, מלגות, עבודה והלוואות</a>`]);
+    // 5. הגעה
+    S.push(['go', 'הגעה לקמפוס', `
+      <div class="dg-home"><input type="text" id="homeIn" list="homeList" placeholder="מאיפה יוצאים? עיר או יישוב" aria-label="יישוב מגורים"><datalist id="homeList"></datalist><button type="button" class="kv-btn-o" id="homeGo">חיפוש מסלול</button></div>
+      <dl class="dg-dl" style="margin-bottom:12px">
+        ${I['רכבת / רכבת קלה / רכבל'] ? `<div><dt>רכבת קרובה</dt><dd>${esc(I['רכבת / רכבת קלה / רכבל'])}</dd></div>` : ''}
+        ${I['חניה'] ? `<div><dt>חניה</dt><dd>${esc(I['חניה'])}</dd></div>` : ''}
+      </dl>
+      <div id="trBox"><p class="dg-empty">הזינו יישוב כדי לראות את מסלולי התחבורה הציבורית, את הקווים על המפה ואת החניונים ליד הקמפוס.</p></div>`, true]);
+    // 6. מגורים
+    S.push(['home', 'מגורים', '<div id="housBox"></div>']);
+    // 7. הרשמה וקשר
+    S.push(['reg', 'הרשמה ויצירת קשר', `
+      <dl class="dg-dl">
+        <div><dt>מועדי הרשמה</dt><dd>${I['הרשמה – מועדים'] ? esc(I['הרשמה – מועדים']) : UNK}${I['הרשמה – נבדק'] ? ` <small class="muted">(נבדק ${esc(I['הרשמה – נבדק'])})</small>` : ''}</dd></div>
+        <div><dt>להרשמה</dt><dd>${ext(I['הרשמה – קישור'], 'מערכת ההרשמה של המוסד') || UNK}</dd></div>
+        <div><dt>ייעוץ ורישום</dt><dd>${esc(d['קשר: יחידה / איש קשר'] || '')}${d['קשר: טלפון'] ? ` · <a href="tel:${esc(String(d['קשר: טלפון']).replace(/[^\d+]/g, ''))}">${esc(d['קשר: טלפון'])}</a>` : ''}${d['קשר: מייל'] ? ` · ${String(d['קשר: מייל']).split(/[ ,;]+/).filter(x => x.includes('@')).map(x => `<a href="mailto:${esc(x)}">${esc(x)}</a>`).join(' ')}` : ''}${!d['קשר: יחידה / איש קשר'] && !d['קשר: טלפון'] && !d['קשר: מייל'] ? (I['טלפון ראשי (מרכזייה)'] ? `מרכזייה: ${esc(I['טלפון ראשי (מרכזייה)'])}` : UNK) : ''}</dd></div>
+        <div><dt>אתר המוסד</dt><dd>${ext(I['אתר רשמי']) || UNK}</dd></div>
+      </dl>`]);
+    // 8. תואר שני
+    S.push(['grad', 'המשך לתואר שני', '<p class="dg-empty" id="gradBox">טוען…</p>']);
+
+    $('dgGrid').innerHTML = S.map(([id, t, h, wide], i) => `<section class="dg-sec${wide ? ' wide' : ''}" id="s-${id}" aria-labelledby="h-${id}"><h2 id="h-${id}"><span class="n" aria-hidden="true">${i + 1}</span>${t}</h2>${h}</section>`).join('');
+    $('dgToc').innerHTML = S.map(([id, t]) => `<a href="#s-${id}">${t}</a>`).join('');
+    $('dgBody').hidden = false;
+    $('dgPicker').style.marginBottom = '6px';
+
+    // ===== הגעה =====
+    const st = window.KivunState ? KivunState.get() : {};
+    if (window.KivunTransit) KivunTransit.allPlaceNames().then(n => { $('homeList').innerHTML = n.map(x => `<option value="${esc(x)}">`).join(''); }).catch(() => {});
+    const runTr = async () => {
+      const home = $('homeIn').value.trim(); if (!home) return;
+      if (window.KivunState) KivunState.set({ home });
+      $('trBox').innerHTML = '<p class="dg-empty">מחשב…</p>';
+      try { await KivunTransit.mount($('trBox'), home, instId, I['שם המוסד'] || ''); }
+      catch (e) { $('trBox').innerHTML = '<p class="dg-empty">לא ניתן היה לחשב את זמני הנסיעה כרגע.</p>'; }
+    };
+    $('homeGo').addEventListener('click', runTr);
+    $('homeIn').addEventListener('keydown', e => { if (e.key === 'Enter') runTr(); });
+    if (st.home) { $('homeIn').value = st.home; runTr(); }
+
+    // ===== מגורים =====
+    (async () => {
+      let H = null; try { H = (await (await fetch('housing/housing.json')).json())[instId]; } catch (e) {}
+      const dorms = H && H.dorms && H.dorms.length ? H.dorms.map(x => [x.name, x.min, x.max, x.note]) : D['מעונות'].filter(x => x['מזהה'] === instId || String(x['מוסד'] || '').startsWith(I['שם המוסד'] || '@@')).map(x => [x['סוג חדר'] || x['שם'] || x['מוסד'], x['מחיר מינימלי (₪)'], x['מחיר מקסימלי (₪)'], x['הערות']]);
+      const liv = D['עלויות מחיה'].find(x => x['עיר'] === (I['עיר לחישוב מחיה'] || I['עיר'])) || D['עלויות מחיה'].find(x => String(x['מוסדות'] || '').split(/,\s*/).includes(instId));
+      let h = '';
+      if (liv && liv['שכ"ד']) h += `<div class="dg-kv"><div><b>${nf(liv['שכ"ד'])} ₪</b><span>שכר דירה ממוצע לדירה ב${esc(liv['עיר'])} (${esc(liv['סוג'] || 'למ"ס')})</span></div></div>`;
+      h += dorms.length ? `<h3 style="font-size:1rem;margin:0 0 8px">מעונות${H && H.dormUrl ? ` · ${ext(H.dormUrl, 'אתר המעונות')}` : ''}</h3><ul class="dg-list">${dorms.slice(0, 8).map(x => `<li><span>${esc(x[0])}${x[3] ? ` <small>(${esc(x[3])})</small>` : ''}</span><b>${x[1] ? (x[2] && x[2] !== x[1] ? `${nf(x[1])}–${nf(x[2])}` : nf(x[1])) + ' ₪ לחודש' : '—'}</b></li>`).join('')}</ul>${H && H.dormInfo ? `<p class="dg-note">${esc(H.dormInfo)}</p>` : ''}` : '<p class="dg-empty">מחירי מעונות למוסד הזה: לא ידוע. יש לוודא ולבדוק באתר המוסד.</p>';
+      if (H && H.hoods && H.hoods.length) h += `<h3 style="font-size:1rem;margin:16px 0 8px">שכונות שסטודנטים גרים בהן</h3><ul class="dg-list">${H.hoods.map(x => `<li><span><b>${esc(x.name)}</b><br><small>${esc(x.vibe || '')}</small></span><small>${esc(x.dist || '')}</small></li>`).join('')}</ul>`;
+      $('housBox').innerHTML = h;
+    })();
+
+    // ===== תוכנית לימודים =====
+    (async () => {
+      const box = $('curBox'); if (!box) return;
+      try {
+        const html = await (await fetch('curricula.html')).text();
+        const m = html.match(/id="curdata">([\s\S]*?)<\/script>/); const C = m ? JSON.parse(m[1]).institutions[instId] : null;
+        if (!C || !C.degs.includes(degName)) { box.outerHTML = `<p class="dg-empty">תוכנית הלימודים של התואר הזה עוד לא במאגר. ${ext(d['מקור (קישור)'], 'לאתר המוסד')}</p>`; return; }
+        const P = (await (await fetch(C.src)).json())[degName];
+        const link = `curricula.html?inst=${encodeURIComponent(instId)}&deg=${encodeURIComponent(degName)}`;
+        if (!P || P.mode === 'link') { box.outerHTML = `<p class="dg-empty">המוסד מפרסם את תוכנית הלימודים רק באתר שלו. ${ext(P && P.url, 'לתוכנית באתר המוסד')}</p>`; return; }
+        const cats = (P.cats || []).filter(c => /[א-ת]/.test(c[0]) && /\d/.test(c[1]));
+        const tot = parseFloat(P.total) || cats.reduce((a, c) => a + parseFloat(c[1]), 0);
+        const cols = ['var(--navy)', 'var(--orange)', 'var(--green)', 'var(--mustard)', 'var(--bar-4)'];
+        let first = [];
+        if (P.sems) first = P.sems.filter(s => s.n <= 2).flatMap(s => s.c.filter(c => c[0]).map(c => [c[1], c[2]]));
+        else if (P.years && P.years[0]) first = P.years[0].groups.filter(g => g.m !== false).flatMap(g => g.c.map(c => [c[1], c[2]]));
+        first = first.filter(c => c[0] && Number(c[1]) > 0);
+        const yrs = P.years_n || (P.sems ? Math.max(1, Math.ceil(Math.max(...P.sems.map(s => s.n)) / 2)) : yN);
+        box.outerHTML = `<p class="sub">${esc(C.name)} · קטלוג ${esc(C.year || '')}${P.code ? ` · קוד מסלול ${esc(P.code)}` : ''}</p>
+          <div class="dg-kv"><div><b>${esc(P.total || '—')}</b><span>נקודות זכות לתואר</span></div><div><b>${esc(yrs || '—')}</b><span>שנות לימוד בתוכנית</span></div></div>
+          ${cats.length ? `<div class="dg-bar" role="img" aria-label="חלוקת הנקודות">${cats.map((c, i) => `<i style="width:${Math.max(2, parseFloat(c[1]) / tot * 100)}%;background:${cols[i % 5]}"></i>`).join('')}</div><div class="dg-legend">${cats.map((c, i) => `<span style="--c:${cols[i % 5]}">${esc(c[0])} · ${esc(c[1])}</span>`).join('')}</div>` : ''}
+          ${first.length ? `<h3 style="font-size:1rem;margin:0 0 8px">קורסי חובה בשנה הראשונה</h3><ul class="dg-list">${first.slice(0, 8).map(c => `<li><span>${esc(c[0])}</span><small>${esc(c[1])} נק׳</small></li>`).join('')}</ul>${first.length > 8 ? `<p class="dg-note">ועוד ${first.length - 8} קורסים בשנה הראשונה.</p>` : ''}` : ''}
+          <a class="dg-more" href="${link}">לתוכנית המלאה לפי שנים וסמסטרים</a>`;
+      } catch (e) { box.textContent = 'לא ניתן היה לטעון את תוכנית הלימודים כרגע.'; }
+    })();
+
+    // ===== שילובים =====
+    (async () => {
+      const box = $('cmbBox'); if (!box) return;
+      try {
+        const J = await (await fetch('combos/combos.json')).json();
+        const C = J[instId];
+        const key = degName.split(/[ ,(]/)[0];
+        const tr = C ? C.tracks.filter(t => String(t[1]).includes(degName) || String(t[1]).startsWith(key)) : [];
+        const sp = (J._special || []).filter(x => x.inst === instId && String(x.title).includes(key));
+        if (!tr.length && !sp.length) { box.outerHTML = `<p class="dg-empty">${C ? 'לא מצאנו מסלולים משולבים לתואר הזה במאגר הצירופים של המוסד.' : 'מאגר השילובים של המוסד הזה עוד לא במערכת.'}</p>`; return; }
+        box.outerHTML = `${sp.length ? `<h3 style="font-size:1rem;margin:0 0 8px">תארים כפולים ותוכניות מיוחדות</h3><ul class="dg-list" style="margin-bottom:12px">${sp.map(x => `<li><span>${esc(x.title)}<br><small>${esc(x.cond || '')}</small></span><small>${esc(x.kind || '')}${x.years ? ' · ' + esc(x.years) + ' שנים' : ''}</small></li>`).join('')}</ul>` : ''}
+          ${tr.length ? `<h3 style="font-size:1rem;margin:0 0 8px">מסלולים במאגר הצירופים (${tr.length})</h3><ul class="dg-list">${tr.slice(0, 8).map(t => `<li><span>${esc(t[1])}</span><small>${esc(t[3] || '')}</small></li>`).join('')}</ul>` : ''}
+          <a class="dg-more" href="combos.html?inst=${encodeURIComponent(instId)}&q=${encodeURIComponent(key)}">לכל השילובים האפשריים</a>
+          ${C && C.sourceName ? `<p class="dg-note">מקור: ${ext(C.source, C.sourceName)}${C.checked ? `, נבדק ${esc(C.checked)}` : ''}</p>` : ''}`;
+      } catch (e) { box.textContent = 'לא ניתן היה לטעון את השילובים כרגע.'; }
+    })();
+
+    // ===== תואר שני =====
+    (async () => {
+      const box = $('gradBox'); if (!box) return;
+      try {
+        const G = await (await fetch('grad/grad.json')).json();
+        const key = degName.replace(/^(הנדסת|מדעי|לימודי)\s+/, '').split(/[ ,(]/)[0];
+        const L = G.programs.filter(p => p.inst === instId && (String(p.name).includes(degName) || String(p.name).includes(key)));
+        box.outerHTML = L.length ? `<ul class="dg-list">${L.slice(0, 8).map(p => `<li><span>${esc(p.name)} <small>${esc(p.deg || '')}</small></span><small>${p.minAvg ? 'ממוצע ' + esc(p.minAvg) + ' ומעלה' : 'סף: לא פורסם'}</small></li>`).join('')}</ul><a class="dg-more" href="grad.html">לכל תוכניות התואר השני והתאמה אישית</a>`
+          : `<p class="dg-empty">לא מצאנו במוסד הזה תואר שני באותו תחום. <a href="grad.html">לחיפוש בכל המוסדות</a></p>`;
+      } catch (e) { box.textContent = 'לא ניתן היה לטעון את תוכניות התואר השני כרגע.'; }
+    })();
+
+    // סימון המקטע הפעיל בתפריט
+    const links = [...$('dgToc').querySelectorAll('a')];
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) links.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id)); }), { rootMargin: '-40% 0px -55% 0px' });
+    document.querySelectorAll('.dg-sec[id^="s-"]').forEach(s => io.observe(s));
+    if (push) window.scrollTo({ top: 0 });
+  }
+});
+</script>
+</body>
+</html>
