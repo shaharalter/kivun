@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ===== מגורים =====
     (async () => {
       let H = null; try { H = (await (await fetch('housing/housing.json')).json())[instId]; } catch (e) {}
-      const dorms = H && H.dorms && H.dorms.length ? H.dorms.map(x => [x.name, x.min, x.max, x.note]) : D['מעונות'].filter(x => x['מזהה'] === instId || String(x['מוסד'] || '').startsWith(I['שם המוסד'] || '@@')).map(x => [x['סוג חדר'] || x['שם'] || x['מוסד'], x['מחיר מינימלי (₪)'], x['מחיר מקסימלי (₪)'], x['הערות']]);
+      const dorms = H && H.dorms && H.dorms.length ? H.dorms.map(x => [x.name, x.min, x.max, x.note]) : D['מעונות'].filter(x => x['מזהה'] === instId || String(x['מוסד'] || '').startsWith(I['שם המוסד'] || '@@')).map(x => [x['סוג יחידה'] || x['מוסד'], x['מחיר מינימלי (₪)'], x['מחיר מקסימלי (₪)'], [x['מה כלול'], x['שנה']].filter(v => v && v !== '—').join(' · ')]);
       const liv = D['עלויות מחיה'].find(x => x['עיר'] === (I['עיר לחישוב מחיה'] || I['עיר'])) || D['עלויות מחיה'].find(x => String(x['מוסדות'] || '').split(/,\s*/).includes(instId));
       let h = '';
       if (liv && liv['שכ"ד']) h += `<div class="dg-kv"><div><b>${nf(liv['שכ"ד'])} ₪</b><span>שכר דירה ממוצע לדירה ב${esc(liv['עיר'])} (${esc(liv['סוג'] || 'למ"ס')})</span></div></div>`;
