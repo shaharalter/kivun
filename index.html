@@ -948,13 +948,15 @@ body.cmp-on{padding-bottom:120px}
     };
   }
 
-  // --- טעינת נתונים מ-data.html ---
+  // --- טעינת נתונים מ-data-lite.json ---
   let DB = { degrees: [], institutions: [], living: [], scholarships: [], dorms: [] };
 
   async function loadDB() {
     try {
-      const res = await fetch('data.json');
-      const raw = await res.json();
+      // גרסה קלה של המאגר (tools/build_lite.py), ואם חסרה – המאגר המלא
+      let raw = null;
+      try { const r = await fetch('data-lite.json'); if (r.ok) raw = await r.json(); } catch (e) {}
+      if (!raw || !Array.isArray(raw['תארים']) || !raw['תארים'].length) raw = await (await fetch('data.json')).json();
       if (raw) {
         DB.degrees = (raw['תארים'] || []).filter(d => d['סטטוס'] !== 'לא קיים במוסד');
         DB.institutions = raw['מוסדות'] || [];
