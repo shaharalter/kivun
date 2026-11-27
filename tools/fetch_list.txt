@@ -7,3 +7,7 @@ runi_law_2027.pdf https://www.runi.ac.il/media/jdcfwl2x/%D7%99%D7%93%D7%99%D7%A2
 biu_yedion.pdf https://www.biu.ac.il/sites/default/files/inline-files/yedion.pdf
 biu_general_admission.html https://www.biu.ac.il/registration-and-admission/information/general-admission-req
 ariel_admission.html https://www.ariel.ac.il/wp/registration-and-acceptance/%D7%AA%D7%A0%D7%90%D7%99-%D7%A7%D7%91%D7%9C%D7%94/
+biu_bonus.html https://www.biu.ac.il/page/9740
+cbs_bycode2023.xlsx https://www.cbs.gov.il/he/publications/doclib/2019/ishuvim/bycode2023.xlsx
+cbs_bycode2022.xlsx https://www.cbs.gov.il/he/publications/doclib/2019/ishuvim/bycode2022.xlsx
+cbs_bycode2021.xlsx https://www.cbs.gov.il/he/publications/doclib/2019/ishuvim/bycode2021.xlsx
