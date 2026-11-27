@@ -58,6 +58,28 @@ button,input,select{font:inherit;color:inherit}
 .dg-empty{color:var(--muted);font-size:.92rem;margin:0}
 .dg-note{font-size:.82rem;color:var(--muted);margin:10px 0 0}
 .leaflet-container{font-family:inherit}
+/* זמני נסיעה ומפה (כמו בעמוד זמני נסיעה) */
+.tr-box h3{font-size:1.15rem;color:var(--pine);margin:6px 0}.tr-box h4{font-size:1rem;color:var(--pine);margin:14px 0 6px}
+.tr-note{font-size:.84rem;color:var(--muted);margin:4px 0}
+.tr-opt{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;background:var(--paper)}
+.tr-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:.92rem}
+.tr-legs{margin:8px 0 0;padding-inline-start:6px;font-size:.9rem;list-style:none}.tr-legs li{margin:4px 0}.tr-legs li.walk{color:var(--muted);list-style:none}
+.tr-ico{margin-inline-end:4px}
+.tr-tab{border-collapse:collapse;width:100%;font-size:.86rem}.tr-tab th,.tr-tab td{padding:5px 6px;border-bottom:1px solid var(--line);text-align:start}
+.tr-lines{display:flex;flex-wrap:wrap;gap:5px}.tr-lines span{border:1px solid var(--line);border-radius:8px;padding:2px 8px;font-weight:600;font-size:.88rem;background:var(--surface)}.tr-lines small{font-weight:400;color:var(--muted)}
+.tr-st{margin:0;padding-inline-start:18px;font-size:.9rem}
+.tr-links{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:.9rem}.tr-links a{color:var(--pine)}
+.tr-showline{border:0;background:none;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline dotted}
+.tr-mapbox{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:10px;margin:8px 0}
+@media (max-width:760px){.tr-mapbox{grid-template-columns:minmax(0,1fr)}}
+.tr-map{height:380px;border-radius:12px;border:1px solid var(--line);z-index:0}
+.tr-map-side{max-height:380px;overflow:auto}
+.tr-map-tools{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:6px;font-size:.88rem}
+.tr-map-tools button{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:3px 8px;cursor:pointer;font:inherit}
+.tr-lbtn{display:block;width:100%;text-align:start;border:2px solid var(--line);background:var(--surface);border-radius:10px;padding:5px 8px;margin:4px 0;cursor:pointer;font:inherit;font-size:.88rem;color:inherit}
+.tr-lbtn[aria-pressed="true"]{background:var(--pine-soft)}
+.tr-lbtn small{color:var(--muted)}
+.tr-badge{background:var(--sun-soft);border-radius:99px;padding:0 8px;font-size:.8rem}
 </style>
 <link rel="stylesheet" href="assets/kivun.css">
 <script src="assets/nav.js" defer></script>
