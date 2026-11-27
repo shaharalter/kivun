@@ -1363,14 +1363,14 @@ body.cmp-on{padding-bottom:120px}
       const r = computeBagAvg('generic');
       finalAvg = r.avg; totalUnits = r.units; droppedSubjects = r.dropped;
       // כללי בונוס רשמיים לפי מוסד (אומתו מול אתרי המוסדות)
-      ['tau', 'haifa', 'huji', 'technion'].forEach(k => { const x = computeBagAvg(k); if (x.avg) byInst[k] = x.avg; });
+      ['tau', 'haifa', 'huji', 'technion', 'bgu', 'biu'].forEach(k => { const x = computeBagAvg(k); if (x.avg) byInst[k] = k === 'bgu' ? Math.min(120, x.avg) : x.avg; });
     }
     return { finalAvg, totalUnits, droppedSubjects, mathU, mathG, engU, engG, hasPhysics5, byInst };
   }
 
   // בונוס לציון בגרות לפי כללי המוסד.
   // tau – go.tau.ac.il/he/ba/how-to-calculate ; haifa – admissions.haifa.ac.il/score-calculation
-  // huji – info.huji.ac.il/reception-components/Bagrut ; technion – admissions.technion.ac.il/calculation-of-the-median-grade
+  // huji – info.huji.ac.il/reception-components/Bagrut ; bgu – ידיעון למועמדים תשפ"ז (מבוא), עמ' 10 ; technion – admissions.technion.ac.il/calculation-of-the-median-grade
   // generic – הערכה כללית למוסדות שכללי הבונוס שלהם לא אומתו
   function bagBonus(rule, id, name, units, g, ctx) {
     if (!(g >= 60) || units < 4) return 0;
@@ -1379,6 +1379,20 @@ body.cmp-on{padding-bottom:120px}
       const huCore = ['eng', 'hist', 'civ', 'lit', 'bible'].includes(id) || /אנגלית|מדעי המחשב|פיזיק|ביולוגי|כימי|היסטורי|ערבית|אזרחות|ספרות|תנ|מחשבת ישראל/.test(name);
       if (isMath) return units >= 5 ? 35 : 15;
       if (huCore) return units >= 5 ? 25 : 15;
+      return units >= 5 ? 20 : 10;
+    }
+    if (rule === 'biu') { // biu.ac.il – "שיטת חישוב ממוצע בגרות ומקצועות המקבלים בונוס"
+      const isMath = id === 'math' || /מתמטיקה/.test(name);
+      if (isMath) return units >= 5 ? 35 : 15;
+      if (['eng', 'hist', 'civ', 'lit', 'bible'].includes(id) || /אנגלית|תנ|תלמוד|תושב|מחשבת ישראל|היסטורי|אזרחות|ספרות|כימי|ביולוגי|פיזיק|פיסיק|מדעי המחשב/.test(name)) return units >= 5 ? 25 : 12.5;
+      return units >= 5 ? 20 : 10;
+    }
+    if (rule === 'bgu') { // ידיעון בן-גוריון תשפ"ז, "ממוצע ציוני תעודת הבגרות והבונוסים"
+      const isMath = id === 'math' || /מתמטיקה/.test(name);
+      const isEng = id === 'eng' || /אנגלית/.test(name);
+      if (isMath) return units >= 5 ? 35 : 20;
+      if (isEng) return units >= 5 ? 25 : 15;
+      if (units >= 5 && (['lit', 'bible', 'hist'].includes(id) || /פיזיק|כימי|ספרות|תנ|היסטורי|ערבית|מדעי המחשב|ביולוגי/.test(name))) return 25;
       return units >= 5 ? 20 : 10;
     }
     if (rule === 'technion') {
@@ -1416,7 +1430,7 @@ body.cmp-on{padding-bottom:120px}
       const g = Number(s.grade);
       if (s.grade !== '' && !isNaN(g) && g > 0) {
         const w = rule === 'technion' && s.id === 'math' ? s.units * 2 : s.units; // בטכניון מתמטיקה נספרת במשקל כפול
-        items.push({ name: s.name, units: w, weighted: g + bagBonus(rule, s.id, s.name, s.units, g, ctx), canDrop: (rule === 'tau' || rule === 'huji') && (s.id === 'bible' || s.id === 'lit') });
+        items.push({ name: s.name, units: w, weighted: g + bagBonus(rule, s.id, s.name, s.units, g, ctx), canDrop: (rule === 'tau' || rule === 'huji' || rule === 'bgu' || rule === 'biu') && (s.id === 'bible' || s.id === 'lit') });
       }
     });
     STATE.majors.forEach(m => {
@@ -1524,8 +1538,8 @@ body.cmp-on{padding-bottom:120px}
     let html = `<strong>ממוצע בגרות משוקלל לחישוב סכם: ${b.finalAvg}</strong>` +
       (STATE.bagMode === 'known' ? ' (נשמר כפי שהזנת, ללא שינוי)' : ` (מחושב על בסיס ${b.totalUnits} יח״ל כולל בונוסים)`);
 
-    if (b.byInst && (b.byInst.tau || b.byInst.haifa || b.byInst.huji || b.byInst.technion)) {
-      html += `<br><small>🎓 לפי כללי הבונוס הרשמיים של כל מוסד: אוניברסיטת ת״א – ${b.byInst.tau || '—'}${b.byInst.tau > 117 ? ' (בחישוב הסכם נלקח 117, התקרה של ת״א)' : ''}, אוניברסיטת חיפה – ${b.byInst.haifa || '—'}, האוניברסיטה העברית – ${b.byInst.huji || '—'}, הטכניון – ${b.byInst.technion || '—'}. במוסדות אחרים מוצגת הערכה כללית לפי בונוס אחיד.</small>`;
+    if (b.byInst && (b.byInst.tau || b.byInst.haifa || b.byInst.huji || b.byInst.technion || b.byInst.bgu || b.byInst.biu)) {
+      html += `<br><small>🎓 לפי כללי הבונוס הרשמיים של כל מוסד: אוניברסיטת ת״א – ${b.byInst.tau || '—'}${b.byInst.tau > 117 ? ' (בחישוב הסכם נלקח 117, התקרה של ת״א)' : ''}, אוניברסיטת חיפה – ${b.byInst.haifa || '—'}, האוניברסיטה העברית – ${b.byInst.huji || '—'}, הטכניון – ${b.byInst.technion || '—'}, בן-גוריון – ${b.byInst.bgu || '—'}, בר-אילן – ${b.byInst.biu || '—'}. במוסדות אחרים מוצגת הערכה כללית לפי בונוס אחיד.</small>`;
     }
     if (b.droppedSubjects.length) {
       html += `<br><small>✨ ממוצע אופטימלי: ${b.droppedSubjects.join(', ')} הושמטו מהשקלול כי הורידו את הממוצע ונשארו לפחות 20 יח״ל. מקצועות החובה של משרד החינוך נשארים תמיד בחישוב.</small>`;

@@ -100,10 +100,10 @@
   async function fullHtml(homeName, instId, instName) {
     const [r, cp] = await Promise.all([forCity(homeName).catch(() => null), loadCampus().catch(() => null)]);
     const C = cp && cp.campus[instId];
-    let h = '<div class="tr-box">';
+    let h = '<div class="tr-box">'; let routeKey = '', homeLL = '';
     if (!r) { const pi = homeName ? await placeInfo(homeName) : null; h += `<p class="tr-note">לא מצאנו את „${esc(homeName || '')}” בלוח הזמנים של התחבורה הציבורית.${pi ? ` היישוב שייך ${pi.council ? 'למועצה האזורית ' + esc(pi.council) : 'לנפת ' + esc(pi.nafa)}.` : ''} זמני הנסיעה: לא ידוע. יש לוודא ולבדוק – אפשר להשתמש בקישורים למטה.</p>`; }
     else {
-      h += proxyNote(r.city);
+      h += proxyNote(r.city); homeLL = r.city.lat + ',' + r.city.lon;
       const e = r.data[instId];
       h += `<h3>🚌 איך מגיעים מ${esc(r.city.name)}</h3><p class="tr-note">מחושב מלוח הזמנים הרשמי של משרד התחבורה (GTFS, עודכן ${cp ? cp.feed : ''}), ליום חול רגיל – יציאה מאמצע ${esc(r.city.name)} מ-7:00 בבוקר. זמנים בפועל משתנים לפי פקקים ושינויי קווים.</p>`;
       if (['huji', 'bgu', 'haifa', 'open'].includes(instId)) h += `<p class="tr-note">ⓘ הזמנים מחושבים לקמפוס הראשי של המוסד. אם החוג שלכם בקמפוס אחר, מומלץ לבדוק גם בגוגל מפות או במוביט.</p>`;
@@ -111,6 +111,7 @@
       else {
         const os = [...e.o].sort((x, y) => x[0] - y[0]);
         const minT = Math.min(...os.map(o => o[3].length));
+        const lg = os[0][3]; if (lg && lg.length) { const z = lg[lg.length - 1]; routeKey = z[0] + '|' + z[1] + '|' + z[2]; }
         h += os.map((o, i) => optionHtml(o, i, i === 0 ? 'הכי מהיר' : (o[3].length === minT ? 'הכי פחות החלפות' : ''))).join('');
       }
       if (e && e.d && e.d.length) {
@@ -132,7 +133,7 @@
         L.map(l => `<span title="${esc(l[3])} · ${l[4]} נסיעות בבוקר">${esc(l[1])} <small>${esc(l[2])}</small></span>`).join('') + `</div><p class="tr-note">מספר הנסיעות בבוקר (6:00–12:00) מופיע כשמצביעים על הקו.</p>`;
       if (C.approx) h += `<p class="tr-note">ⓘ מיקום הקמפוס של ${esc(instName || '')} במפה משוער – יש לוודא את הכתובת המדויקת.</p>`;
     }
-    h += `<h4>🗺️ מפה: קווי אוטובוס, רכבת ותחנות</h4><p class="tr-note">לחצו על קו כדי לראות את כל המסלול והתחנות שלו. לחיצה על תחנה מציגה פרטים.</p><div class="tr-mapbox" data-inst="${esc(instId)}"><div class="tr-map"></div><div class="tr-map-side"><div class="tr-map-tools"><span></span><button type="button" class="tr-clear">ניקוי המפה</button></div><div class="tr-map-lines">טוען…</div></div></div>`;
+    h += `<h4>🗺️ מפה: קווי אוטובוס, רכבת ותחנות</h4><p class="tr-note">לחצו על קו כדי לראות את כל המסלול והתחנות שלו. לחיצה על תחנה מציגה פרטים.</p><div class="tr-mapbox" data-inst="${esc(instId)}" data-home="${esc(homeLL)}" data-homename="${esc(r ? r.city.name : '')}" data-route="${esc(routeKey)}"><div class="tr-map"></div><div class="tr-map-side"><div class="tr-map-tools"><span></span><button type="button" class="tr-clear">ניקוי המפה</button></div><div class="tr-map-lines">טוען…</div></div></div>`;
     h += `<section class="tr-pkbox" data-inst="${esc(instId)}" aria-label="חניה ליד הקמפוס"><h4>🅿️ חניה ליד הקמפוס</h4><p class="tr-note">חניונים בטווח של עד כ-1.3 ק״מ מהקמפוס, לפי גוגל מפות. מחירים ושעות: לא ידוע. יש לוודא ולבדוק מול החניון.</p><div class="tr-pkgrid"><div class="tr-pkmap"></div><ol class="tr-pklist"><li class="tr-note">טוען…</li></ol></div></section>`;
     const dest = encodeURIComponent((instName || '') + (homeName ? '' : ''));
     h += `<div class="tr-links"><a href="https://www.google.com/maps/dir/?api=1${homeName ? '&origin=' + encodeURIComponent(homeName) : ''}&destination=${C ? C.ll.join(',') : dest}&travelmode=transit" target="_blank" rel="noopener">מסלול בזמן אמת בגוגל מפות ↗</a><a href="https://moovitapp.com/tripplan/israel-1/poi/he?tll=${C ? C.ll.join('_') : ''}" target="_blank" rel="noopener">מוביט ↗</a></div>`;
@@ -200,6 +201,18 @@
       if (!active.has(idx)) toggle(idx); else map.fitBounds(active.get(idx).getLayers()[0].getBounds(), { padding: [20, 20] });
       box.scrollIntoView({ behavior: 'smooth', block: 'center' });
     };
+    // מסלול: הבית, הקמפוס והקו האחרון במסלול המהיר ביותר
+    if (box.dataset.home) {
+      const hl = box.dataset.home.split(',').map(Number);
+      if (hl.length === 2 && !isNaN(hl[0])) {
+        L.marker(hl, { title: 'נקודת היציאה', icon: L.divIcon({ className: 'tr-campus-ic', html: '🏠', iconSize: [30, 30] }) }).addTo(map).bindPopup(`<b>🏠 ${esc(box.dataset.homename || 'נקודת היציאה')}</b><br>אמצע היישוב, נקודת היציאה בחישוב`);
+        const ri = box.dataset.route ? M.lines.findIndex(l => (l.m + '|' + l.n + '|' + l.a) === box.dataset.route) : -1;
+        if (ri >= 0 && !active.has(ri)) toggle(ri);
+        const pts = [hl, M.ll]; if (ri >= 0) active.get(ri).getLayers().forEach(x => { if (x.getBounds) { const b = x.getBounds(); pts.push(b.getSouthWest(), b.getNorthEast()); } });
+        map.fitBounds(L.latLngBounds(pts), { padding: [30, 30] });
+        alertNote(box, ri >= 0 ? 'במפה: נקודת היציאה (🏠), הקמפוס, והקו האחרון במסלול המהיר ביותר. קווים קודמים במסלול מופיעים בפירוט הנסיעה למעלה.' : 'במפה: נקודת היציאה (🏠) והקמפוס. הקווים במסלול לא עוברים ליד הקמפוס, ולכן הם מופיעים רק בפירוט הנסיעה.');
+      }
+    }
   }
   function initParking(sec, M, L) {
     if (!sec || sec.dataset.ready) return; sec.dataset.ready = '1';
