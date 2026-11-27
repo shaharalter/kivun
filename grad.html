@@ -163,6 +163,7 @@ button,input,select{font:inherit;color:inherit}
       const notes = [];
       if (avg != null && need) notes.push(avg >= need ? `הממוצע שלך (${avg}) עומד בסף (${need})` : `חסרות ${Math.round((need - avg) * 10) / 10} נקודות לסף (${need})`);
       if (avg != null && !need && p.floor) notes.push(avg >= p.floor ? `עובר את הסף הכללי של המוסד (${p.floor}); סף היחידה לא פורסם` : `מתחת לסף הכללי של המוסד (${p.floor})`);
+      if (/בקורסי (?:ה)?(?:פסיכולוגיה|הליבה|התחום|החוג)|ממוצע בפסיכולוגיה/.test((p.note || '') + ' ' + (p.reqBA || ''))) notes.push('שימו לב: הסף כאן הוא ממוצע בקורסי התחום (למשל קורסי הפסיכולוגיה או קורסי הליבה), ולא ממוצע התואר הכללי שהזנתם. ההשוואה היא הערכה בלבד.');
       if (fit === 'yes') notes.push('התחום שלך מופיע בדרישות');
       else if (fit === 'open') notes.push('התוכנית פתוחה לבוגרי תחומים שונים');
       else if (fit === 'excl') notes.push('התוכנית מיועדת לבוגרי תחומים אחרים – לא לבוגרי התחום שלך');

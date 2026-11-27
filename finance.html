@@ -203,6 +203,7 @@ input[aria-invalid="true"]{border-color:var(--hard)!important}
     <ul class="tips" id="tips"></ul>
     <div class="actions">
       <button type="button" class="btn" id="shareBtn">🔗 שמירה ושיתוף</button>
+      <button type="button" class="btn" id="resetFin" title="מוחק את הערכים שנשמרו בדפדפן הזה">התחלה מחדש</button>
       <button type="button" class="btn ghost" id="saveScen">＋ שמירה כתרחיש להשוואה</button>
       <button type="button" class="btn ghost" id="printBtn">🖨️ הדפסה / PDF</button>
     </div>
@@ -338,6 +339,7 @@ function simulate(){
 }
 
 function recalc(){
+  try{localStorage.setItem(FIN_KEY,JSON.stringify(snap()))}catch(e){}
   const S=simulate();
   const v=$('verdict');
   if(S.loanTot&&S.end>=0&&S.end-S.loanTot<0){v.className='verdict mid';v.innerHTML=`⚠ התוכנית מחזיקה רק בזכות ההלוואה. בלי ההלוואה היו חסרים כ-<b>${money(S.loanTot-S.end)}</b>, ובסוף התואר יהיה לכם חוב של כ-<b>${money(S.debt)}</b>${S.pay?` (החזר של כ-${money(S.pay)} בחודש)`:''}.`}
@@ -415,7 +417,10 @@ function drawScen(){$('scenCard').hidden=!scen.length;
 function snap(){const o={h:housing,inst:$('inst').value,deg:$('deg').value,v:{}};qsa('#f input,#f select').forEach(el=>{if(!el.id||el.id==='inst'||el.id==='deg')return;if(el.type==='checkbox'){if(el.checked)o.v[el.id]=1}else if(el.value!=='')o.v[el.id]=el.value});return o}
 function enc(s){const b=new TextEncoder().encode(s);let x='';b.forEach(c=>x+=String.fromCharCode(c));return btoa(x).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function dec(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return new TextDecoder().decode(Uint8Array.from(atob(s),c=>c.charCodeAt(0)))}
-function restore(){const m=location.hash.match(/^#s=([\w-]+)/);if(!m)return false;try{const o=JSON.parse(dec(m[1]));
+const FIN_KEY='kivun_fin_v1';
+function restore(){const m=location.hash.match(/^#s=([\w-]+)/);let o=null;
+  if(!m){if(new URLSearchParams(location.search).get('inst'))return false;try{o=JSON.parse(localStorage.getItem(FIN_KEY)||'null')}catch(e){}if(!o||!o.v)return false}
+  try{if(!o)o=JSON.parse(dec(m[1]));
   if(o.inst&&[...$('inst').options].some(x=>x.value===o.inst)){$('inst').value=o.inst;onInst(o.deg)}housing=o.h||'parents';applyHousing(false);
   qsa('#f input,#f select').forEach(el=>{if(!el.id||el.id==='inst'||el.id==='deg')return;if(el.type==='checkbox')el.checked=!!o.v[el.id];else if(o.v[el.id]!==undefined)el.value=o.v[el.id]});
   recalc();return true}catch(e){console.warn('קישור לא תקין',e);return false}}
@@ -462,7 +467,7 @@ function bind(){
   $('dormSel').addEventListener('change',()=>{applyHousing(true);recalc()});
   $('mates').addEventListener('input',()=>{applyHousing(true);recalc()});
   qsa('#f input,#f select').forEach(el=>{if(['inst','deg','dormSel','mates'].includes(el.id))return;el.addEventListener(el.type==='checkbox'||el.tagName==='SELECT'?'change':'input',recalc)});
-  $('shareBtn').onclick=share;$('saveScen').onclick=saveScenario;$('printBtn').onclick=()=>window.print();
+  $('shareBtn').onclick=share;$('resetFin').onclick=()=>{try{localStorage.removeItem(FIN_KEY)}catch(e){}location.href=location.pathname};$('saveScen').onclick=saveScenario;$('printBtn').onclick=()=>window.print();
 }
 load();
 })();
