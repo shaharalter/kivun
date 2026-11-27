@@ -209,7 +209,7 @@
         const ri = box.dataset.route ? M.lines.findIndex(l => (l.m + '|' + l.n + '|' + l.a) === box.dataset.route) : -1;
         if (ri >= 0 && !active.has(ri)) toggle(ri);
         const pts = [hl, M.ll]; if (ri >= 0) active.get(ri).getLayers().forEach(x => { if (x.getBounds) { const b = x.getBounds(); pts.push(b.getSouthWest(), b.getNorthEast()); } });
-        const fit = () => { map.invalidateSize(); map.fitBounds(L.latLngBounds(pts), { padding: [30, 30] }); };
+        const fit = () => { map.stop(); map.invalidateSize(); map.fitBounds(L.latLngBounds(pts), { padding: [30, 30], animate: false }); };
         fit(); setTimeout(fit, 400);
         alertNote(box, ri >= 0 ? 'במפה: נקודת היציאה (🏠), הקמפוס, והקו האחרון במסלול המהיר ביותר. קווים קודמים במסלול מופיעים בפירוט הנסיעה למעלה.' : 'במפה: נקודת היציאה (🏠) והקמפוס. הקווים במסלול לא עוברים ליד הקמפוס, ולכן הם מופיעים רק בפירוט הנסיעה.');
       }
